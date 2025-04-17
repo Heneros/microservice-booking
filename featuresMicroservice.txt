@@ -1,7 +1,0 @@
-nest generate app NAME_APP
-
-
-nest g library  common
-
-https://youtu.be/yuVVKB0EaOQ?t=360
-https://medium.com/widle-studio/mastering-microservices-in-nest-js-eb143a6b9639
