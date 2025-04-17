@@ -1,0 +1,213 @@
+
+version: '3.8'
+
+services:
+  auth:
+    build:
+     dockerfile: ./apps/auth/Dockerfile
+     target: development
+    command: npm run start:dev auth
+    env_file:
+      - ./apps/auth/.env
+    depends_on:
+      - postgres
+      - pgadmin
+      - redis
+      - maildev
+    volumes:
+     - .:/usr/src/app
+     - /usr/src/app/node_modules
+
+
+  users:
+    build:
+     dockerfile: ./apps/users/Dockerfile
+     target: development
+    command: npm run start:dev users
+    env_file:
+      - ./apps/users/.env
+    depends_on:
+      - auth
+      - postgres
+      - pgadmin
+      - redis
+      - maildev
+    volumes:
+     - .:/usr/src/app
+     - /usr/src/app/node_modules
+
+  billing:
+    build:
+     dockerfile: ./apps/billing/Dockerfile
+     target: development
+    command: npm run start:dev billing
+    env_file:
+      - ./apps/billing/.env
+    depends_on:
+      - auth
+      - users
+      - postgres
+      - pgadmin
+      - redis
+      - maildev
+    volumes:
+     - .:/usr/src/app
+     - /usr/src/app/node_modules
+  
+  notifications:
+    build:
+     dockerfile: ./apps/notifications/Dockerfile
+     target: development
+    command: npm run start:dev notifications
+    env_file:
+      - ./apps/notifications/.env
+    depends_on:
+      - auth
+      - users
+      - billing
+      - postgres
+      - pgadmin
+      - redis
+      - maildev
+    volumes:
+     - .:/usr/src/app
+     - /usr/src/app/node_modules
+    
+  reservations:
+    build:
+     dockerfile: ./apps/reservations/Dockerfile
+     target: development
+    command: npm run start:dev reservations
+    env_file:
+      - ./apps/reservations/.env
+    depends_on:
+      - auth
+      - users
+      - billing
+      - notifications
+      - postgres
+      - pgadmin
+      - redis
+      - maildev
+    volumes:
+     - .:/usr/src/app
+     - /usr/src/app/node_modules
+
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - "5672:5672"
+
+  mongodb-primary:
+    image: docker.io/bitnami/mongodb:5.0
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+    volumes:
+      - 'mongodb_master_data:/bitnami/mongodb'
+    ports:
+      - '27017:27017'
+
+  mongodb-secondary:
+    image: docker.io/bitnami/mongodb:5.0
+    depends_on:
+      - mongodb-primary
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+
+  mongodb-arbiter:
+    image: docker.io/bitnami/mongodb:5.0
+    depends_on:
+      - mongodb-primary
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-arbiter
+      - MONGODB_REPLICA_SET_MODE=arbiter
+      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+
+
+  postgres:
+    restart: always
+    image: postgres:17.4
+    build:
+      context: ./docker/dev/postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD:  ${POSTGRES_PASSWORD}
+      POSTGRES_DB:  ${POSTGRES_DB}
+    volumes:
+      - master_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      micro_booking:
+
+  pgadmin:
+   container_name: pgadmi_nest
+   image: dpage/pgadmin4:8
+   restart: always
+   environment: 
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+   ports: 
+     - "5050:80"
+   depends_on:  
+    - postgres-master
+   volumes:
+      - pgadmin-data:/var/lib/pgadmin
+   networks:
+    micro_booking:
+
+     
+  maildev:
+   image: maildev/maildev:2.2.1
+   restart: always
+   ports:
+    - "1080:1080"
+    - "1025:1025"
+   environment:
+      - MAILDEV_WEB_PORT=1080
+      - MAILDEV_SMTP_PORT=1025
+   networks:
+    micro_booking:
+
+  redis:
+   image: redis:7.4
+   container_name: 'redis-nestjs'
+   restart: always
+   ports:
+    - '6379:6379'
+   volumes:
+   - redis_data:/data
+   networks:
+    micro_booking:
+
+volumes:
+  master_data:
+  redis_data:
+  pgadmin-data:
+  mongodb_master_data:
+
+networks:
+   micro_booking:
+      driver: bridge
+
+
+
+
+
+
+
