@@ -21,8 +21,6 @@ services:
     networks:
       micro_booking:
 
-
-
   users:
     build:
      context: .
@@ -118,8 +116,6 @@ services:
     networks:
       micro_booking:
 
-
-
   mongodb-primary:
     image: docker.io/bitnami/mongodb:5.0
     environment:
@@ -147,7 +143,6 @@ services:
     networks:
       micro_booking:
 
-
   mongodb-arbiter:
     image: docker.io/bitnami/mongodb:5.0
     depends_on:
@@ -164,8 +159,9 @@ services:
   postgres:
     restart: always
     image: postgres:17.4
-    build:
-      context: ./docker/dev/postgres
+    container_name: 'postgres-micro'
+    # build:
+    #   context: ./docker/postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD:  ${POSTGRES_PASSWORD}
@@ -184,7 +180,6 @@ services:
       micro_booking:
 
   pgadmin:
-   container_name: pgadmi_nest
    image: dpage/pgadmin4:8
    restart: always
    environment: 
@@ -192,12 +187,10 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
    ports: 
      - "5050:80"
- 
    volumes:
       - pgadmin-data:/var/lib/pgadmin
    networks:
     micro_booking:
-
      
   maildev:
    image: maildev/maildev:2.2.1
@@ -213,7 +206,7 @@ services:
 
   redis:
    image: redis:7.4
-   container_name: 'redis-nestjs'
+   container_name: 'redis-micro'
    restart: always
    ports:
     - '6379:6379'
