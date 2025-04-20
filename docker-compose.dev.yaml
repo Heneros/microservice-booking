@@ -4,6 +4,7 @@ version: '3.8'
 services:
   auth:
     build:
+     context: .
      dockerfile: ./apps/auth/Dockerfile
      target: development
     command: npm run start:dev auth
@@ -17,10 +18,14 @@ services:
     volumes:
      - .:/usr/src/app
      - /usr/src/app/node_modules
+    networks:
+      micro_booking:
+
 
 
   users:
     build:
+     context: .
      dockerfile: ./apps/users/Dockerfile
      target: development
     command: npm run start:dev users
@@ -35,9 +40,12 @@ services:
     volumes:
      - .:/usr/src/app
      - /usr/src/app/node_modules
+    networks:
+      micro_booking:
 
   billing:
     build:
+     context: .
      dockerfile: ./apps/billing/Dockerfile
      target: development
     command: npm run start:dev billing
@@ -53,9 +61,13 @@ services:
     volumes:
      - .:/usr/src/app
      - /usr/src/app/node_modules
+    networks:
+      micro_booking:
+
   
   notifications:
     build:
+     context: .
      dockerfile: ./apps/notifications/Dockerfile
      target: development
     command: npm run start:dev notifications
@@ -72,9 +84,13 @@ services:
     volumes:
      - .:/usr/src/app
      - /usr/src/app/node_modules
+    networks:
+      micro_booking:
+
     
   reservations:
     build:
+     context: .
      dockerfile: ./apps/reservations/Dockerfile
      target: development
     command: npm run start:dev reservations
@@ -92,11 +108,17 @@ services:
     volumes:
      - .:/usr/src/app
      - /usr/src/app/node_modules
+    networks:
+      micro_booking:
 
   rabbitmq:
     image: rabbitmq
     ports:
       - "5672:5672"
+    networks:
+      micro_booking:
+
+
 
   mongodb-primary:
     image: docker.io/bitnami/mongodb:5.0
@@ -109,6 +131,8 @@ services:
       - 'mongodb_master_data:/bitnami/mongodb'
     ports:
       - '27017:27017'
+    networks:
+      micro_booking:
 
   mongodb-secondary:
     image: docker.io/bitnami/mongodb:5.0
@@ -120,6 +144,9 @@ services:
       - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
       - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
+    networks:
+      micro_booking:
+
 
   mongodb-arbiter:
     image: docker.io/bitnami/mongodb:5.0
@@ -131,7 +158,8 @@ services:
       - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
       - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
-
+    networks:
+      micro_booking:
 
   postgres:
     restart: always
@@ -164,8 +192,7 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
    ports: 
      - "5050:80"
-   depends_on:  
-    - postgres-master
+ 
    volumes:
       - pgadmin-data:/var/lib/pgadmin
    networks:
@@ -192,6 +219,11 @@ services:
     - '6379:6379'
    volumes:
    - redis_data:/data
+   healthcheck:
+    test: ["CMD", "redis-cli", "ping"]
+    interval: 5s
+    timeout: 5s
+    retries: 5
    networks:
     micro_booking:
 
@@ -204,10 +236,3 @@ volumes:
 networks:
    micro_booking:
       driver: bridge
-
-
-
-
-
-
-
