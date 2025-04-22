@@ -46,6 +46,7 @@
         "tsConfigPath": "apps/notifications/tsconfig.app.json"
       }
     },
+
     "reservations": {
       "type": "application",
       "root": "apps/reservations",

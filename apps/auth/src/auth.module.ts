@@ -3,7 +3,7 @@ import Joi from 'joi';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { ConfigModule } from '@nestjs/config';
-import { DatabaseModule } from '@app/common';
+import { MongodbModule } from '@app/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Auth, AuthSchema } from './schemas/auth.schema';
 
@@ -13,10 +13,11 @@ import { Auth, AuthSchema } from './schemas/auth.schema';
       isGlobal: true,
       validationSchema: Joi.object({
         MONGODB_URI: Joi.string().required(),
+        PORT: Joi.number().required(),
       }),
       envFilePath: './app/auth/.env',
     }),
-    DatabaseModule,
+    MongodbModule,
     MongooseModule.forFeature([
       {
         name: Auth.name,

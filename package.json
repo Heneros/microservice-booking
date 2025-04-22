@@ -28,14 +28,18 @@
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
     "@nestjs/cqrs": "^11.0.3",
+    "@nestjs/graphql": "^13.1.0",
     "@nestjs/microservices": "^11.0.13",
     "@nestjs/mongoose": "^11.0.3",
     "@nestjs/platform-express": "^11.0.1",
-    "@nestjs/swagger": "^11.1.4",
+    "@nestjs/swagger": "^11.1.5",
     "@prisma/client": "^6.6.0",
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.7",
     "cache-manager": "^6.4.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "cqrs": "^3.1.0",
     "joi": "^17.13.3",
     "mongoose": "^8.13.2",
     "reflect-metadata": "^0.2.2",
@@ -91,7 +95,8 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1"
+      "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",
+      "^@app/postgresql-database(|/.*)$": "<rootDir>/libs/postgresql-database/src/$1"
     }
   }
 }

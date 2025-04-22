@@ -9,7 +9,9 @@ import {
   Connection,
 } from 'mongoose';
 
-export abstract class AbstractRepository<TDocument extends AbstractDocument> {
+export abstract class AbstractRepositoryMongodb<
+  TDocument extends AbstractDocument,
+> {
   protected abstract readonly logger: Logger;
 
   constructor(

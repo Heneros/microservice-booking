@@ -12,7 +12,7 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "noImplicitAny": false,
@@ -24,6 +24,12 @@
       ],
       "@app/common/*": [
         "libs/common/src/*"
+      ],
+      "@app/postgresql-database": [
+        "libs/postgresql-database/src"
+      ],
+      "@app/postgresql-database/*": [
+        "libs/postgresql-database/src/*"
       ]
     }
   }

@@ -9,3 +9,8 @@ Microservice app for booking hotels/apartments, you can rent apartment
 
 ## Packages
 - 
+
+
+## Future: 
+- npx nx init
+- 
