@@ -1,17 +1,16 @@
-import { AbstractRepository } from '@app/common';
+import { AbstractRepositoryPostgres, PrismaService } from '@app/common';
 import { Injectable, Logger } from '@nestjs/common';
-import { Connection, Model } from 'mongoose';
-import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Auth } from '../schemas/auth.schema';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class AuthRepository extends AbstractRepository<Auth> {
+export class AuthRepository extends AbstractRepositoryPostgres<Auth> {
   protected readonly logger = new Logger(AuthRepository.name);
-
-  constructor(
-    @InjectModel(Auth.name) authModel: Model<Auth>,
-    @InjectConnection() connection: Connection,
-  ) {
-    super(authModel, connection);
+  protected readonly prisma: PrismaClient;
+  protected readonly model: any;
+  constructor(private readonly prismaService: PrismaService) {
+    super();
+    this.prisma = prismaService;
+    this.model = prismaService;
   }
 }

@@ -6,10 +6,48 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+
+model VerifyResetToken {
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int      @unique
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+
+model User{
+  id Int @id @default(autoincrement())
+  username String 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  password String 
+  isEmailVerified Boolean @default(false)
+  avatarId Int? @unique()
+  blocked Boolean @default(false)
+  avatar Avatar? @relation(name: "AvatarUser", fields: [avatarId], references: [id], onDelete: Cascade)
+  email     String   @unique
+  roles     String[] @default(["User"])
+  refreshToken    String[]
+  token          VerifyResetToken[]
+
+  provider  String?
+  googleId  String? @unique()
+  githubId  String? @unique()
+  discordId String? @unique()
+}
+
+model Avatar{
+  id       Int    @id @default(autoincrement())
+  url      String
+  publicId String
+  user User? @relation(name: "AvatarUser")
+  createdAt DateTime @default(now())
 }

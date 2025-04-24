@@ -13,4 +13,5 @@ Microservice app for booking hotels/apartments, you can rent apartment
 
 ## Future: 
 - npx nx init
-- 
+- Implement Shard DB
+- Implement Cluster DB
