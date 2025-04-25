@@ -13,6 +13,21 @@ export abstract class AbstractRepositoryPostgres<T> {
     return this.model.findUnique({ where: { id } });
   }
 
+  async findByEmail(criteria: { email: string }): Promise<T | null> {
+    return this.model.findUnique({ where: { email: criteria.email } });
+  }
+
+  async createToken(data: Partial<T>): Promise<T> {
+    return await this.model.create({
+      data: {
+        userId: userId,
+        token: token,
+        createdAt: new Date().toISOString(),
+        expiresAt: data.tempDate,
+      },
+    });
+  }
+
   async create(data: Partial<T>): Promise<T> {
     return this.model.create({ data });
   }

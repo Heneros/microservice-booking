@@ -3,9 +3,8 @@ import Joi from 'joi';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { ConfigModule } from '@nestjs/config';
-import { MongodbModule } from '@app/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Auth, AuthSchema } from './schemas/auth.schema';
+
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
   imports: [
@@ -17,13 +16,7 @@ import { Auth, AuthSchema } from './schemas/auth.schema';
       }),
       envFilePath: './app/auth/.env',
     }),
-    MongodbModule,
-    MongooseModule.forFeature([
-      {
-        name: Auth.name,
-        schema: AuthSchema,
-      },
-    ]),
+    CqrsModule.forRoot({}),
   ],
   controllers: [AuthController],
   providers: [AuthService],
