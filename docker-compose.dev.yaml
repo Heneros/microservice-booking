@@ -6,14 +6,15 @@ services:
     build:
      context: .
      dockerfile: ./apps/auth/Dockerfile
-     target: development
+     target: builder
     command: npm run start:dev auth
     env_file:
-      - ./apps/auth/.env
+      - ./.env
     depends_on:
       - postgres
       - pgadmin
       - redis
+      - rabbitmq
       - maildev
     volumes:
      - .:/usr/src/app
@@ -30,13 +31,14 @@ services:
      target: development
     command: npm run start:dev users
     env_file:
-      - ./apps/users/.env
+      - ./.env
     depends_on:
       - auth
       - postgres
       - pgadmin
       - redis
       - maildev
+      - rabbitmq
     volumes:
      - .:/usr/src/app
      - /usr/src/app/node_modules
@@ -52,12 +54,13 @@ services:
      target: development
     command: npm run start:dev billing
     env_file:
-      - ./apps/billing/.env
+      - ./.env
     depends_on:
       - auth
       - users
       - postgres
       - pgadmin
+      - rabbitmq
       - redis
       - maildev
     volumes:
@@ -76,7 +79,7 @@ services:
      target: development
     command: npm run start:dev notifications
     env_file:
-      - ./apps/notifications/.env
+      - ./.env
     depends_on:
       - auth
       - users
@@ -84,6 +87,7 @@ services:
       - postgres
       - pgadmin
       - redis
+      - rabbitmq
       - maildev
     volumes:
      - .:/usr/src/app
@@ -101,7 +105,7 @@ services:
      target: development
     command: npm run start:dev reservations
     env_file:
-      - ./apps/reservations/.env
+      - ./.env
     depends_on:
       - auth
       - users
@@ -170,7 +174,6 @@ services:
     restart: always
     image: postgres:17.4
     env_file: ./.env
-    container_name: postgres-micro
     build:
      context: ./docker/postgres
      dockerfile: Dockerfile

@@ -3,15 +3,19 @@ import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { RegisterUserCommand } from '../commands';
 import { ICommandHandler } from '@nestjs/cqrs';
-import { AuthRepository } from '../repository/auth.respository';
+
 import { BadRequestException } from '@nestjs/common';
 import { roundsOfHashing, tempRegisterDate } from 'libs/data/defaultData';
+import { AuthRepository, VerifyResetTokenRepository } from '../repository';
 
 @CommandHandler(RegisterUserCommand)
 export class RegisterUserHandler
   implements ICommandHandler<RegisterUserCommand>
 {
-  constructor(private readonly authRepository: AuthRepository) {}
+  constructor(
+    private readonly authRepository: AuthRepository,
+    private readonly verifyResetToken: VerifyResetTokenRepository,
+  ) {}
 
   async execute(command: RegisterUserCommand) {
     const { registerUserDto } = command;
@@ -26,7 +30,7 @@ export class RegisterUserHandler
     );
     const token = randomBytes(32).toString('hex');
     registerUserDto.password = hashedPassword;
-    let email = registerUserDto.email;
+    // let email = registerUserDto.email;
 
     const userEmail = await this.authRepository.findByEmail({
       email: registerUserDto.email,
@@ -49,10 +53,17 @@ export class RegisterUserHandler
 
     const userId = createdUser.id;
 
-    const emailVerificationToken = await this.authRepository.createToken({
+    const emailVerificationToken = await this.verifyResetToken.createToken({
       userId,
       token,
       tempDate: tempRegisterDate,
     });
+
+    return {
+      id: userId,
+      email: registerUserDto.email,
+      name: registerUserDto.username,
+      accessToken: emailVerificationToken.token,
+    };
   }
 }

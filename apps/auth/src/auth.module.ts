@@ -14,7 +14,7 @@ import { CqrsModule } from '@nestjs/cqrs';
         MONGODB_URI: Joi.string().required(),
         PORT: Joi.number().required(),
       }),
-      envFilePath: './app/auth/.env',
+      envFilePath: process.env.NODE_ENV === 'local' ? '.env.local' : '.env',
     }),
     CqrsModule.forRoot({}),
   ],
