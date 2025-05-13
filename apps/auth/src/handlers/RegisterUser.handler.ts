@@ -1,8 +1,7 @@
-import { CommandHandler } from 'cqrs';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { RegisterUserCommand } from '../commands';
-import { ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { BadRequestException } from '@nestjs/common';
 import { roundsOfHashing, tempRegisterDate } from 'libs/data/defaultData';
@@ -20,17 +19,17 @@ export class RegisterUserHandler
   async execute(command: RegisterUserCommand) {
     const { registerUserDto } = command;
 
+    console.log(roundsOfHashing);
     if (registerUserDto.password !== registerUserDto.passwordConfirm) {
       throw new BadRequestException('Confirm password');
     }
 
-    const hashedPassword = await bcrypt.hash(
-      registerUserDto.password,
-      roundsOfHashing,
-    );
+    const salt = await bcrypt.genSalt(roundsOfHashing);
+    const hashedPassword = await bcrypt.hash(registerUserDto.password, salt);
     const token = randomBytes(32).toString('hex');
     registerUserDto.password = hashedPassword;
     // let email = registerUserDto.email;
+    // console.log(registerUserDto.email);
 
     const userEmail = await this.authRepository.findByEmail({
       email: registerUserDto.email,

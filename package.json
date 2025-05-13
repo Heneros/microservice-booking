@@ -43,7 +43,6 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.7",
-    "cqrs": "^3.1.0",
     "joi": "^17.13.3",
     "mongoose": "^8.13.2",
     "reflect-metadata": "^0.2.2",

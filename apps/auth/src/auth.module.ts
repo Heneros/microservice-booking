@@ -3,11 +3,14 @@ import Joi from 'joi';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { ConfigModule } from '@nestjs/config';
-
 import { CqrsModule } from '@nestjs/cqrs';
+import * as Handlers from './handlers';
+import { CommonModule, PrismaService } from '@app/common';
+import * as Repository from './repository';
 
 @Module({
   imports: [
+    CommonModule,
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -19,6 +22,11 @@ import { CqrsModule } from '@nestjs/cqrs';
     CqrsModule.forRoot({}),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [
+    PrismaService,
+    AuthService,
+    ...Object.values(Handlers),
+    ...Object.values(Repository),
+  ],
 })
 export class AuthModule {}

@@ -5,8 +5,8 @@ import { AuthEntity } from '../entities/Auth.entity';
 import { PAGINATION_LIMIT } from '../data/defaultData';
 
 @Injectable()
-export class AuthRepository extends AbstractRepositoryPostgres<AuthEntity> {
-  protected readonly logger = new Logger(AuthRepository.name);
+export class UserRepository extends AbstractRepositoryPostgres<AuthEntity> {
+  protected readonly logger = new Logger(UserRepository.name);
   protected readonly prisma: PrismaClient;
   protected readonly model: any;
 
@@ -16,8 +16,14 @@ export class AuthRepository extends AbstractRepositoryPostgres<AuthEntity> {
   constructor(private readonly prismaService: PrismaService) {
     super();
     this.prisma = prismaService;
-    this.model = this.prisma.user;
     this.userModel = this.prismaService.user;
     this.tokenModel = this.prismaService.verifyResetToken;
+  }
+
+  async findAllUser(skip: number) {
+    return await this.prisma.user.findMany({
+      skip,
+      take: PAGINATION_LIMIT,
+    });
   }
 }
