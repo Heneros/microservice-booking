@@ -4,18 +4,19 @@ import { RegisterUserDto } from './dto';
 import { AUTH_CONTROLLER } from './sites/constants';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { RegisterUserCommand } from './commands';
+import { FindAllUsersQuery } from './queries/GetUsers.query';
 
 @Controller(AUTH_CONTROLLER)
 export class AuthController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-    private readonly authService: AuthService,
   ) {}
 
   @Get()
   async getTest() {
-    return 'Hello World';
+    return await this.queryBus.execute(new FindAllUsersQuery());
+    // return 'Hello World';
   }
 
   @Post()
@@ -23,7 +24,4 @@ export class AuthController {
     return await this.commandBus.execute(new RegisterUserCommand(request));
     // return await this.authService.registerUser(request);
   }
-
-  @Get()
-  async getUsers() {}
 }

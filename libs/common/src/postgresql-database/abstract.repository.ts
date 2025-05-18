@@ -9,7 +9,6 @@ export abstract class AbstractRepositoryPostgres<T> {
     return this.model.findMany();
   }
 
-  
   async findById(id: number): Promise<T | null> {
     return this.model.findUnique({ where: { id } });
   }

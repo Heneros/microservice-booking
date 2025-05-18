@@ -1,24 +1,24 @@
-FROM node:20 as builder
+FROM node:alpine AS builder
 
 WORKDIR /usr/src/app 
 COPY package*.json ./
-RUN npm ci 
+RUN npm install 
 
 COPY . .
 
 RUN npx prisma generate \
     --schema=libs/common/src/postgresql-database/prisma/schema.prisma
-
+    
 RUN npm run build auth
 
 
-#-----------------------------------development-----------------------------------
-FROM node:20-alpine
+#-----------------------------------production-----------------------------------
+FROM node:alpine AS production 
 
 WORKDIR /usr/src/app
 
 COPY --from=builder /usr/src/app .
-# COPY package*.json ./
+COPY package*.json ./
 
 
 RUN npm ci

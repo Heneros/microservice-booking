@@ -9,3 +9,6 @@ export * from './postgresql-database/prisma.module';
 
 export * from './postgresql-database/prisma.service';
 export * from './postgresql-database/abstract.repository';
+
+export * from './rmq/rmq.service';
+export * from './rmq/rmq.module';

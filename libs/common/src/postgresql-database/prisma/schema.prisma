@@ -38,7 +38,7 @@ model User{
   refreshToken    String[]
   token          VerifyResetToken[]
 
-  provider  String?
+  provider  String? @default("email")
   googleId  String? @unique()
   githubId  String? @unique()
   discordId String? @unique()

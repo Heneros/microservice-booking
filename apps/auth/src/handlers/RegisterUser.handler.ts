@@ -43,7 +43,7 @@ export class RegisterUserHandler
     }
 
     const userData = {
-      name: registerUserDto.username,
+      username: registerUserDto.username,
       email: registerUserDto.email,
       password: hashedPassword,
     };

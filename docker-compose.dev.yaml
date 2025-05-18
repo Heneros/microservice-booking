@@ -2,6 +2,7 @@
 version: '3.8'
 
 services:
+  
   auth:
     build:
      context: .
@@ -66,8 +67,6 @@ services:
     volumes:
      - .:/usr/src/app
      - /usr/src/app/node_modules
-    ports:
-      - '3002:3002'
     networks:
       micro_booking:
 
