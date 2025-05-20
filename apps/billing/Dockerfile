@@ -8,6 +8,9 @@ RUN npm install
 
 COPY . .
 
+RUN npx prisma generate \
+    --schema=libs/common/src/postgresql-database/prisma/schema.prisma
+
 RUN npm run build billing
 
 #-----------------------------------production-----------------------------------

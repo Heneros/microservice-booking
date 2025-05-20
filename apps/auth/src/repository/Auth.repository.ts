@@ -1,6 +1,6 @@
 import { AbstractRepositoryPostgres, PrismaService } from '@app/common';
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { AuthEntity } from '../entities/Auth.entity';
 import { PAGINATION_LIMIT } from '../data/defaultData';
 

@@ -19,7 +19,6 @@ export class RegisterUserHandler
   async execute(command: RegisterUserCommand) {
     const { registerUserDto } = command;
 
-    console.log(roundsOfHashing);
     if (registerUserDto.password !== registerUserDto.passwordConfirm) {
       throw new BadRequestException('Confirm password');
     }
