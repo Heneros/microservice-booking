@@ -48,126 +48,55 @@ services:
     networks:
       micro_booking:
 
-  billing:
-    build:
-     context: .
-     dockerfile: ./apps/billing/Dockerfile
-     target: development
-    command: npm run start:dev billing
-    env_file:
-      - ./.env
-    depends_on:
-      - auth
-      - users
-      - postgres
-      - pgadmin
-      - rabbitmq
-      - redis
-      - maildev
-    volumes:
-     - .:/usr/src/app
-     - /usr/src/app/node_modules
-    networks:
-      micro_booking:
-
-  
-  notifications:
-    build:
-     context: .
-     dockerfile: ./apps/notifications/Dockerfile
-     target: development
-    command: npm run start:dev notifications
-    env_file:
-      - ./.env
-    depends_on:
-      - auth
-      - users
-      - billing
-      - postgres
-      - pgadmin
-      - redis
-      - rabbitmq
-      - maildev
-    volumes:
-     - .:/usr/src/app
-     - /usr/src/app/node_modules
-    ports:
-      - '3003:3003'
-    networks:
-      micro_booking:
-
-    
-  reservations:
-    build:
-     context: .
-     dockerfile: ./apps/reservations/Dockerfile
-     target: development
-    command: npm run start:dev reservations
-    env_file:
-      - ./.env
-    depends_on:
-      - auth
-      - users
-      - billing
-      - notifications
-      - postgres
-      - pgadmin
-      - redis
-      - maildev
-    volumes:
-     - .:/usr/src/app
-     - /usr/src/app/node_modules
-    ports:
-      - '3004:3004'
-    networks:
-      micro_booking:
-
   rabbitmq:
-    image: rabbitmq
+    image: rabbitmq:3-management
     ports:
       - "5672:5672"
-    networks:
-      micro_booking:
-
-  mongodb-primary:
-    image: docker.io/bitnami/mongodb:5.0
-    environment:
-      - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
-      - MONGODB_REPLICA_SET_MODE=primary
-      - MONGODB_ROOT_PASSWORD=password123
-      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+      - "15672:15672"
     volumes:
-      - 'mongodb_master_data:/bitnami/mongodb'
-    ports:
-      - '27017:27017'
+      - rabbit_data:/var/lib/rabbitmq
     networks:
       micro_booking:
 
-  mongodb-secondary:
-    image: docker.io/bitnami/mongodb:5.0
-    depends_on:
-      - mongodb-primary
-    environment:
-      - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary
-      - MONGODB_REPLICA_SET_MODE=secondary
-      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
-      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
-      - MONGODB_REPLICA_SET_KEY=replicasetkey123
-    networks:
-      micro_booking:
+  # mongodb-primary:
+  #   image: docker.io/bitnami/mongodb:5.0
+  #   environment:
+  #     - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
+  #     - MONGODB_REPLICA_SET_MODE=primary
+  #     - MONGODB_ROOT_PASSWORD=password123
+  #     - MONGODB_REPLICA_SET_KEY=replicasetkey123
+  #   volumes:
+  #     - 'mongodb_master_data:/bitnami/mongodb'
+  #   ports:
+  #     - '27017:27017'
+  #   networks:
+  #     micro_booking:
 
-  mongodb-arbiter:
-    image: docker.io/bitnami/mongodb:5.0
-    depends_on:
-      - mongodb-primary
-    environment:
-      - MONGODB_ADVERTISED_HOSTNAME=mongodb-arbiter
-      - MONGODB_REPLICA_SET_MODE=arbiter
-      - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
-      - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
-      - MONGODB_REPLICA_SET_KEY=replicasetkey123
-    networks:
-      micro_booking:
+  # mongodb-secondary:
+  #   image: docker.io/bitnami/mongodb:5.0
+  #   depends_on:
+  #     - mongodb-primary
+  #   environment:
+  #     - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary
+  #     - MONGODB_REPLICA_SET_MODE=secondary
+  #     - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+  #     - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
+  #     - MONGODB_REPLICA_SET_KEY=replicasetkey123
+  #   networks:
+  #     micro_booking:
+
+  # mongodb-arbiter:
+  #   image: docker.io/bitnami/mongodb:5.0
+  #   depends_on:
+  #     - mongodb-primary
+  #   environment:
+  #     - MONGODB_ADVERTISED_HOSTNAME=mongodb-arbiter
+  #     - MONGODB_REPLICA_SET_MODE=arbiter
+  #     - MONGODB_INITIAL_PRIMARY_HOST=mongodb-primary
+  #     - MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD=password123
+  #     - MONGODB_REPLICA_SET_KEY=replicasetkey123
+  #   networks:
+  #     micro_booking:
 
   postgres:
     restart: always
@@ -239,6 +168,7 @@ volumes:
   redis_data:
   pgadmin-data:
   mongodb_master_data:
+  rabbit_data:
 
 networks:
    micro_booking:

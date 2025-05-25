@@ -20,7 +20,6 @@ export class AuthController {
   @Get()
   async getTest() {
     return await this.queryBus.execute(new FindAllUsersQuery());
-    // return 'Hello World';
   }
 
   @Post()

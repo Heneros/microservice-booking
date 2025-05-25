@@ -4,7 +4,7 @@
 /build
 *.env
 featuresMicroservice.txt
-.txt
+*.txt
 # Logs
 logs
 *.log
@@ -13,7 +13,8 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-
+nest-microservice@0.0.1
+npx
 # OS
 .DS_Store
 

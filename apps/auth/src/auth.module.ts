@@ -2,12 +2,13 @@ import { Module, Global } from '@nestjs/common';
 import Joi from 'joi';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import * as Handlers from './handlers';
 import { CommonModule, PrismaService, RmqModule } from '@app/common';
 import * as Repository from './repository';
 import { BILLING_SERVICE } from './constants/services';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -25,6 +26,15 @@ import { BILLING_SERVICE } from './constants/services';
     RmqModule.register({
       name: BILLING_SERVICE,
     }),
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: `${configService.get('JWT_EXPIRATION')}s`,
+        },
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AuthController],
   providers: [
@@ -32,6 +42,7 @@ import { BILLING_SERVICE } from './constants/services';
     AuthService,
     ...Object.values(Handlers),
     ...Object.values(Repository),
+    // LocalSt
   ],
 })
 export class AuthModule {}

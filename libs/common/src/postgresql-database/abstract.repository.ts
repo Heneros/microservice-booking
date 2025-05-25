@@ -5,6 +5,10 @@ export abstract class AbstractRepositoryPostgres<T> {
 
   protected abstract readonly model: any;
 
+  async findOne(data: { text: string }): Promise<T> {
+    return this.model.findOne();
+  }
+
   async findAll(): Promise<T[]> {
     return this.model.findMany();
   }

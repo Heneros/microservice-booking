@@ -12,7 +12,7 @@ export class FindAllUsersHandler implements IQueryHandler<FindAllUsersQuery> {
 
     const allUsers = await this.userRepository.findAllUser(page);
 
-    console.log(allUsers);
+    // console.log(allUsers);
     if (allUsers.length === 0) {
       throw new NotFoundException('No users exist');
     }
