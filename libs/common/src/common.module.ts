@@ -7,6 +7,6 @@ import { PostgresModule } from './postgresql-database/prisma.module';
 @Module({
   providers: [CommonService],
   exports: [CommonService],
-  imports: [MongodbModule, PostgresModule, ConfigModule],
+  imports: [ConfigModule, MongodbModule, PostgresModule],
 })
 export class CommonModule {}

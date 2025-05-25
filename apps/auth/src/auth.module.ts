@@ -5,7 +5,12 @@ import { AuthService } from './auth.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import * as Handlers from './handlers';
-import { CommonModule, PrismaService, RmqModule } from '@app/common';
+import {
+  CommonModule,
+  PrismaService,
+  RmqModule,
+  RmqService,
+} from '@app/common';
 import * as Repository from './repository';
 import { BILLING_SERVICE } from './constants/services';
 import { JwtModule } from '@nestjs/jwt';
@@ -24,8 +29,9 @@ import { JwtModule } from '@nestjs/jwt';
     }),
     CqrsModule.forRoot({}),
     RmqModule.register({
-      name: BILLING_SERVICE,
+      name: 'BILLING',
     }),
+
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
@@ -42,6 +48,7 @@ import { JwtModule } from '@nestjs/jwt';
     AuthService,
     ...Object.values(Handlers),
     ...Object.values(Repository),
+    RmqService,
     // LocalSt
   ],
 })

@@ -10,6 +10,15 @@
   "monorepo": true,
   "root": "apps/auth",
   "projects": {
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+      }
+    },
     "auth": {
       "type": "application",
       "root": "apps/auth",
@@ -46,7 +55,6 @@
         "tsConfigPath": "apps/notifications/tsconfig.app.json"
       }
     },
-
     "reservations": {
       "type": "application",
       "root": "apps/reservations",
