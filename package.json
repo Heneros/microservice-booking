@@ -15,7 +15,6 @@
     "start:prod": "node dist/apps/nest-microservice/main",
     "docker:build": "docker compose -f docker-compose.dev.yaml up -d --build -V ",
     "docker:run": "docker compose -f docker-compose.dev.yaml up -d",
-    "docker:kill": "docker compose -f docker-compose.dev.yaml up -d",
     "docker:down": "docker compose -f docker-compose.dev.yaml down",
     "prisma:build": "npx prisma generate --schema=libs/common/src/postgresql-database/prisma/schema.prisma && npx prisma migrate dev --schema=libs/common/src/postgresql-database/prisma/schema.prisma",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",

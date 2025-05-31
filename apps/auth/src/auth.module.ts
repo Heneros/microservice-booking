@@ -4,18 +4,31 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
-import * as Handlers from './handlers';
+import * as Repository from './repository';
+import { RegisterUserHandler } from './handlers/RegisterUser.handler';
 import {
   CommonModule,
   PrismaService,
   RmqModule,
   RmqService,
 } from '@app/common';
-import * as Repository from './repository';
+
 import { BILLING_SERVICE } from './constants/services';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
+  controllers: [AuthController],
+  providers: [
+    PrismaService,
+    RegisterUserHandler,
+    // RegisterUserHandler,
+    // ...Object.values(Handlers),
+    ...Object.values(Repository),
+    AuthService,
+
+    RmqService,
+    // LocalSt
+  ],
   imports: [
     CommonModule,
     ConfigModule.forRoot({
@@ -41,15 +54,6 @@ import { JwtModule } from '@nestjs/jwt';
       }),
       inject: [ConfigService],
     }),
-  ],
-  controllers: [AuthController],
-  providers: [
-    PrismaService,
-    AuthService,
-    ...Object.values(Handlers),
-    ...Object.values(Repository),
-    RmqService,
-    // LocalSt
   ],
 })
 export class AuthModule {}
