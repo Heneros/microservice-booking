@@ -30,7 +30,7 @@ export class ApiGatewayController {
       const result = await lastValueFrom(
         this.apiService
           .send({ cmd: 'register_user' }, request)
-          .pipe(timeout(5000)),
+          .pipe(timeout(8000)),
       );
       console.log('API Gateway:  ', result);
       return result;

@@ -34,7 +34,7 @@ import { JwtModule } from '@nestjs/jwt';
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
-        MONGODB_URI: Joi.string().required(),
+        // MONGODB_URI: Joi.string().required(),
         PORT: Joi.number().required(),
       }),
       // envFilePath: process.env.NODE_ENV === 'local' ? '.env.local' : '.env',

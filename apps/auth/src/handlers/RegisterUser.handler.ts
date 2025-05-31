@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { randomBytes } from 'crypto';
 import { RegisterUserCommand } from '../commands';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
