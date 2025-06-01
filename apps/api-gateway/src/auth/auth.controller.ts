@@ -1,6 +1,13 @@
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import {
+  BadGatewayException,
+  BadRequestException,
+  Body,
+  Controller,
+  Inject,
+  Post,
+} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { RegisterUserDto } from '../dto';
+import { LoginUserDto, RegisterUserDto } from './dto';
 import { lastValueFrom, timeout } from 'rxjs';
 
 @Controller('auth')
@@ -10,18 +17,34 @@ export class AuthController {
   @Post('register')
   async register(@Body() request: RegisterUserDto) {
     try {
-      // console.log('register ', request);
-
       const result = await lastValueFrom(
         this.apiService
           .send({ cmd: 'register_user' }, request)
-          .pipe(timeout(8000)),
+          .pipe(timeout(5000)),
       );
-      console.log('API Gateway:  ', result);
       return result;
     } catch (error) {
-      console.error('register error', error);
-      throw error;
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadGatewayException(error.message || 'Registration failed');
+    }
+  }
+
+  @Post('login')
+  async login(@Body() request: LoginUserDto) {
+    try {
+      const result = await lastValueFrom(
+        this.apiService
+          .send({ cmd: 'login_user' }, request)
+          .pipe(timeout(5000)),
+      );
+      return result;
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadGatewayException(error.message || 'Login failed');
     }
   }
 }

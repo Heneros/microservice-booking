@@ -6,4 +6,6 @@ export class AuthEntity {
   email: string;
 
   refreshToken?: string;
+
+  blocked: true;
 }

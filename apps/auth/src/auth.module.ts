@@ -54,6 +54,8 @@ import { JwtModule } from '@nestjs/jwt';
       }),
       inject: [ConfigService],
     }),
+
+    
   ],
 })
 export class AuthModule {}

@@ -1,12 +1,11 @@
 import { AbstractRepositoryPostgres, PrismaService } from '@app/common';
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 
-import { PAGINATION_LIMIT } from '../../../../apps/auth/src/data/defaultData';
 import { AuthEntity } from '@app/common/entities/Auth.entity';
 
 @Injectable()
-export class AuthRepository extends AbstractRepositoryPostgres<AuthEntity> {
+export class AuthRepository extends AbstractRepositoryPostgres<User> {
   protected readonly logger = new Logger(AuthRepository.name);
   protected readonly prisma: PrismaClient;
   protected readonly model: any;

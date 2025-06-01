@@ -9,9 +9,7 @@ import { PostgresModule } from './postgresql-database/prisma.module';
   exports: [CommonService],
   imports: [
     ConfigModule,
-
     //MongodbModule,
-
     PostgresModule,
   ],
 })

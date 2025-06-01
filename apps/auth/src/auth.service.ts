@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 // import bcrypt from 'bcrypt';
-import { RegisterUserDto } from './dto';
+import { RegisterUserDto } from '../../../libs/common/src/dtos';
 import { UserRepository } from '../../../libs/common/src/repository';
 
 @Injectable()

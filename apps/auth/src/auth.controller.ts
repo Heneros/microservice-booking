@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterUserDto } from './dto';
-import { AUTH_CONTROLLER } from '../../../libs/common/src/sites/constants';
+import { RegisterUserDto } from '../../../libs/common/src/dtos';
+
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { RegisterUserCommand } from './commands/RegisterUser.command';
 import { FindAllUsersQuery } from './queries/GetUsers.query';
@@ -15,7 +15,7 @@ import {
   RmqContext,
   RpcException,
 } from '@nestjs/microservices';
-import { RmqService } from '@app/common';
+import { AUTH_CONTROLLER, LoginUserDto, RmqService } from '@app/common';
 
 @Controller(AUTH_CONTROLLER)
 export class AuthController {
@@ -37,8 +37,6 @@ export class AuthController {
     @Payload() data: RegisterUserDto,
     @Ctx() context: RmqContext,
   ) {
-    console.log('Received registration request');
-
     try {
       const user = await this.commandBus.execute(new RegisterUserCommand(data));
       this.rmqService.ack(context);
@@ -48,16 +46,9 @@ export class AuthController {
       throw new RpcException(error.message);
     }
   }
-  //   const user = await this.commandBus.execute(new RegisterUserCommand(data));
-  //   // console.log(123);
-  //   // console.log('AUTH: ', user);
 
-  //   this.rmqService.ack(context);
-  //   try {
-  //     console.log({ success: true });
-  //     return { success: true, user };
-  //   } catch (error) {
-  //     return { success: false, error: error.message };
-  //   }
-  // }
+  @MessagePattern({ cmd: 'register_user' })
+  async handleLogin(@Payload() data: LoginUserDto) {
+    
+  }
 }
