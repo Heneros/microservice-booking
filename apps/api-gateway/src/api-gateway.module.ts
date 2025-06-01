@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
 import { AuthModule } from 'apps/auth/src/auth.module';
 import { CqrsModule } from '@nestjs/cqrs';
+import { AuthController } from './auth/auth.controller';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { CqrsModule } from '@nestjs/cqrs';
     AuthModule,
   ],
 
-  controllers: [ApiGatewayController],
+  controllers: [ApiGatewayController, AuthController],
   providers: [ApiGatewayService],
 })
 export class ApiGatewayModule {}

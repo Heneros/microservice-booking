@@ -4,7 +4,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
-import * as Repository from './repository';
+import * as Repository from '../../../libs/common/src/repository';
 import { RegisterUserHandler } from './handlers/RegisterUser.handler';
 import {
   CommonModule,

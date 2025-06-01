@@ -5,7 +5,10 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { BadRequestException } from '@nestjs/common';
 import { roundsOfHashing, tempRegisterDate } from 'libs/data/defaultData';
-import { AuthRepository, VerifyResetTokenRepository } from '../repository';
+import {
+  AuthRepository,
+  VerifyResetTokenRepository,
+} from '../../../../libs/common/src/repository';
 
 @CommandHandler(RegisterUserCommand)
 export class RegisterUserHandler

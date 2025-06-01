@@ -1,12 +1,11 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { FindAllUsersQuery } from '../queries/GetUsers.query';
-import { UserRepository } from '../repository';
+import { UserRepository } from '../../../../libs/common/src/repository';
 import { NotFoundException } from '@nestjs/common';
 
 @QueryHandler(FindAllUsersQuery)
 export class FindAllUsersHandler implements IQueryHandler<FindAllUsersQuery> {
-  constructor(private readonly userRepository: UserRepository) {
-  }
+  constructor(private readonly userRepository: UserRepository) {}
   async execute(query: FindAllUsersQuery) {
     const { page } = query;
 

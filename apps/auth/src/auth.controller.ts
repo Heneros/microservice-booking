@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto';
-import { AUTH_CONTROLLER } from './sites/constants';
+import { AUTH_CONTROLLER } from '../../../libs/common/src/sites/constants';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { RegisterUserCommand } from './commands/RegisterUser.command';
 import { FindAllUsersQuery } from './queries/GetUsers.query';

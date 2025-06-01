@@ -1,7 +1,7 @@
 import { AbstractRepositoryPostgres, PrismaService } from '@app/common';
 import { Injectable } from '@nestjs/common';
 import { PrismaClient, VerifyResetToken } from '@prisma/client';
-import { CreateTokenInput } from 'libs/interfaces/model';
+import { CreateTokenInput } from '@app/common/interfaces/model.interface';
 
 @Injectable()
 export class VerifyResetTokenRepository extends AbstractRepositoryPostgres<VerifyResetToken> {

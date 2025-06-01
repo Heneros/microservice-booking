@@ -7,8 +7,6 @@ import {
   Payload,
   RmqContext,
 } from '@nestjs/microservices';
-import { RegisterUserDto } from 'apps/auth/src/dto';
-import { lastValueFrom, timeout } from 'rxjs';
 
 @Controller()
 export class ApiGatewayController {
@@ -20,23 +18,5 @@ export class ApiGatewayController {
   @Get()
   async getHello(): Promise<string> {
     return 'Hello World!!!!!!';
-  }
-
-  @Post('auth/register')
-  async register(@Body() request: RegisterUserDto) {
-    try {
-      // console.log('register ', request);
-
-      const result = await lastValueFrom(
-        this.apiService
-          .send({ cmd: 'register_user' }, request)
-          .pipe(timeout(8000)),
-      );
-      console.log('API Gateway:  ', result);
-      return result;
-    } catch (error) {
-      console.error('register error', error);
-      throw error;
-    }
   }
 }
