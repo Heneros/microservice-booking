@@ -5,5 +5,7 @@ import { lastValueFrom, timeout } from 'rxjs';
 
 @Controller('user')
 export class UsersController {
-  // constructor(@Inject('User') private readonly apiService: ClientProxy) {}
+  constructor(@Inject('User') private readonly apiService: ClientProxy) {}
+
+  
 }

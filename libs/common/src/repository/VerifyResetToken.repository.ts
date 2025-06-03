@@ -2,6 +2,7 @@ import { AbstractRepositoryPostgres, PrismaService } from '@app/common';
 import { Injectable } from '@nestjs/common';
 import { PrismaClient, VerifyResetToken } from '@prisma/client';
 import { CreateTokenInput } from '@app/common/interfaces/model.interface';
+import { tempTokenDate } from '../data/constants';
 
 @Injectable()
 export class VerifyResetTokenRepository extends AbstractRepositoryPostgres<VerifyResetToken> {
@@ -31,5 +32,23 @@ export class VerifyResetTokenRepository extends AbstractRepositoryPostgres<Verif
 
   async deleteToken(userId: number): Promise<VerifyResetToken> {
     return this.model.delete({ where: { userId } });
+  }
+
+  async updateToken(
+    userId: number,
+    emailToken: string,
+  ): Promise<VerifyResetToken> {
+    return this.model.upsert({
+      where: { userId },
+      update: {
+        token: emailToken,
+        expiresAt: tempTokenDate,
+      },
+      create: {
+        userId,
+        token: emailToken,
+        expiresAt: tempTokenDate,
+      },
+    });
   }
 }

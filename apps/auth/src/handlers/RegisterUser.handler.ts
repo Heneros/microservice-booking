@@ -1,14 +1,12 @@
 import bcrypt from 'bcryptjs';
 import { randomBytes } from 'crypto';
-import { RegisterUserCommand } from '../commands';
+
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { BadRequestException } from '@nestjs/common';
 import { roundsOfHashing, tempRegisterDate } from 'libs/data/defaultData';
-import {
-  AuthRepository,
-  VerifyResetTokenRepository,
-} from '../../../../libs/common/src/repository';
+import { AuthRepository, VerifyResetTokenRepository } from '@app/common';
+import { RegisterUserCommand } from '../commands/RegisterUser.command';
 
 @CommandHandler(RegisterUserCommand)
 export class RegisterUserHandler
@@ -33,9 +31,9 @@ export class RegisterUserHandler
     // let email = registerUserDto.email;
     // console.log(registerUserDto.email);
 
-    const userEmail = await this.authRepository.findByEmail({
-      email: registerUserDto.email,
-    });
+    const userEmail = await this.authRepository.findByEmail(
+      registerUserDto.email,
+    );
 
     if (userEmail) {
       throw new BadRequestException('User already exists with this email', {

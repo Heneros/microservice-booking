@@ -1,24 +1,23 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 import { BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserCommand } from '../commands/LoginUser.command';
-import { AuthRepository } from '@app/common';
+import { AuthRepository, VerifyResetTokenRepository } from '@app/common';
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
   constructor(
     private readonly authRepository: AuthRepository,
+    private readonly verifyResetTokenRepository: VerifyResetTokenRepository,
     private readonly jwtService: JwtService,
   ) {}
 
   async execute(command: LoginUserCommand) {
     const { logInDto } = command;
     try {
-      const user = await this.authRepository.findByEmail({
-        email: logInDto.email,
-      });
+      const user = await this.authRepository.findByEmail(logInDto.email);
       if (!user) {
         throw new BadRequestException('User not found');
       }
@@ -43,25 +42,30 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
       const refreshToken = await this.jwtService.signAsync(payload, {
         expiresIn: '31d',
       });
-      // await this.authRepository.deleteToken({
-      //   where: { userId: user.id },
-      // });
-      // await this.authRepository.updateToken(user.id, refreshToken);
-      // await this.authRepository.updateProfile(user.id, {
-      //   refreshToken: [refreshToken],
-      // });
-      // return {
-      //   accessToken,
-      //   refreshToken,
-      //   // user,
-      //   user: {
-      //     id: user.id,
-      //     name: user.name,
-      //     email: user.email,
-      //     roles: user.roles,
-      //   },
-      // };
+
+      await this.verifyResetTokenRepository.delete({ userId: user.id });
+
+      await this.verifyResetTokenRepository.updateToken(user.id, refreshToken);
+
+      await this.authRepository.updateProfile(user.id, {
+        refreshToken: [refreshToken],
+      });
+      return {
+        accessToken,
+        refreshToken,
+        // user,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          roles: user.roles,
+        },
+      };
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+
       // console.error('Error setting cookie or sending response:', error);
       throw error;
     }

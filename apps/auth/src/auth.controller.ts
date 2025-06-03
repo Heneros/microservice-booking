@@ -1,12 +1,10 @@
 import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterUserDto } from '../../../libs/common/src/dtos';
+import { RegisterUserDto } from '@app/common';
 
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { RegisterUserCommand } from './commands/RegisterUser.command';
-import { FindAllUsersQuery } from './queries/GetUsers.query';
+
 import { lastValueFrom } from 'rxjs';
-import { BILLING_SERVICE } from './constants/services';
 import {
   ClientProxy,
   Ctx,
@@ -15,7 +13,15 @@ import {
   RmqContext,
   RpcException,
 } from '@nestjs/microservices';
-import { AUTH_CONTROLLER, LoginUserDto, RmqService } from '@app/common';
+import {
+  AUTH_CONTROLLER,
+  AUTH_SERVICE,
+  LoginUserDto,
+  RmqService,
+} from '@app/common';
+import { RegisterUserCommand } from './commands/RegisterUser.command';
+import { LoginUserCommand } from './commands/LoginUser.command';
+// import { LoginUserCommand, RegisterUserCommand } from './commands/index';
 
 @Controller(AUTH_CONTROLLER)
 export class AuthController {
@@ -26,12 +32,12 @@ export class AuthController {
     // @Inject(BILLING_SERVICE) private billingClient: ClientProxy,
   ) {}
 
-  @Get()
-  async getTest() {
-    return await this.queryBus.execute(new FindAllUsersQuery());
-  }
+  // @Get()
+  // async getTest() {
+  //   return await this.queryBus.execute(new FindAllUsersQuery());
+  // }
 
-  @MessagePattern({ cmd: 'register_user' })
+  @MessagePattern({ cmd: AUTH_SERVICE.REGISTER_USER })
   // async registerUser(@Body() request: RegisterUserDto) {
   async handleRegistration(
     @Payload() data: RegisterUserDto,
@@ -42,13 +48,38 @@ export class AuthController {
       this.rmqService.ack(context);
       return { success: true, user };
     } catch (error) {
-      this.rmqService.ack(context);
       throw new RpcException(error.message);
     }
   }
 
-  @MessagePattern({ cmd: 'register_user' })
-  async handleLogin(@Payload() data: LoginUserDto) {
-    
+  @MessagePattern({ cmd: AUTH_SERVICE.LOGIN_USER })
+  async handleLogin(@Payload() data: LoginUserDto, @Ctx() context: RmqContext) {
+    //   this.rmqService.ack(context);
+    try {
+      const result = await this.commandBus.execute(new LoginUserCommand(data));
+
+      this.rmqService.ack(context);
+
+      return {
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+        user: {
+          id: result.user.id,
+          name: result.user.name,
+          email: result.user.email,
+        },
+      };
+    } catch (error) {
+      //      this.rmqService.(context);
+      throw new RpcException(error.message);
+
+      // return {
+      //   success: false,
+      //   message: error.message || 'Login failed',
+      //   error: error.name || 'InternalError',
+      //   statusCode: error.status || 500,
+      // };
+      //      throw error;
+    }
   }
 }

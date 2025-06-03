@@ -4,8 +4,8 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
-import * as Repository from '../../../libs/common/src/repository';
-import { RegisterUserHandler } from './handlers/RegisterUser.handler';
+import * as Repository from 'libs/common/src/repository';
+// import * as Handlers from './handlers/index';
 import {
   CommonModule,
   PrismaService,
@@ -15,16 +15,22 @@ import {
 
 import { BILLING_SERVICE } from './constants/services';
 import { JwtModule } from '@nestjs/jwt';
+import { RegisterUserHandler } from './handlers/RegisterUser.handler';
+import { LoginUserHandler } from './handlers/LoginUser.handler';
 
 @Module({
   controllers: [AuthController],
   providers: [
     PrismaService,
-    RegisterUserHandler,
     // RegisterUserHandler,
+
+    Repository.AuthRepository,
+    Repository.VerifyResetTokenRepository,
+
+    RegisterUserHandler,
+    LoginUserHandler,
     // ...Object.values(Handlers),
-    ...Object.values(Repository),
-    AuthService,
+    // ...Object.values(Repository),
 
     RmqService,
     // LocalSt
@@ -54,8 +60,6 @@ import { JwtModule } from '@nestjs/jwt';
       }),
       inject: [ConfigService],
     }),
-
-    
   ],
 })
 export class AuthModule {}

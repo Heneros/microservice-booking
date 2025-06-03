@@ -20,4 +20,12 @@ export class AuthRepository extends AbstractRepositoryPostgres<User> {
     this.userModel = this.prismaService.user;
     this.tokenModel = this.prismaService.verifyResetToken;
   }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.findUnique({ email });
+  }
+
+  async updateProfile(id: number, data): Promise<User | null> {
+    return this.update({ id }, data);
+  }
 }

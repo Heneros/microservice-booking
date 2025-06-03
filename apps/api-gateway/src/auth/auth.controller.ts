@@ -5,10 +5,13 @@ import {
   Controller,
   Inject,
   Post,
+  Res,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { LoginUserDto, RegisterUserDto } from './dto';
 import { lastValueFrom, timeout } from 'rxjs';
+import { Response } from 'express';
+import { isDevelopment } from '@app/common';
 
 @Controller('auth')
 export class AuthController {
@@ -32,13 +35,24 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() request: LoginUserDto) {
+  async login(
+    @Body() request: LoginUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     try {
       const result = await lastValueFrom(
         this.apiService
           .send({ cmd: 'login_user' }, request)
           .pipe(timeout(5000)),
       );
+
+      res.cookie('jwtBooking', result.refreshToken, {
+        httpOnly: !isDevelopment,
+        sameSite: isDevelopment ? 'none' : 'strict',
+        maxAge: 31 * 24 * 60 * 60 * 1000,
+        secure: !isDevelopment,
+      });
+
       return result;
     } catch (error) {
       if (error instanceof BadRequestException) {
