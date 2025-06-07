@@ -1,12 +1,10 @@
-import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from '@app/common';
 
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
-import { lastValueFrom } from 'rxjs';
 import {
-  ClientProxy,
   Ctx,
   MessagePattern,
   Payload,
@@ -21,6 +19,7 @@ import {
 } from '@app/common';
 import { RegisterUserCommand } from './commands/RegisterUser.command';
 import { LoginUserCommand } from './commands/LoginUser.command';
+import { JwtGuard } from './jwt.guard';
 // import { LoginUserCommand, RegisterUserCommand } from './commands/index';
 
 @Controller(AUTH_CONTROLLER)
@@ -72,14 +71,16 @@ export class AuthController {
     } catch (error) {
       //      this.rmqService.(context);
       throw new RpcException(error.message);
-
-      // return {
-      //   success: false,
-      //   message: error.message || 'Login failed',
-      //   error: error.name || 'InternalError',
-      //   statusCode: error.status || 500,
-      // };
-      //      throw error;
     }
+  }
+
+  @MessagePattern({ cmd: AUTH_SERVICE.VERIFY_JWT })
+  @UseGuards(JwtGuard)
+  async verifyJwt(
+    @Ctx() context: RmqContext,
+    @Payload() payload: { jwt: string },
+  ) {
+    this.rmqService.ack(context);
+    // return this.
   }
 }

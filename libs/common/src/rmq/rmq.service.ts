@@ -13,7 +13,6 @@ export class RmqService {
         urls: [this.configService.get<string>('RABBIT_MQ_URI')],
         queue: this.configService.get<string>(`RABBIT_MQ_${queue}_QUEUE`),
         noAck,
-        // persistent: true,
         queueOptions: {
           durable: true,
         },
