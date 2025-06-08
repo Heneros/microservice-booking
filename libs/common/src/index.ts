@@ -7,6 +7,8 @@ export * from './data/constants';
 
 export * from './data/sites';
 
+export * from './entities/index';
+
 export * from './dtos/CreateUser.dto';
 export * from './dtos/LoginUser.dto';
 

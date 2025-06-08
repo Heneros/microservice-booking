@@ -5,7 +5,6 @@ import { AuthService } from './auth.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import * as Repository from 'libs/common/src/repository';
-// import * as Handlers from './handlers/index';
 import {
   CommonModule,
   PrismaService,
@@ -13,7 +12,6 @@ import {
   RmqService,
 } from '@app/common';
 
-import { BILLING_SERVICE } from './constants/services';
 import { JwtModule } from '@nestjs/jwt';
 import { RegisterUserHandler } from './handlers/RegisterUser.handler';
 import { LoginUserHandler } from './handlers/LoginUser.handler';

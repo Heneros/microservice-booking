@@ -4,14 +4,20 @@ import { ApiGatewayService } from './api-gateway.service';
 import { RmqModule } from '@app/common';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
+import { UsersModule } from 'apps/users/src/users.module';
 import { AuthModule } from 'apps/auth/src/auth.module';
+
 import { CqrsModule } from '@nestjs/cqrs';
 import { AuthController } from './auth/auth.controller';
+import { UsersController } from './users/users.controller';
 
 @Module({
   imports: [
     RmqModule.register({
       name: 'AUTH',
+    }),
+    RmqModule.register({
+      name: 'USERS',
     }),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -23,9 +29,10 @@ import { AuthController } from './auth/auth.controller';
     }),
 
     AuthModule,
+    UsersModule,
   ],
 
-  controllers: [ApiGatewayController, AuthController],
+  controllers: [ApiGatewayController, AuthController, UsersController],
   providers: [ApiGatewayService],
 })
 export class ApiGatewayModule {}

@@ -1,14 +1,33 @@
-import { USER_ROUTES, USERS_CONTROLLER } from '@app/common';
+import { USER_ROUTES, USERS_CONTROLLER, USERS_SERVICE } from '@app/common';
 import { AuthGuard } from '@app/common/guards/auth.guard';
-import { Body, Controller, Get, Inject, Post, UseGuards } from '@nestjs/common';
+import {
+  BadGatewayException,
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom, timeout } from 'rxjs';
 
 @Controller(USERS_CONTROLLER)
 export class UsersController {
-  constructor(@Inject('User') private readonly apiService: ClientProxy) {}
+  constructor(@Inject('USERS') private readonly apiService: ClientProxy) {}
 
   @Get(USER_ROUTES.GET_ID_USER)
   @UseGuards(AuthGuard)
-  async() {}
+  async getProfile(@Param('userId', ParseIntPipe) userId: number) {
+    try {
+      return this.apiService.send({ cmd: USERS_SERVICE.MY_PROFILE }, userId);
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadGatewayException(error.message || 'Get profile failed');
+    }
+  }
 }

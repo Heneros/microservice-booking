@@ -1,4 +1,6 @@
-Microservice app for booking hotels/apartments, you can rent apartment   
+Microservice app for booking hotels/apartments, 
+with calender (google calendar API) with payment (stripe or paypal)
+and notifications(websocket + email).
 
 ## Modules
 - users
