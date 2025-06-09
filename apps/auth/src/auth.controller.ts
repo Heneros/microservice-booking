@@ -20,6 +20,7 @@ import {
 import { RegisterUserCommand } from './commands/RegisterUser.command';
 import { LoginUserCommand } from './commands/LoginUser.command';
 import { JwtGuard } from './jwt.guard';
+import { VerifyJWTService } from './services/verifyJwt.service';
 // import { LoginUserCommand, RegisterUserCommand } from './commands/index';
 
 @Controller(AUTH_CONTROLLER)
@@ -28,6 +29,7 @@ export class AuthController {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
     private readonly rmqService: RmqService,
+    private readonly verifyJwtService: VerifyJWTService,
     // @Inject(BILLING_SERVICE) private billingClient: ClientProxy,
   ) {}
 
@@ -80,7 +82,18 @@ export class AuthController {
     @Ctx() context: RmqContext,
     @Payload() payload: { jwt: string },
   ) {
+    console.log('test213', payload.jwt);
     this.rmqService.ack(context);
-    // return this.
+    return this.verifyJwtService.verifyJwt(payload.jwt);
+  }
+
+  @MessagePattern({ cmd: AUTH_SERVICE.DECODE_JWT })
+  async decodeJwt(
+    @Ctx() context: RmqContext,
+    @Payload() payload: { jwt: string },
+  ) {
+    console.log('payload ', payload.jwt);
+    this.rmqService.ack(context);
+    return this.verifyJwtService.getUserFromHeader(payload.jwt);
   }
 }

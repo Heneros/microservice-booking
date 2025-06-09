@@ -3,6 +3,7 @@ export interface UserRequest extends Request {
     id: number;
     username: string;
     email: string;
-    password?: string;
+    //  password?: string;
+    roles: string[];
   };
 }

@@ -22,7 +22,7 @@ export const USERS_CONTROLLER = 'users' as const;
 
 export const USER_ROUTES = {
   GET_ALL: '',
-  GET_ID_USER: ':userId/my-account',
+  MY_ACCOUNT: 'my-account',
   UPDATE_USER: ':userId',
   DELETE_USER: ':userId',
   CHANGE_ROLE: ':userId/role',

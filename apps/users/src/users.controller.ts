@@ -26,6 +26,7 @@ export class UsersController {
     @Ctx() context: RmqContext,
   ) {
     try {
+      console.log('userId', userId);
       const profile = await this.queryBus.execute(new GetProfileQuery(userId));
       this.rmqService.ack(context);
       return profile;

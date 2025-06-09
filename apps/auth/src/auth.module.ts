@@ -10,23 +10,29 @@ import {
   PrismaService,
   RmqModule,
   RmqService,
+  UserInterceptor,
 } from '@app/common';
 
 import { JwtModule } from '@nestjs/jwt';
 import { RegisterUserHandler } from './handlers/RegisterUser.handler';
 import { LoginUserHandler } from './handlers/LoginUser.handler';
+import { VerifyJWTService } from './services/verifyJwt.service';
+import { JwtStrategy } from './jwt-strategy';
+import { JwtGuard } from './jwt.guard';
 
 @Module({
   controllers: [AuthController],
   providers: [
     PrismaService,
     // RegisterUserHandler,
-
+    JwtGuard,
+    JwtStrategy,
     Repository.AuthRepository,
     Repository.VerifyResetTokenRepository,
 
     RegisterUserHandler,
     LoginUserHandler,
+    VerifyJWTService,
     // ...Object.values(Handlers),
     // ...Object.values(Repository),
 

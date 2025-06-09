@@ -3,7 +3,7 @@ import { ApiGatewayModule } from './api-gateway.module';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
-import { RmqService } from '@app/common';
+import { RmqService, UserInterceptor } from '@app/common';
 
 // async function bootstrap() {
 //   const app = await NestFactory.create(ApiGatewayModule);
@@ -23,10 +23,16 @@ async function bootstrap() {
   const app = await NestFactory.create(ApiGatewayModule);
 
   app.use(cookieParser());
-  
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
+  const rmqService = app.get(RmqService);
+  app.connectMicroservice(rmqService.getOptions('AUTH'));
+  app.connectMicroservice(rmqService.getOptions('USERS'));
+
+  await app.startAllMicroservices();
+
+  // app.useGlobalInterceptors(app.get(UserInterceptor));
+
   await app.listen(process.env.PORT ?? 3000);
-  // console.log('API Gateway started on port', process.env.PORT ?? 3000);
 }
 bootstrap();

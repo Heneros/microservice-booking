@@ -10,6 +10,8 @@ services:
     command: npm run start:dev api-gateway
     ports:
      - "3000:3000"  
+    env_file:
+      - ./apps/api-gateway/.env
     volumes:
      - .:/usr/src/app
      - /usr/src/app/node_modules
@@ -28,7 +30,7 @@ services:
      target: builder
     command: npm run start:dev auth
     env_file:
-      - ./.env
+      - ./apps/auth/.env
     depends_on:
       - postgres
       - pgadmin
@@ -50,7 +52,7 @@ services:
      target: development
     command: npm run start:dev users
     env_file:
-      - ./.env
+      - ./apps/users/.env
     depends_on:
       - auth
       - postgres
