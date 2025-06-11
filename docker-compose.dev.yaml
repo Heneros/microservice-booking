@@ -7,6 +7,7 @@ services:
       context: .
       dockerfile: ./apps/api-gateway/Dockerfile
       target: development
+    restart: always
     command: npm run start:dev api-gateway
     ports:
      - "3000:3000"  

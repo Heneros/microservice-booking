@@ -77,14 +77,21 @@ export class AuthController {
   }
 
   @MessagePattern({ cmd: AUTH_SERVICE.VERIFY_JWT })
-  @UseGuards(JwtGuard)
+  //  @UseGuards(JwtGuard)
   async verifyJwt(
     @Ctx() context: RmqContext,
     @Payload() payload: { jwt: string },
   ) {
-    console.log('test213', payload.jwt);
-    this.rmqService.ack(context);
-    return this.verifyJwtService.verifyJwt(payload.jwt);
+    try {
+      this.rmqService.ack(context);
+      return this.verifyJwtService.verifyJwt(payload.jwt);
+      //  return { exp: decoded.exp };
+    } catch (err) {
+      throw new RpcException('Invalid token');
+    }
+    // console.log('test213', payload.jwt);
+    // this.rmqService.ack(context);
+    // return this.verifyJwtService.verifyJwt(payload.jwt);
   }
 
   @MessagePattern({ cmd: AUTH_SERVICE.DECODE_JWT })

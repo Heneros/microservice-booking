@@ -23,10 +23,11 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { User } from '@prisma/client';
 
-export interface User {
-  id: number;
-}
+// export interface User {
+//   userId: number;
+// }
 @Controller(USERS_CONTROLLER)
 export class UsersController {
   constructor(@Inject('USERS') private readonly apiService: ClientProxy) {}
@@ -38,15 +39,7 @@ export class UsersController {
   async getProfile(@CurrentUser() user: User) {
     try {
       console.log('CurrentUser:', user);
-      return this.apiService.send(
-        { cmd: USERS_SERVICE.MY_PROFILE },
-        { userId: user.id },
-      );
-      // console.log(123);
-      // return this.apiService.send(
-      //   { cmd: USERS_SERVICE.MY_PROFILE },
-      //   { userId: req.user.id },
-      // );
+      return this.apiService.send({ cmd: USERS_SERVICE.MY_PROFILE }, user.id);
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;

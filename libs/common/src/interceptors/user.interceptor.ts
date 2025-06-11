@@ -30,7 +30,7 @@ export class UserInterceptor implements NestInterceptor {
 
     const [, jwt] = authHeaderParts;
 
-    console.log('jwt', jwt);
+    // console.log('jwt', jwt);
     return this.authService
       .send<UserJwt>(
         {
@@ -40,7 +40,7 @@ export class UserInterceptor implements NestInterceptor {
       )
       .pipe(
         switchMap((response) => {
-          console.log('Auth service response:', response);
+          // console.log('Auth service response:', response);
 
           if (response && response.user) {
             request.user = response.user;

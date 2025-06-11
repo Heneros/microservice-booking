@@ -35,6 +35,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
         id: user.id,
         username: user.username,
         roles: user.roles,
+        
       };
       const accessToken = await this.jwtService.signAsync(payload, {
         expiresIn: '15m',
@@ -48,7 +49,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
       await this.verifyResetTokenRepository.updateToken(user.id, refreshToken);
 
       await this.authRepository.updateProfile(user.id, {
-        refreshToken: [refreshToken],
+        refreshToken: [accessToken],
       });
       return {
         accessToken,

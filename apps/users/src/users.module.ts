@@ -5,7 +5,7 @@ import { UsersService } from './users.service';
 import { CommonModule, PrismaService, RmqModule } from '@app/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ConfigModule } from '@nestjs/config';
-import { GetProfileQuery } from './query/GetProfile.query';
+import { GetProfileUserHandler } from './handlers/GetProfile.handler';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { GetProfileQuery } from './query/GetProfile.query';
   controllers: [UsersController],
   providers: [
     PrismaService,
-    GetProfileQuery,
+    GetProfileUserHandler,
     Repository.AuthRepository,
     Repository.VerifyResetTokenRepository,
     Repository.UserRepository,

@@ -54,7 +54,9 @@ import { JwtGuard } from './jwt.guard';
     RmqModule.register({
       name: 'BILLING',
     }),
-
+    RmqModule.register({
+      name: 'USERS',
+    }),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
