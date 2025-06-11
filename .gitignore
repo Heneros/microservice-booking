@@ -2,7 +2,10 @@
 /dist
 /node_modules
 /build
-*.env
+
+.env
+.env.prod
+
 featuresMicroservice.txt
 *.txt
 # Logs

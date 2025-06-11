@@ -23,6 +23,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 
 // export interface User {
@@ -35,10 +36,15 @@ export class UsersController {
   @UseGuards(AuthGuard)
   // @UseInterceptors(UserInterceptor)
   @Get(USER_ROUTES.MY_ACCOUNT)
-  // async getProfile(@Req() req: UserRequest) {
+  @ApiResponse({
+    status: 200,
+    description: 'Get my profile',
+  })
+  @ApiOperation({ summary: 'Get  my profile' })
+  @ApiBearerAuth('access-token')
   async getProfile(@CurrentUser() user: User) {
     try {
-      console.log('CurrentUser:', user);
+      //   console.log('CurrentUser:', user);
       return this.apiService.send({ cmd: USERS_SERVICE.MY_PROFILE }, user.id);
     } catch (error) {
       if (error instanceof BadRequestException) {

@@ -17,12 +17,18 @@ import {
   AUTH_SERVICE,
   isDevelopment,
 } from '@app/common';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller(AUTH_CONTROLLER)
 export class AuthController {
   constructor(@Inject('AUTH') private readonly apiService: ClientProxy) {}
 
   @Post(AUTH_ROUTES.REGISTER)
+  @ApiResponse({
+    status: 201,
+    description: 'Registration success',
+  })
+  @ApiOperation({ summary: 'Registration user' })
   async register(@Body() request: RegisterUserDto) {
     try {
       const result = await lastValueFrom(
@@ -40,6 +46,11 @@ export class AuthController {
   }
 
   @Post(AUTH_ROUTES.LOGIN)
+  @ApiResponse({
+    status: 200,
+    description: 'Log in success',
+  })
+  @ApiOperation({ summary: 'Log in' })
   async login(
     @Body() request: LoginUserDto,
     @Res({ passthrough: true }) res: Response,

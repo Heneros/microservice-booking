@@ -37,7 +37,7 @@
     "@nestjs/mongoose": "^11.0.3",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
-    "@nestjs/swagger": "^11.2.0",
+    "@nestjs/swagger": "github:nestjs/swagger",
     "@prisma/client": "^6.6.0",
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.8",

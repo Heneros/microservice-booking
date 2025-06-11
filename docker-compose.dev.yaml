@@ -168,9 +168,30 @@ services:
    networks:
     micro_booking:
 
+  redis-insight:
+    image: redislabs/redisinsight:latest
+    restart: always
+    ports:
+      - "8082:8081"
+    volumes:
+      - redis_insight_data:/db
+    depends_on:
+      - redis
+    networks:
+      - micro_booking
+    environment:
+      - RIPORT=8081
+      - RIHOST=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+
   redis:
    image: redis:7.4
-   container_name: 'redis-micro'
+   container_name: redis-micro
    restart: always
    ports:
     - '6379:6379'
@@ -184,12 +205,15 @@ services:
    networks:
     micro_booking:
 
+
+
 volumes:
   postgres_data:
   redis_data:
   pgadmin-data:
   mongodb_master_data:
   rabbit_data:
+  redis_insight_data:
 
 networks:
    micro_booking:
