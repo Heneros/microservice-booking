@@ -99,7 +99,7 @@ export class AuthController {
     @Ctx() context: RmqContext,
     @Payload() payload: { jwt: string },
   ) {
-    console.log('payload ', payload.jwt);
+   // console.log('payload ', payload.jwt);
     this.rmqService.ack(context);
     return this.verifyJwtService.getUserFromHeader(payload.jwt);
   }

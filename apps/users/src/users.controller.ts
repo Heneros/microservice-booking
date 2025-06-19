@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { UsersService } from './users.service';
+
 import {
   Ctx,
   MessagePattern,
@@ -7,9 +7,15 @@ import {
   RmqContext,
   RpcException,
 } from '@nestjs/microservices';
-import { RmqService, USERS_CONTROLLER, USERS_SERVICE } from '@app/common';
+import {
+  RmqService,
+  UserEntity,
+  USERS_CONTROLLER,
+  USERS_SERVICE,
+} from '@app/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { GetProfileQuery } from './query/GetProfile.query';
+import { plainToInstance } from 'class-transformer';
 
 @Controller(USERS_CONTROLLER)
 export class UsersController {
@@ -17,7 +23,6 @@ export class UsersController {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
     private readonly rmqService: RmqService,
-    private readonly usersService: UsersService,
   ) {}
 
   @MessagePattern({ cmd: USERS_SERVICE.MY_PROFILE })
@@ -26,11 +31,15 @@ export class UsersController {
     @Ctx() context: RmqContext,
   ) {
     try {
-      console.log('userId555', userId);
+      console.log('userId', userId);
       this.rmqService.ack(context);
       const profile = await this.queryBus.execute(new GetProfileQuery(userId));
 
-      return profile;
+      const userEntity = plainToInstance(UserEntity, profile, {
+        excludeExtraneousValues: true,
+      });
+
+      return userEntity;
     } catch (error) {
       throw new RpcException(error.message);
     }

@@ -1,6 +1,5 @@
 import {
   USER_ROUTES,
-  UserInterceptor,
   UserJwt,
   UserRequest,
   USERS_CONTROLLER,
@@ -53,4 +52,6 @@ export class UsersController {
       throw new BadGatewayException(error.message || 'Get profile failed');
     }
   }
+
+  // @Get(USER_ROUTES.GET_ALL)
 }

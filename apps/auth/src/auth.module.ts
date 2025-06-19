@@ -10,7 +10,7 @@ import {
   PrismaService,
   RmqModule,
   RmqService,
-  UserInterceptor,
+
 } from '@app/common';
 
 import { JwtModule } from '@nestjs/jwt';
@@ -45,6 +45,8 @@ import { JwtGuard } from './jwt.guard';
       isGlobal: true,
       validationSchema: Joi.object({
         // MONGODB_URI: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
+
         PORT: Joi.number().required(),
       }),
       // envFilePath: process.env.NODE_ENV === 'local' ? '.env.local' : '.env',

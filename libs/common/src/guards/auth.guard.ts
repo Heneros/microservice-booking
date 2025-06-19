@@ -22,15 +22,21 @@ export class AuthGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
 
-    const authHeader = request.headers['authorization'];
+    const authHeader = request.headers?.authorization;
 
-    if (!authHeader) return false;
+    if (!authHeader) {
+      throw new UnauthorizedException('No authorization header');
+    }
 
-    const authHeaderParts = (authHeader as string).split(' ');
+    // const authHeaderParts = (authHeader as string).split(' ');
 
-    if (authHeaderParts.length !== 2) return false;
+    // if (authHeaderParts.length !== 2) return false;
 
-    const [, jwt] = authHeaderParts;
+    // const [, jwt] = authHeaderParts;
+    const jwt = authHeader.split('Bearer ')[1];
+    if (!jwt) {
+      throw new UnauthorizedException('No token provided');
+    }
 
     // console.log('jwt', jwt);
 

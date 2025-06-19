@@ -9,6 +9,7 @@ and notifications(websocket + email).
 - payment 
 - notifications
 
+
 ## Packages
 - 
 
@@ -17,3 +18,6 @@ and notifications(websocket + email).
 - npx nx init
 - Implement Shard DB
 - Implement Cluster DB
+- K8s
+- Socket io.
+- Chat module

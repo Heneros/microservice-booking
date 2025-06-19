@@ -6,6 +6,8 @@
 .env
 .env.prod
 
+*.pdf
+
 featuresMicroservice.txt
 *.txt
 # Logs

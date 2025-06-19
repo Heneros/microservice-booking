@@ -27,10 +27,14 @@ export const CurrentUser = createParamDecorator(
       throw new UnauthorizedException('No token provided');
     }
 
-    const payload = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
+    try {
+      const payload = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
 
-    // console.log('request.userId ', payload);
+      // console.log('request.userId ', payload);
 
-    return payload;
+      return payload;
+    } catch (error) {
+      console.error(error);
+    }
   },
 );

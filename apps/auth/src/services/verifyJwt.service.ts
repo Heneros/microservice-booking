@@ -1,15 +1,19 @@
 import { UserEntity, UserJwt } from '@app/common';
+import * as jsonWeb from 'jsonwebtoken';
 import {
   BadRequestException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class VerifyJWTService {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private configService: ConfigService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async verifyJwt(
     jwt: string,
@@ -17,14 +21,16 @@ export class VerifyJWTService {
     if (!jwt) {
       throw new UnauthorizedException();
     }
-    // console.log('jwtjwtjwt', jwt);
+    let secret = this.configService.get('JWT_SECRET');
     try {
-      const decoded = await this.jwtService.verifyAsync(jwt, {
-        secret: process.env.JWT_SECRET,
+      const decoded = await this.jwtService.verify(jwt, {
+        secret,
       });
+      // const decoded = jsonWeb.verify(secret, process.env.JWT_SECRET) as any;
+
       // console.log('Decoded JWT:', decoded);
 
-      if (!decoded.username || !decoded.exp) {
+      if (!decoded.userId || !decoded.exp) {
         throw new UnauthorizedException('Invalid JWT payload');
       }
       // console.log('decoded000', decoded);
@@ -32,7 +38,7 @@ export class VerifyJWTService {
 
       return {
         // username: decoded.username,
-        userId: decoded.id,
+        userId: decoded.userId,
         roles: decoded.roles,
         exp: decoded.exp,
       };

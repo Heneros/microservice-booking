@@ -3,7 +3,7 @@ import { ApiGatewayModule } from './api-gateway.module';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
-import { domain, RmqService, UserInterceptor } from '@app/common';
+import { domain, RmqService } from '@app/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
@@ -64,7 +64,6 @@ async function bootstrap() {
     },
   });
 
-  
   const rmqService = app.get(RmqService);
   app.connectMicroservice(rmqService.getOptions('AUTH'));
   app.connectMicroservice(rmqService.getOptions('USERS'));

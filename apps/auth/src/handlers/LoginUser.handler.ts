@@ -32,11 +32,11 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
         throw new BadRequestException('Invalid password');
       }
       const payload = {
-        id: user.id,
+        userId: user.id,
         username: user.username,
         roles: user.roles,
-        
       };
+
       const accessToken = await this.jwtService.signAsync(payload, {
         expiresIn: '15m',
       });
@@ -51,16 +51,18 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
       await this.authRepository.updateProfile(user.id, {
         refreshToken: [accessToken],
       });
+
+      console.log({ payload });
       return {
         accessToken,
         refreshToken,
         // user,
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          roles: user.roles,
-        },
+        // user: {
+        //   id: user.id,
+        //   username: user.username,
+        //   email: user.email,
+        //   roles: user.roles,
+        // },
       };
     } catch (error) {
       if (error instanceof BadRequestException) {
