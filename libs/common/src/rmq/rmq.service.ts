@@ -16,6 +16,12 @@ export class RmqService {
         queueOptions: {
           durable: true,
         },
+        prefetchCount: 1,
+
+        socketOptions: {
+          heartbeatIntervalInSeconds: 60,
+          reconnectTimeInSeconds: 5,
+        },
       },
     };
   }
@@ -23,6 +29,8 @@ export class RmqService {
   ack(context: RmqContext) {
     const channel = context.getChannelRef();
     const originalMessage = context.getMessage();
-    channel.ack(originalMessage);
+    if (channel && originalMessage) {
+      channel.ack(originalMessage);
+    }
   }
 }

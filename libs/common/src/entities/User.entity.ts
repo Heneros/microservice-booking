@@ -11,7 +11,8 @@ export class UserEntity implements User {
   @Expose()
   createdAt: Date;
 
-  @Expose()
+  
+  @Exclude()
   updatedAt: Date;
 
   @Exclude()

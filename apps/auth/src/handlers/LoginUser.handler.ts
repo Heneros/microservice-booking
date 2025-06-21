@@ -5,10 +5,13 @@ import { BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserCommand } from '../commands/LoginUser.command';
 import { AuthRepository, VerifyResetTokenRepository } from '@app/common';
+import { ConfigService } from '@nestjs/config';
+import { lastValueFrom } from 'rxjs';
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
   constructor(
+    private configService: ConfigService,
     private readonly authRepository: AuthRepository,
     private readonly verifyResetTokenRepository: VerifyResetTokenRepository,
     private readonly jwtService: JwtService,
@@ -34,25 +37,37 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
       const payload = {
         userId: user.id,
         username: user.username,
-        roles: user.roles,
+        roles: user.roles || ['User'],
       };
 
+      const secret = process.env.JWT_SECRET;
+      // console.log(secret);
+
       const accessToken = await this.jwtService.signAsync(payload, {
+        secret: secret,
         expiresIn: '15m',
       });
       const refreshToken = await this.jwtService.signAsync(payload, {
+        secret: secret,
         expiresIn: '31d',
       });
+
+      //  await lastValueFrom(
+      // this.
+      // )
 
       await this.verifyResetTokenRepository.delete({ userId: user.id });
 
       await this.verifyResetTokenRepository.updateToken(user.id, refreshToken);
 
+      // await this.authRepository.updateProfile(user.id, {
+      //   refreshToken: [accessToken],
+      // });
       await this.authRepository.updateProfile(user.id, {
-        refreshToken: [accessToken],
+        refreshToken: [refreshToken],
       });
 
-      console.log({ payload });
+      // console.log({ payload });
       return {
         accessToken,
         refreshToken,

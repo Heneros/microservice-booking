@@ -64,11 +64,11 @@ export class AuthController {
       return {
         accessToken: result.accessToken,
         refreshToken: result.refreshToken,
-        user: {
-          id: result.user.id,
-          name: result.user.name,
-          email: result.user.email,
-        },
+        // user: {
+        //   id: result.user.id,
+        //   name: result.user.name,
+        //   email: result.user.email,
+        // },
       };
     } catch (error) {
       //      this.rmqService.(context);
@@ -77,29 +77,38 @@ export class AuthController {
   }
 
   @MessagePattern({ cmd: AUTH_SERVICE.VERIFY_JWT })
-  //  @UseGuards(JwtGuard)
-  async verifyJwt(
-    @Ctx() context: RmqContext,
-    @Payload() payload: { jwt: string },
-  ) {
+  async verifyJwt(@Ctx() context: RmqContext, @Payload() jwt: string) {
+    // let ackCalled = false;
+    //  this.rmqService.ack(context);
     try {
-      this.rmqService.ack(context);
-      return this.verifyJwtService.verifyJwt(payload.jwt);
-      //  return { exp: decoded.exp };
-    } catch (err) {
-      throw new RpcException('Invalid token');
-    }
-    // console.log('test213', payload.jwt);
-    // this.rmqService.ack(context);
-    // return this.verifyJwtService.verifyJwt(payload.jwt);
-  }
+      // console.log('JWT received:', payload.jwt);
 
+      const result = await this.verifyJwtService.verifyJwt(jwt);
+
+      this.rmqService.ack(context);
+
+      return {
+        status: 'success',
+        data: result,
+      };
+      // ackCalled = true;
+      // }
+    } catch (err) {
+      console.error('Auth service error:', err.message);
+      this.rmqService.ack(context);
+
+      return {
+        status: 'error',
+        message: err.message || 'Invalid token',
+      };
+    }
+  }
   @MessagePattern({ cmd: AUTH_SERVICE.DECODE_JWT })
   async decodeJwt(
     @Ctx() context: RmqContext,
     @Payload() payload: { jwt: string },
   ) {
-   // console.log('payload ', payload.jwt);
+    // console.log('payload ', payload.jwt);
     this.rmqService.ack(context);
     return this.verifyJwtService.getUserFromHeader(payload.jwt);
   }

@@ -28,34 +28,35 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('No authorization header');
     }
 
-    // const authHeaderParts = (authHeader as string).split(' ');
-
-    // if (authHeaderParts.length !== 2) return false;
-
-    // const [, jwt] = authHeaderParts;
-    const jwt = authHeader.split('Bearer ')[1];
-    if (!jwt) {
-      throw new UnauthorizedException('No token provided');
+    const [scheme, token] = authHeader.split(' ');
+    if (scheme.toLowerCase() !== 'bearer' || !token) {
+      throw new UnauthorizedException('Invalid authorization header');
     }
-
+    const jwt = token.trim();
     // console.log('jwt', jwt);
 
     return this.authService
-      .send({ cmd: AUTH_SERVICE.VERIFY_JWT }, { jwt })
+      .send<{
+        status: string;
+        data?: { userId: number; roles: string[]; exp: number };
+        message?: string;
+      }>({ cmd: AUTH_SERVICE.VERIFY_JWT }, jwt)
       .pipe(
-        switchMap((response: any) => {
-          if (response?.status === 'error') {
-            throw new UnauthorizedException(response.message);
+        switchMap((resp) => {
+          if (resp.status === 'error') {
+            throw new UnauthorizedException(resp.message);
           }
 
-          const { exp } = response;
-          const isJwtValid = Date.now() < exp * 1000;
-          return of(isJwtValid);
+          const { userId, roles, exp } = resp.data;
+          // if (!userId || Date.now() >= exp * 1000) {
+          //   throw new UnauthorizedException('Token expired');
+          // }
+          request.user = { userId, roles, exp };
+          return of(true);
         }),
-        catchError((error) => {
-          console.log('error123', error);
-          throw new UnauthorizedException();
-        }),
+        catchError((e) =>
+          throwError(() => new UnauthorizedException(e.message)),
+        ),
       );
   }
 }

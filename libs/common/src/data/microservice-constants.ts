@@ -8,4 +8,5 @@ export const AUTH_SERVICE = {
 export const USERS_SERVICE = {
   MY_PROFILE: 'my-profile',
   UPDATE_PROFILE: 'update-profile',
+  UPDATE_REFRESH_TOKEN: 'update_refresh_token',
 };

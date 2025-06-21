@@ -27,7 +27,16 @@ import { User } from '@prisma/client';
 
 // export interface User {
 //   userId: number;
+
 // }
+
+interface AuthenticatedRequest extends Request {
+  user: {
+    userId: number;
+    roles: string[];
+    exp: number;
+  };
+}
 @Controller(USERS_CONTROLLER)
 export class UsersController {
   constructor(@Inject('USERS') private readonly apiService: ClientProxy) {}
@@ -41,10 +50,17 @@ export class UsersController {
   })
   @ApiOperation({ summary: 'Get  my profile' })
   @ApiBearerAuth('access-token')
-  async getProfile(@CurrentUser() user: User) {
+  // async getProfile(@CurrentUser() user: any) {
+  async getProfile(@Req() req: AuthenticatedRequest) {
     try {
-      //   console.log('CurrentUser:', user);
-      return this.apiService.send({ cmd: USERS_SERVICE.MY_PROFILE }, user.id);
+      const { userId } = req.user;
+      console.log('CurrentUser:', userId);
+      const result = this.apiService.send(
+        { cmd: USERS_SERVICE.MY_PROFILE },
+        userId,
+      );
+
+      return result;
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;

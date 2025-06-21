@@ -25,13 +25,14 @@ export class UsersController {
     private readonly rmqService: RmqService,
   ) {}
 
+  
   @MessagePattern({ cmd: USERS_SERVICE.MY_PROFILE })
   async handleGetProfile(
     @Payload() userId: number,
     @Ctx() context: RmqContext,
   ) {
     try {
-      console.log('userId', userId);
+      ///   console.log('userId', userId);
       this.rmqService.ack(context);
       const profile = await this.queryBus.execute(new GetProfileQuery(userId));
 

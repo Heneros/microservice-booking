@@ -10,7 +10,6 @@ import {
   PrismaService,
   RmqModule,
   RmqService,
-
 } from '@app/common';
 
 import { JwtModule } from '@nestjs/jwt';
@@ -45,8 +44,8 @@ import { JwtGuard } from './jwt.guard';
       isGlobal: true,
       validationSchema: Joi.object({
         // MONGODB_URI: Joi.string().required(),
-        JWT_SECRET: Joi.string().required(),
-
+        //      JWT_SECRET: Joi.string().required(),
+        //
         PORT: Joi.number().required(),
       }),
       // envFilePath: process.env.NODE_ENV === 'local' ? '.env.local' : '.env',
@@ -61,10 +60,13 @@ import { JwtGuard } from './jwt.guard';
     }),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: {
-          expiresIn: `${configService.get('JWT_EXPIRATION')}s`,
-        },
+        // secret: configService.get<string>('JWT_SECRET'),
+        // secret: configService.get('JWT_SECRET'),
+        secret: process.env.JWT_SECRET,
+        // signOptions: {
+        //   expiresIn: `${configService.get('JWT_EXPIRATION')}s`,
+        // },
+        signOptions: { expiresIn: '31' },
       }),
       inject: [ConfigService],
     }),

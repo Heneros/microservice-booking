@@ -11,11 +11,6 @@ export const CurrentUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
 
-    //const authHeader = request.headers.authorization;
-    // const token = authHeader?.split('Bearer ')[1];
-
-    // const payload = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
-    // console.log('request ', request);
     const authHeader = request.headers?.authorization;
 
     if (!authHeader) {
