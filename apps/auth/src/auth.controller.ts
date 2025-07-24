@@ -79,13 +79,16 @@ export class AuthController {
   @MessagePattern({ cmd: AUTH_SERVICE.VERIFY_JWT })
   async verifyJwt(@Ctx() context: RmqContext, @Payload() jwt: string) {
     // let ackCalled = false;
-    //  this.rmqService.ack(context);
+
     try {
       // console.log('JWT received:', payload.jwt);
 
       const result = await this.verifyJwtService.verifyJwt(jwt);
-
       this.rmqService.ack(context);
+      // this.rmqService.ack(context);
+      // const channel = context.getChannelRef();
+      // const originalMsg = context.getMessage();
+      // channel.ack(originalMsg);
 
       return {
         status: 'success',

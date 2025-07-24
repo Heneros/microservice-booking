@@ -66,7 +66,7 @@ import { JwtGuard } from './jwt.guard';
         // signOptions: {
         //   expiresIn: `${configService.get('JWT_EXPIRATION')}s`,
         // },
-        signOptions: { expiresIn: '31' },
+        signOptions: { expiresIn: '31d' },
       }),
       inject: [ConfigService],
     }),

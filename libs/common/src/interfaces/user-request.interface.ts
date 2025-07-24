@@ -7,3 +7,11 @@ export interface UserRequest extends Request {
     roles: string[];
   };
 }
+
+export interface AuthenticatedRequest extends Request {
+  user: {
+    userId: number;
+    roles: string[];
+    exp: number;
+  };
+}

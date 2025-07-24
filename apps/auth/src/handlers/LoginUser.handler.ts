@@ -37,11 +37,10 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
       const payload = {
         userId: user.id,
         username: user.username,
-        roles: user.roles || ['User'],
+        roles: user.roles,
       };
 
       const secret = process.env.JWT_SECRET;
-      // console.log(secret);
 
       const accessToken = await this.jwtService.signAsync(payload, {
         secret: secret,
@@ -71,13 +70,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
       return {
         accessToken,
         refreshToken,
-        // user,
-        // user: {
-        //   id: user.id,
-        //   username: user.username,
-        //   email: user.email,
-        //   roles: user.roles,
-        // },
+
       };
     } catch (error) {
       if (error instanceof BadRequestException) {

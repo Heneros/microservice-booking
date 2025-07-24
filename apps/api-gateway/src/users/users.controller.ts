@@ -54,7 +54,6 @@ export class UsersController {
   async getProfile(@Req() req: AuthenticatedRequest) {
     try {
       const { userId } = req.user;
-      console.log('CurrentUser:', userId);
       const result = this.apiService.send(
         { cmd: USERS_SERVICE.MY_PROFILE },
         userId,

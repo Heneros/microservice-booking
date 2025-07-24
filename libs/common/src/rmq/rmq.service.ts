@@ -17,7 +17,6 @@ export class RmqService {
           durable: true,
         },
         prefetchCount: 1,
-
         socketOptions: {
           heartbeatIntervalInSeconds: 60,
           reconnectTimeInSeconds: 5,
@@ -27,10 +26,18 @@ export class RmqService {
   }
 
   ack(context: RmqContext) {
-    const channel = context.getChannelRef();
-    const originalMessage = context.getMessage();
-    if (channel && originalMessage) {
-      channel.ack(originalMessage);
+    try {
+      const channel = context.getChannelRef();
+      const originalMessage = context.getMessage();
+
+      if (channel && originalMessage) {
+        channel.ack(originalMessage);
+        console.log('Message acknowledged successfully');
+      } else {
+        console.warn('Cannot acknowledge message: missing channel or message');
+      }
+    } catch (error) {
+      console.error('Error acknowledging message:', error.message);
     }
   }
 }
