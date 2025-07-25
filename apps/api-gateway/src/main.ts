@@ -64,11 +64,11 @@ async function bootstrap() {
     },
   });
 
-  const rmqService = app.get(RmqService);
-  app.connectMicroservice(rmqService.getOptions('AUTH'));
-  app.connectMicroservice(rmqService.getOptions('USERS'));
+  // const rmqService = app.get(RmqService);
+  // app.connectMicroservice(rmqService.getOptions('AUTH'));
+  // app.connectMicroservice(rmqService.getOptions('USERS'));
 
-  await app.startAllMicroservices();
+  // await app.startAllMicroservices();
 
   // app.useGlobalInterceptors(app.get(UserInterceptor));
 

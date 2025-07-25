@@ -17,18 +17,18 @@ export class VerifyJWTService {
 
   async verifyJwt(
     jwt: string,
-  ): Promise<{ userId: number; roles: string[]; exp: number }> {
+  ) {
     if (!jwt) {
       throw new UnauthorizedException('Token is required');
     }
 
-    const secret = this.configService.get<string>('JWT_SECRET')?.trim();
+    const secret = this.configService.get('JWT_SECRET')
 
     try {
-      const tokenParts = jwt.split('.');
-      if (tokenParts.length !== 3) {
-        throw new Error('Invalid JWT format - wrong number of parts');
-      }
+      // const tokenParts = jwt.split('.');
+      // if (tokenParts.length !== 3) {
+      //   throw new Error('Invalid JWT format - wrong number of parts');
+      // }
 
       const decoded = await this.jwtService.verifyAsync<{
         userId: number;
@@ -39,19 +39,19 @@ export class VerifyJWTService {
         secret,
         clockTolerance: 30,
         ignoreExpiration: false,
-        algorithms: ['HS256'], 
+        // algorithms: ['HS256'], 
       });
 
       if (!decoded.userId || !decoded.exp) {
         throw new UnauthorizedException('Invalid JWT payload');
       }
 
-      const now = Math.floor(Date.now() / 1000);
-      const timeToExpiry = decoded.exp - now;
+      // const now = Math.floor(Date.now() / 1000);
+      // const timeToExpiry = decoded.exp - now;
 
-      if (timeToExpiry < 0) {
-        throw new UnauthorizedException('Token expired');
-      }
+      // if (timeToExpiry < 0) {
+      //   throw new UnauthorizedException('Token expired');
+      // }
 
       return decoded;
     } catch (error) {

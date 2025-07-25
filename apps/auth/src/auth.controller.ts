@@ -19,8 +19,9 @@ import {
 } from '@app/common';
 import { RegisterUserCommand } from './commands/RegisterUser.command';
 import { LoginUserCommand } from './commands/LoginUser.command';
-import { JwtGuard } from './jwt.guard';
+import { JwtGuard } from './guards/jwt.guard';
 import { VerifyJWTService } from './services/verifyJwt.service';
+
 // import { LoginUserCommand, RegisterUserCommand } from './commands/index';
 
 @Controller(AUTH_CONTROLLER)
@@ -76,43 +77,68 @@ export class AuthController {
     }
   }
 
-  @MessagePattern({ cmd: AUTH_SERVICE.VERIFY_JWT })
-  async verifyJwt(@Ctx() context: RmqContext, @Payload() jwt: string) {
-    // let ackCalled = false;
+  // @MessagePattern({ cmd: AUTH_SERVICE.VERIFY_JWT })
+  // async verifyJwt(@Ctx() context: RmqContext, @Payload() jwt: string) {
+  //   // let ackCalled = false;
+
+  //   try {
+  //     // console.log('JWT received:', payload.jwt);
+
+  //     const result = await this.verifyJwtService.verifyJwt(jwt);
+  //     this.rmqService.ack(context);
+  //      return {
+  //       status: 'success',
+  //       data: result,
+  //     };
+  //     // ackCalled = true;
+  //     // }
+  //   } catch (err) {
+  //     console.error('Auth service error:', err.message);
+  //     this.rmqService.ack(context);
+
+  //     return {
+  //       status: 'error',
+  //       message: err.message || 'Invalid token',
+  //     };
+  //   }
+  // }
+  // @MessagePattern({ cmd: AUTH_SERVICE.DECODE_JWT })
+  // async decodeJwt(
+  //   @Ctx() context: RmqContext,
+  //   @Payload() payload: { jwt: string },
+  // ) {
+  //   // console.log('payload ', payload.jwt);
+  //   this.rmqService.ack(context);
+  //   return this.verifyJwtService.getUserFromHeader(payload.jwt);
+  // }
+
+
+  // @UseGuards(JwtGuard)
+  @MessagePattern('authenticate')
+  async authenticate(@Ctx() context: RmqContext,@Payload() token: any){
 
     try {
-      // console.log('JWT received:', payload.jwt);
+      console.log('JWT received:', token);
 
-      const result = await this.verifyJwtService.verifyJwt(jwt);
-      this.rmqService.ack(context);
-      // this.rmqService.ack(context);
-      // const channel = context.getChannelRef();
-      // const originalMsg = context.getMessage();
-      // channel.ack(originalMsg);
-
-      return {
-        status: 'success',
-        data: result,
-      };
+      const result = await this.verifyJwtService.verifyJwt(token);
+    // this.rmqService.ack(context);
+    //    return {
+    //     status: 'success',
+    //     data: result,
+    //   };
       // ackCalled = true;
       // }
+          return result;   
     } catch (err) {
-      console.error('Auth service error:', err.message);
-      this.rmqService.ack(context);
+            throw new RpcException('Unauthorized');
+      // console.error('Auth service error:', err.message);
+      // this.rmqService.ack(context);
 
-      return {
-        status: 'error',
-        message: err.message || 'Invalid token',
-      };
+      // return {
+      //   status: 'error',
+      //   message: err.message || 'Invalid token',
+      // };
     }
-  }
-  @MessagePattern({ cmd: AUTH_SERVICE.DECODE_JWT })
-  async decodeJwt(
-    @Ctx() context: RmqContext,
-    @Payload() payload: { jwt: string },
-  ) {
-    // console.log('payload ', payload.jwt);
-    this.rmqService.ack(context);
-    return this.verifyJwtService.getUserFromHeader(payload.jwt);
+
   }
 }
