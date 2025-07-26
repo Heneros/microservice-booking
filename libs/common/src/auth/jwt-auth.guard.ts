@@ -10,6 +10,7 @@ export class JWTAuthGuard implements CanActivate{
 
     
     canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+<<<<<<< HEAD
    const request = context.switchToHttp().getRequest();
     const authHeader = request.headers['authorization'];
 
@@ -61,6 +62,37 @@ export class JWTAuthGuard implements CanActivate{
     }
 
 
+=======
+//        const request = context.switchToHttp().getRequest();
+// const authHeader = request.headers['authorization'];
+
+// if (!authHeader || !authHeader.startsWith('Bearer ')) {
+//   return false;
+// }
+
+// const token = authHeader.split(' ')[1];
+    const req = context.switchToHttp().getRequest();
+    const authHeader = req.headers['authorization'];
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return false;
+    }
+    const token = authHeader.slice(7);
+
+// console.log('tokentoken', token)
+            return this.authClient.send('authenticate',  token).pipe(
+                tap((user) =>{
+                   req.user = user;
+                  // context.switchToHttp().getRequest().user = res;
+                }),
+                map(() => true),
+                        catchError((err) => {
+          console.error('err123', err);
+          return of(false);
+        }),
+            )
+    }
+
+>>>>>>> a0efbcbaca2620cbc83f4aa753ae2f8f3b001353
 }
 
 

@@ -95,6 +95,7 @@ export class AuthController {
   // @MessagePattern({ cmd: AUTH_SERVICE.VERIFY_JWT })
   // async verifyJwt(@Ctx() context: RmqContext, @Payload() jwt: string) {
   //   // let ackCalled = false;
+<<<<<<< HEAD
 
   //   try {
   //     // console.log('JWT received:', payload.jwt);
@@ -154,12 +155,72 @@ export class AuthController {
     } catch (err) {
       console.error('Auth service error:', err.message);
      // this.rmqService.ack(context);
+=======
 
-      return {
-        status: 'error',
-        message: err.message || 'Invalid token',
-      };
+  //   try {
+  //     // console.log('JWT received:', payload.jwt);
+
+  //     const result = await this.verifyJwtService.verifyJwt(jwt);
+  //     this.rmqService.ack(context);
+  //      return {
+  //       status: 'success',
+  //       data: result,
+  //     };
+  //     // ackCalled = true;
+  //     // }
+  //   } catch (err) {
+  //     console.error('Auth service error:', err.message);
+  //     this.rmqService.ack(context);
+
+  //     return {
+  //       status: 'error',
+  //       message: err.message || 'Invalid token',
+  //     };
+  //   }
+  // }
+  // @MessagePattern({ cmd: AUTH_SERVICE.DECODE_JWT })
+  // async decodeJwt(
+  //   @Ctx() context: RmqContext,
+  //   @Payload() payload: { jwt: string },
+  // ) {
+  //   // console.log('payload ', payload.jwt);
+  //   this.rmqService.ack(context);
+  //   return this.verifyJwtService.getUserFromHeader(payload.jwt);
+  // }
+
+
+  // @UseGuards(JwtGuard)
+  @MessagePattern('authenticate')
+  async authenticate(@Ctx() context: RmqContext,@Payload() token: any){
+
+    try {
+      console.log('JWT received:', token);
+
+      const result = await this.verifyJwtService.verifyJwt(token);
+    // this.rmqService.ack(context);
+    //    return {
+    //     status: 'success',
+    //     data: result,
+    //   };
+      // ackCalled = true;
+      // }
+          return result;   
+    } catch (err) {
+            throw new RpcException('Unauthorized');
+      // console.error('Auth service error:', err.message);
+      // this.rmqService.ack(context);
+>>>>>>> a0efbcbaca2620cbc83f4aa753ae2f8f3b001353
+
+      // return {
+      //   status: 'error',
+      //   message: err.message || 'Invalid token',
+      // };
     }
+<<<<<<< HEAD
   
   
+=======
+
+  }
+>>>>>>> a0efbcbaca2620cbc83f4aa753ae2f8f3b001353
 }

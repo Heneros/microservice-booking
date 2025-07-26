@@ -25,8 +25,6 @@ import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { catchError, throwError } from 'rxjs';
 
-
-
 // export interface User {
 //   userId: number;
 
@@ -56,8 +54,7 @@ export class UsersController {
   async getProfile(@Req() req: AuthenticatedRequest) {
     try {
       const { userId } = req.user;
-            console.log('Getting profile for user:', userId);
-
+      console.log('CurrentUser:', userId);
       const result = this.apiService.send(
         { cmd: USERS_SERVICE.MY_PROFILE },
         userId,
