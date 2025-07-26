@@ -5,8 +5,7 @@ import {
   USERS_CONTROLLER,
   USERS_SERVICE,
 } from '@app/common';
-import { CurrentUser } from '@app/common/decorator/current-user.decorator';
-import { AuthGuard } from '@app/common/guards/auth.guard';
+import { JWTAuthGuard } from '@app/common/auth/jwt-auth.guard';
 import {
   BadGatewayException,
   BadRequestException,
@@ -24,6 +23,9 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { User } from '@prisma/client';
+import { catchError, throwError } from 'rxjs';
+
+
 
 // export interface User {
 //   userId: number;
@@ -41,7 +43,7 @@ interface AuthenticatedRequest extends Request {
 export class UsersController {
   constructor(@Inject('USERS') private readonly apiService: ClientProxy) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(JWTAuthGuard)
   // @UseInterceptors(UserInterceptor)
   @Get(USER_ROUTES.MY_ACCOUNT)
   @ApiResponse({
@@ -54,11 +56,18 @@ export class UsersController {
   async getProfile(@Req() req: AuthenticatedRequest) {
     try {
       const { userId } = req.user;
-      console.log('CurrentUser:', userId);
+            console.log('Getting profile for user:', userId);
+
       const result = this.apiService.send(
         { cmd: USERS_SERVICE.MY_PROFILE },
         userId,
-      );
+      )        .pipe(
+   
+          catchError((error) => {
+            console.error('Users service error:', error);
+            return throwError(() => new BadGatewayException('Users service unavailable'));
+          }),
+        );
 
       return result;
     } catch (error) {

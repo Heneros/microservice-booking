@@ -19,15 +19,31 @@ import {
 } from '@app/common';
 import { RegisterUserCommand } from './commands/RegisterUser.command';
 import { LoginUserCommand } from './commands/LoginUser.command';
-import { JwtGuard } from './jwt.guard';
+import { JwtGuard } from './guards/jwt.guard';
 import { VerifyJWTService } from './services/verifyJwt.service';
+
 // import { LoginUserCommand, RegisterUserCommand } from './commands/index';
+export interface AuthRequest {
+  jwt: string;
+}
+
+export interface AuthResponse {
+  status: 'success' | 'error';
+  data?: {
+    userId: number;
+    username?: string;
+    roles: string[];
+    exp: number;
+  };
+  message?: string;
+}
 
 @Controller(AUTH_CONTROLLER)
 export class AuthController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
+    //    private readonly authService: AuthService,
     private readonly rmqService: RmqService,
     private readonly verifyJwtService: VerifyJWTService,
     // @Inject(BILLING_SERVICE) private billingClient: ClientProxy,
@@ -76,40 +92,74 @@ export class AuthController {
     }
   }
 
-  @MessagePattern({ cmd: AUTH_SERVICE.VERIFY_JWT })
-  async verifyJwt(@Ctx() context: RmqContext, @Payload() jwt: string) {
-    // let ackCalled = false;
-    //  this.rmqService.ack(context);
-    try {
-      // console.log('JWT received:', payload.jwt);
+  // @MessagePattern({ cmd: AUTH_SERVICE.VERIFY_JWT })
+  // async verifyJwt(@Ctx() context: RmqContext, @Payload() jwt: string) {
+  //   // let ackCalled = false;
 
-      const result = await this.verifyJwtService.verifyJwt(jwt);
+  //   try {
+  //     // console.log('JWT received:', payload.jwt);
 
+  //     const result = await this.verifyJwtService.verifyJwt(jwt);
+  //     this.rmqService.ack(context);
+  //      return {
+  //       status: 'success',
+  //       data: result,
+  //     };
+  //     // ackCalled = true;
+  //     // }
+  //   } catch (err) {
+  //     console.error('Auth service error:', err.message);
+  //     this.rmqService.ack(context);
+
+  //     return {
+  //       status: 'error',
+  //       message: err.message || 'Invalid token',
+  //     };
+  //   }
+  // }
+  // @MessagePattern({ cmd: AUTH_SERVICE.DECODE_JWT })
+  // async decodeJwt(
+  //   @Ctx() context: RmqContext,
+  //   @Payload() payload: { jwt: string },
+  // ) {
+  //   // console.log('payload ', payload.jwt);
+  //   this.rmqService.ack(context);
+  //   return this.verifyJwtService.getUserFromHeader(payload.jwt);
+  // }
+
+
+  // @UseGuards(JwtGuard)
+  @MessagePattern('authenticate')
+  async authenticate(    @Ctx() context: RmqContext,
+    @Payload() data: AuthRequest,){
+
+
+          console.log('JWT received:', data.jwt);
+
+      if (!data || !data.jwt) {
+        this.rmqService.ack(context);
+        return {
+          status: 'error',
+          message: 'JWT token is required',
+        };
+      }
+
+      const result = await this.verifyJwtService.verifyJwt(data.jwt)
       this.rmqService.ack(context);
 
       return {
         status: 'success',
         data: result,
       };
-      // ackCalled = true;
-      // }
     } catch (err) {
       console.error('Auth service error:', err.message);
-      this.rmqService.ack(context);
+     // this.rmqService.ack(context);
 
       return {
         status: 'error',
         message: err.message || 'Invalid token',
       };
     }
-  }
-  @MessagePattern({ cmd: AUTH_SERVICE.DECODE_JWT })
-  async decodeJwt(
-    @Ctx() context: RmqContext,
-    @Payload() payload: { jwt: string },
-  ) {
-    // console.log('payload ', payload.jwt);
-    this.rmqService.ack(context);
-    return this.verifyJwtService.getUserFromHeader(payload.jwt);
-  }
+  
+  
 }

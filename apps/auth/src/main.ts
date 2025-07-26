@@ -3,13 +3,20 @@ import { AuthModule } from './auth.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RmqService } from '@app/common';
-import { RmqOptions } from '@nestjs/microservices';
+import { MicroserviceOptions, RmqOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AuthModule);
-  const rmqService = app.get<RmqService>(RmqService);
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(AuthModule, {
+    transport: Transport.RMQ,
+    options: {
+      urls: [process.env.RABBITMQ_URI],
+      queue: 'AUTH_QUEUE',
+      queueOptions: { durable: true },
+    },
+  });
+  // const rmqService = app.get<RmqService>(RmqService);
 
-  app.connectMicroservice<RmqOptions>(rmqService.getOptions('AUTH'));
+  // app.connectMicroservice<RmqOptions>(rmqService.getOptions('AUTH'));
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -22,7 +29,7 @@ async function bootstrap() {
   );
 
   // const configService = app.get(ConfigService);
-  await app.startAllMicroservices();
+  // await app.startAllMicroservices();
   await app.init();
 }
 bootstrap();

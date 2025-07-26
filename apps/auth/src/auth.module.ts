@@ -17,7 +17,9 @@ import { RegisterUserHandler } from './handlers/RegisterUser.handler';
 import { LoginUserHandler } from './handlers/LoginUser.handler';
 import { VerifyJWTService } from './services/verifyJwt.service';
 import { JwtStrategy } from './jwt-strategy';
-import { JwtGuard } from './jwt.guard';
+import { JwtGuard } from './guards/jwt.guard';
+import { JWTAuthGuard } from '@app/common/auth/jwt-auth.guard';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   controllers: [AuthController],
@@ -25,6 +27,7 @@ import { JwtGuard } from './jwt.guard';
     PrismaService,
     // RegisterUserHandler,
     JwtGuard,
+    // JWTAuthGuard ,
     JwtStrategy,
     Repository.AuthRepository,
     Repository.VerifyResetTokenRepository,
@@ -44,7 +47,7 @@ import { JwtGuard } from './jwt.guard';
       isGlobal: true,
       validationSchema: Joi.object({
         // MONGODB_URI: Joi.string().required(),
-        //      JWT_SECRET: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
         //
         PORT: Joi.number().required(),
       }),
@@ -52,9 +55,29 @@ import { JwtGuard } from './jwt.guard';
       envFilePath: './apps/auth/.env',
     }),
     CqrsModule.forRoot({}),
-    RmqModule.register({
-      name: 'BILLING',
-    }),
+        ClientsModule.register([
+      {
+        name: 'AUTH',         
+        transport: Transport.RMQ,
+        options: {
+          urls: [process.env.RABBITMQ_URI],
+          queue: 'AUTH_QUEUE',
+          queueOptions: { durable: true },
+        },
+      },
+          {
+        name: 'USERS',         
+        transport: Transport.RMQ,
+        options: {
+          urls: [process.env.RABBITMQ_URI],
+          queue: 'USERS_QUEUE',
+          queueOptions: { durable: true },
+        },
+      },
+    ]),
+    // RmqModule.register({
+    //   name: 'BILLING',
+    // }),
     RmqModule.register({
       name: 'USERS',
     }),
@@ -66,7 +89,7 @@ import { JwtGuard } from './jwt.guard';
         // signOptions: {
         //   expiresIn: `${configService.get('JWT_EXPIRATION')}s`,
         // },
-        signOptions: { expiresIn: '31' },
+        signOptions: { expiresIn: '31d' },
       }),
       inject: [ConfigService],
     }),

@@ -15,42 +15,69 @@ export class VerifyJWTService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async verifyJwt(
-    jwt: string,
-  ): Promise<{ userId: number; roles: string[]; exp: number }> {
-    if (!jwt) {
-      throw new UnauthorizedException();
+  async verifyJwt(jwt: string){
+    if (!jwt || typeof jwt !== 'string') {
+      throw new UnauthorizedException('Token is required and must be a string');
     }
 
-    const secret = this.configService.get<string>('JWT_SECRET')?.trim();
+    const secret = this.configService.get<string>('JWT_SECRET');
+    
+    if (!secret) {
+      throw new Error('JWT_SECRET is not configured');
+    }
 
     try {
-      // const decoded = await this.jwtService.verify(jwt, { secret });
-      const decoded = await this.jwtService.verifyAsync<{
-        userId: number;
-        roles: string[];
-        exp: number;
-      }>(jwt, {
+   
+      const tokenParts = jwt.split('.');
+      if (tokenParts.length !== 3) {
+        throw new UnauthorizedException('Invalid JWT format');
+      }
+
+    
+      const decoded = await this.jwtService.verifyAsync(jwt, {
         secret,
         clockTolerance: 30,
         ignoreExpiration: false,
+        algorithms: ['HS256'],
       });
 
-      console.log('JWT successfully decoded:', {
-        userId: decoded.userId,
-        exp: decoded.exp,
-        roles: decoded.roles,
-      });
-
-      if (!decoded.userId || !decoded.exp) {
-        throw new UnauthorizedException('Invalid JWT payload');
+      if (!decoded.userId || !decoded.exp || !decoded.roles) {
+        throw new UnauthorizedException('Invalid JWT payload structure');
       }
 
-      return decoded;
+ 
+      const now = Math.floor(Date.now() / 1000);
+      if (decoded.exp <= now) {
+        throw new UnauthorizedException('Token expired');
+      }
+
+      console.log('JWT successfully verified for user:', decoded.userId);
+
+      return {
+        userId: decoded.userId,
+        username: decoded.username,
+        roles: decoded.roles,
+        exp: decoded.exp,
+      };
     } catch (error) {
-      console.error('JWT decode error:', error.message);
-      console.error('JWT being verified:', jwt);
-      throw new UnauthorizedException('Invalid token');
+      console.error('JWT verification error:', error.message);
+
+      if (error.name === 'TokenExpiredError') {
+        throw new UnauthorizedException('Token expired');
+      } else if (error.name === 'JsonWebTokenError') {
+        if (error.message.includes('invalid signature')) {
+          throw new UnauthorizedException('Invalid token signature - check JWT_SECRET');
+        }
+        throw new UnauthorizedException(`Invalid token: ${error.message}`);
+      } else if (error.name === 'NotBeforeError') {
+        throw new UnauthorizedException('Token not active yet');
+      }
+
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+
+      throw new UnauthorizedException('Token verification failed');
     }
   }
 

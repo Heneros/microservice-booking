@@ -21,3 +21,4 @@ and notifications(websocket + email).
 - K8s
 - Socket io.
 - Chat module
+- ioredis

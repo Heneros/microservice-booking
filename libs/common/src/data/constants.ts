@@ -8,3 +8,5 @@ export const isDevelopment = process.env.NODE_ENV === 'development';
 export const roundsOfHashing = 10;
 
 export const domain = process.env.DOMAIN;
+
+
