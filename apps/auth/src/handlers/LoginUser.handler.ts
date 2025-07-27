@@ -18,6 +18,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
     const { logInDto } = command;
     try {
       const user = await this.authRepository.findByEmail(logInDto.email);
+
       if (!user) {
         throw new BadRequestException('User not found');
       }
@@ -47,22 +48,22 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
       await this.verifyResetTokenRepository.delete({ userId: user.id });
 
       await this.verifyResetTokenRepository.updateToken(user.id, refreshToken);
-
+     
       await this.authRepository.updateProfile(user.id, {
         refreshToken: [accessToken],
       });
 
-      console.log({ payload });
+   //   console.log({ payload });
       return {
         accessToken,
         refreshToken,
         // user,
-        // user: {
-        //   id: user.id,
-        //   username: user.username,
-        //   email: user.email,
-        //   roles: user.roles,
-        // },
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          roles: user.roles,
+        },
       };
     } catch (error) {
       if (error instanceof BadRequestException) {

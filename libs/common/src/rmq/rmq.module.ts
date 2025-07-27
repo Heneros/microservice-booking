@@ -8,15 +8,11 @@ interface RmqModuleOptions {
 }
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: './.env',
-    }),
-  ],
   providers: [RmqService],
   exports: [RmqService],
 })
+
+
 export class RmqModule {
   static register({ name }: RmqModuleOptions): DynamicModule {
     return {

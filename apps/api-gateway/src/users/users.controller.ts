@@ -1,12 +1,12 @@
 import {
+
+  CurrentUser,
+  JwtAuthGuard,
   USER_ROUTES,
-  UserJwt,
-  UserRequest,
   USERS_CONTROLLER,
   USERS_SERVICE,
 } from '@app/common';
-import { CurrentUser } from '@app/common/decorator/current-user.decorator';
-import { AuthGuard } from '@app/common/guards/auth.guard';
+
 import {
   BadGatewayException,
   BadRequestException,
@@ -25,31 +25,42 @@ import { ClientProxy } from '@nestjs/microservices';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 
-// export interface User {
-//   userId: number;
-// }
+
+import { catchError, throwError, lastValueFrom } from 'rxjs';
+
+
 @Controller(USERS_CONTROLLER)
 export class UsersController {
   constructor(@Inject('USERS') private readonly apiService: ClientProxy) {}
 
-  @UseGuards(AuthGuard)
-  // @UseInterceptors(UserInterceptor)
+
+ 
   @Get(USER_ROUTES.MY_ACCOUNT)
+  @UseGuards(JwtAuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Get my profile',
   })
   @ApiOperation({ summary: 'Get  my profile' })
   @ApiBearerAuth('access-token')
-  async getProfile(@CurrentUser() user: User) {
+  // async getProfile(@CurrentUser() user: any) {
+  async getProfile(@Req() req: any) {
     try {
-      //   console.log('CurrentUser:', user);
-      return this.apiService.send({ cmd: USERS_SERVICE.MY_PROFILE }, user.id);
-    } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new BadGatewayException(error.message || 'Get profile failed');
+         const user = req.user;
+  const token = req.cookies.jwtBooking; 
+  const payload = { userId: user.userId, Authentication: token };
+
+  const profile = await lastValueFrom(
+    this.apiService.send(   { cmd: USERS_SERVICE.MY_PROFILE }, payload),
+  );
+  return profile;
+    } catch (err) {
+     if (err.name === 'EmptyError') {
+      console.error('RPC pattern not found or handler did not return:', err);
+      throw new BadGatewayException('Profile service unavailable');
+    }
+    console.error('GetProfile error:', err);
+    throw new BadGatewayException(err.message || 'Get profile failed');
     }
   }
 

@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Inject, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterUserDto } from '@app/common';
+import {  CurrentUser, RegisterUserDto } from '@app/common';
 
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
@@ -19,8 +19,10 @@ import {
 } from '@app/common';
 import { RegisterUserCommand } from './commands/RegisterUser.command';
 import { LoginUserCommand } from './commands/LoginUser.command';
-import { JwtGuard } from './jwt.guard';
+import { JwtGuard } from './guards/jwt.guard';
 import { VerifyJWTService } from './services/verifyJwt.service';
+import { Response } from 'express';
+import { JwtService } from '@nestjs/jwt';
 // import { LoginUserCommand, RegisterUserCommand } from './commands/index';
 
 @Controller(AUTH_CONTROLLER)
@@ -30,13 +32,10 @@ export class AuthController {
     private readonly queryBus: QueryBus,
     private readonly rmqService: RmqService,
     private readonly verifyJwtService: VerifyJWTService,
+    private readonly jwtService: JwtService
     // @Inject(BILLING_SERVICE) private billingClient: ClientProxy,
   ) {}
 
-  // @Get()
-  // async getTest() {
-  //   return await this.queryBus.execute(new FindAllUsersQuery());
-  // }
 
   @MessagePattern({ cmd: AUTH_SERVICE.REGISTER_USER })
   // async registerUser(@Body() request: RegisterUserDto) {
@@ -54,10 +53,11 @@ export class AuthController {
   }
 
   @MessagePattern({ cmd: AUTH_SERVICE.LOGIN_USER })
-  async handleLogin(@Payload() data: LoginUserDto, @Ctx() context: RmqContext) {
+  async handleLogin( @Payload() data: LoginUserDto, @Ctx() context: RmqContext) {
     //   this.rmqService.ack(context);
     try {
       const result = await this.commandBus.execute(new LoginUserCommand(data));
+
 
       this.rmqService.ack(context);
 
@@ -75,6 +75,21 @@ export class AuthController {
       throw new RpcException(error.message);
     }
   }
+
+  // @UseGuards(JwtGuard)
+  @MessagePattern('validate_user')
+  async validateUser(
+    @Payload() data: { Authentication: string },
+  ) {
+    const token = data.Authentication;
+
+    const user = this.jwtService.verify(token, {
+      secret: process.env.JWT_SECRET,
+    });
+    return user; 
+  }
+
+
 
   @MessagePattern({ cmd: AUTH_SERVICE.VERIFY_JWT })
   //  @UseGuards(JwtGuard)

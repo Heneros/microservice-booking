@@ -24,6 +24,10 @@ export * from './postgresql-database/abstract.repository';
 export * from './rmq/rmq.service';
 export * from './rmq/rmq.module';
 
+export * from './auth/jwt-auth.guard'
+
+export * from './decorator/current-user.decorator'
+
 
 export * from './interfaces/user-request.interface';
 export * from './interfaces/user-jwt.interface';

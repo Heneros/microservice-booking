@@ -69,9 +69,6 @@ async function bootstrap() {
   app.connectMicroservice(rmqService.getOptions('USERS'));
 
   await app.startAllMicroservices();
-
-  // app.useGlobalInterceptors(app.get(UserInterceptor));
-
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

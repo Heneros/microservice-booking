@@ -7,6 +7,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import * as Repository from 'libs/common/src/repository';
 import {
   CommonModule,
+  JwtAuthGuard,
   PrismaService,
   RmqModule,
   RmqService,
@@ -18,12 +19,13 @@ import { RegisterUserHandler } from './handlers/RegisterUser.handler';
 import { LoginUserHandler } from './handlers/LoginUser.handler';
 import { VerifyJWTService } from './services/verifyJwt.service';
 import { JwtStrategy } from './jwt-strategy';
-import { JwtGuard } from './jwt.guard';
+import { JwtGuard } from './guards/jwt.guard';
 
 @Module({
   controllers: [AuthController],
   providers: [
     PrismaService,
+    // JwtAuthGuard,
     // RegisterUserHandler,
     JwtGuard,
     JwtStrategy,
@@ -46,16 +48,17 @@ import { JwtGuard } from './jwt.guard';
       validationSchema: Joi.object({
         // MONGODB_URI: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
-
+        RABBIT_MQ_URI: Joi.string().required(),
         PORT: Joi.number().required(),
       }),
       // envFilePath: process.env.NODE_ENV === 'local' ? '.env.local' : '.env',
       envFilePath: './apps/auth/.env',
     }),
     CqrsModule.forRoot({}),
-    RmqModule.register({
-      name: 'BILLING',
-    }),
+    // RmqModule.register({
+    //   name: 'BILLING',
+    // }),
+        RmqModule,
     RmqModule.register({
       name: 'USERS',
     }),

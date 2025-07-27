@@ -4,11 +4,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RmqService } from '@app/common';
 import { RmqOptions } from '@nestjs/microservices';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
   const rmqService = app.get<RmqService>(RmqService);
 
+  app.use(cookieParser());
   app.connectMicroservice<RmqOptions>(rmqService.getOptions('AUTH'));
   app.useGlobalPipes(
     new ValidationPipe({

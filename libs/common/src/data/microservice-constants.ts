@@ -1,4 +1,5 @@
 export const AUTH_SERVICE = {
+  
   LOGIN_USER: 'login_user',
   REGISTER_USER: 'register_user',
   VERIFY_JWT: 'verify-jwt',

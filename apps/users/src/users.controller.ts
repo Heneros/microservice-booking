@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Req } from '@nestjs/common';
 
 import {
   Ctx,
@@ -27,19 +27,21 @@ export class UsersController {
 
   @MessagePattern({ cmd: USERS_SERVICE.MY_PROFILE })
   async handleGetProfile(
-    @Payload() userId: number,
+   @Payload() data: { userId: number, Authentication: string }, 
     @Ctx() context: RmqContext,
+  
   ) {
     try {
-      console.log('userId', userId);
-      this.rmqService.ack(context);
-      const profile = await this.queryBus.execute(new GetProfileQuery(userId));
+      // console.log('userId', data.userId);
+  
+      const profile = await this.queryBus.execute(new GetProfileQuery(data.userId));
 
       const userEntity = plainToInstance(UserEntity, profile, {
         excludeExtraneousValues: true,
       });
-
+    this.rmqService.ack(context);
       return userEntity;
+
     } catch (error) {
       throw new RpcException(error.message);
     }
