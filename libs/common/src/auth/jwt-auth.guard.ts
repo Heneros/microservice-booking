@@ -22,7 +22,7 @@ export class JwtAuthGuard implements CanActivate {
 
     const req = ctx.switchToHttp().getRequest<Request>();
     const token =
-      // req.cookies?.jwtBooking ||
+      req.cookies?.jwtBooking ||
       this.extractBearerToken(req.headers.authorization);
 
     if (!token) {
