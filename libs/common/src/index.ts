@@ -35,3 +35,6 @@ export * from './interfaces/user-jwt.interface';
 export * from './repository/Auth.repository';
 export * from './repository/User.repository';
 export * from './repository/VerifyResetToken.repository';
+
+
+export * from './interfaces/cus-request';

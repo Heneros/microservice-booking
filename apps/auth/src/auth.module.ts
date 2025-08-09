@@ -11,7 +11,6 @@ import {
   PrismaService,
   RmqModule,
   RmqService,
-
 } from '@app/common';
 
 import { JwtModule } from '@nestjs/jwt';
@@ -20,6 +19,7 @@ import { LoginUserHandler } from './handlers/LoginUser.handler';
 import { VerifyJWTService } from './services/verifyJwt.service';
 import { JwtStrategy } from './jwt-strategy';
 import { JwtGuard } from './guards/jwt.guard';
+import { LogoutHandler } from './handlers/Logout.handler';
 
 @Module({
   controllers: [AuthController],
@@ -34,6 +34,7 @@ import { JwtGuard } from './guards/jwt.guard';
 
     RegisterUserHandler,
     LoginUserHandler,
+    LogoutHandler,
     VerifyJWTService,
     // ...Object.values(Handlers),
     // ...Object.values(Repository),
@@ -58,7 +59,7 @@ import { JwtGuard } from './guards/jwt.guard';
     // RmqModule.register({
     //   name: 'BILLING',
     // }),
-        RmqModule,
+    RmqModule,
     RmqModule.register({
       name: 'USERS',
     }),

@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import session from 'express-session';
 import { ApiGatewayModule } from './api-gateway.module';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
@@ -11,6 +12,18 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
+  app.use(
+    session({
+      secret: process.env.SECRET_SESSION,
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 31 * 1000 * 60 * 60 * 24,
+      },
+    }),
+  );
   app.enableCors({
     origin: domain,
     credentials: true,

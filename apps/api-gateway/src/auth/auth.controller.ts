@@ -5,6 +5,7 @@ import {
   Controller,
   Inject,
   Post,
+  Req,
   Res,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -15,6 +16,7 @@ import {
   AUTH_CONTROLLER,
   AUTH_ROUTES,
   AUTH_SERVICE,
+  CustomRequest,
   isDevelopment,
 } from '@app/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -75,6 +77,42 @@ export class AuthController {
         throw error;
       }
       throw new BadGatewayException(error.message || 'Login failed');
+    }
+  }
+
+  @Post(AUTH_ROUTES.LOGOUT)
+  @ApiResponse({
+    status: 302,
+    description: 'Log out successfully',
+  })
+  @ApiOperation({
+    summary: 'Log out for application ',
+  })
+  async logout(@Req() req: CustomRequest, @Res() res: Response) {
+    //  console.log('Log out for application');
+    try {
+      if (!req.session) {
+        return res.status(400).json({ message: 'Session not found' });
+      }
+
+      await new Promise<void>((resolve, reject) => {
+        req.session.destroy((err) => {
+          if (err) {
+            reject(new Error('Failed to destroy session'));
+          } else {
+            resolve();
+          }
+        });
+      });
+      res.clearCookie('jwtBooking');
+      res.clearCookie('connect.sid');
+
+      return res.status(200).json({ message: 'Logged out successfully!!' });
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadGatewayException(error.message || 'Logout failed');
     }
   }
 }

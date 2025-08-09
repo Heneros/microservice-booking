@@ -19,6 +19,16 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
+    "types": [
+      "express",
+      "express-session",
+      "jest",
+      "node"
+    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "libs/common/src/interfaces",
+    ],
     "paths": {
       "@app/common": [
         "libs/common/src"
