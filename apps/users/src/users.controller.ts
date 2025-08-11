@@ -27,21 +27,21 @@ export class UsersController {
 
   @MessagePattern({ cmd: USERS_SERVICE.MY_PROFILE })
   async handleGetProfile(
-   @Payload() data: { userId: number, Authentication: string }, 
+    @Payload() data: { userId: number; Authentication: string },
     @Ctx() context: RmqContext,
-  
   ) {
     try {
       // console.log('userId', data.userId);
-  
-      const profile = await this.queryBus.execute(new GetProfileQuery(data.userId));
+
+      const profile = await this.queryBus.execute(
+        new GetProfileQuery(data.userId),
+      );
 
       const userEntity = plainToInstance(UserEntity, profile, {
         excludeExtraneousValues: true,
       });
-    this.rmqService.ack(context);
+      this.rmqService.ack(context);
       return userEntity;
-
     } catch (error) {
       throw new RpcException(error.message);
     }

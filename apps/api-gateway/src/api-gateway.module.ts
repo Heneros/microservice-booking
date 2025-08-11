@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ApiGatewayController } from './api-gateway.controller';
 import { ApiGatewayService } from './api-gateway.service';
-import { RmqModule } from '@app/common';
+import { isDevelopment, RmqModule } from '@app/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import Joi from 'joi';
 import { UsersModule } from 'apps/users/src/users.module';
@@ -28,7 +28,9 @@ import { JwtModule } from '@nestjs/jwt';
         JWT_SECRET: Joi.string().required(),
         RABBIT_MQ_API_QUEUE: Joi.string().required(),
       }),
-      envFilePath: './apps/api-gateway/.env',
+      envFilePath: isDevelopment
+        ? './apps/api-gateway/.env'
+        : './apps/api-gateway/.env.prod',
     }),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({

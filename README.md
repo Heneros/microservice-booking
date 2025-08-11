@@ -11,7 +11,9 @@ and notifications(websocket + email).
 
 
 ## Packages
-- 
+- RabbitMQ
+- Prisma
+- Redis
 
 
 ## Future: 
