@@ -22,4 +22,4 @@ and notifications(websocket + email).
 - Implement Cluster DB
 - K8s
 - Socket io.
-- Chat module
+- [] Chat module

@@ -11,8 +11,6 @@ interface RmqModuleOptions {
   providers: [RmqService],
   exports: [RmqService],
 })
-
-
 export class RmqModule {
   static register({ name }: RmqModuleOptions): DynamicModule {
     return {

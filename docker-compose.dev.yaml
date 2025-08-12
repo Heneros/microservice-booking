@@ -1,14 +1,11 @@
 
-version: '3.8'
-
 services:
   api-gateway:
     build:
       context: .
       dockerfile: ./apps/api-gateway/Dockerfile
-      target: ${NODE_ENV}
+      target: ${APP_ENV:-development}
     restart: always
-    command: npm run start:dev api-gateway
     ports:
      - "3000:3000"  
     env_file:
@@ -29,8 +26,8 @@ services:
     build:
      context: .
      dockerfile: ./apps/auth/Dockerfile
-    #  target: builder
-    command: npm run start:dev auth
+     target: ${APP_ENV:-development}
+    # command: npm run start:dev auth
     env_file:
       -  .env
       - ./apps/auth/.env.${NODE_ENV}
@@ -52,8 +49,8 @@ services:
     build:
      context: .
      dockerfile: ./apps/users/Dockerfile
-     target: ${NODE_ENV}
-    command: npm run start:dev users
+     target: ${APP_ENV:-development}
+    # command: npm run start:dev users
     env_file:
       - .env
       - ./apps/users/.env.${NODE_ENV}

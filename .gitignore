@@ -2,7 +2,7 @@
 /dist
 /node_modules
 /build
-
+*.env.development
 .env
 .env.prod
 

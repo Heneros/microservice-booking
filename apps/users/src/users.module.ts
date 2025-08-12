@@ -18,7 +18,7 @@ import { GetProfileUserHandler } from './handlers/GetProfile.handler';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: isDevelopment
-        ? './apps/users/.env'
+        ? './apps/users/.env.development'
         : './apps/users/.env.prod',
     }),
     CqrsModule.forRoot({}),

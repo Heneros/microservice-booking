@@ -29,7 +29,7 @@ import { JwtModule } from '@nestjs/jwt';
         RABBIT_MQ_API_QUEUE: Joi.string().required(),
       }),
       envFilePath: isDevelopment
-        ? './apps/api-gateway/.env'
+        ? './apps/api-gateway/.env.development'
         : './apps/api-gateway/.env.prod',
     }),
     JwtModule.registerAsync({
@@ -41,8 +41,6 @@ import { JwtModule } from '@nestjs/jwt';
       }),
       inject: [ConfigService],
     }),
-    AuthModule,
-    UsersModule,
   ],
 
   controllers: [ApiGatewayController, AuthController, UsersController],

@@ -4,7 +4,7 @@ import { RmqService } from '@app/common';
 import { RmqOptions } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
 
-console.log('users serv')
+
 async function bootstrap() {
   const app = await NestFactory.create(UsersModule);
   const rmqService = app.get<RmqService>(RmqService);

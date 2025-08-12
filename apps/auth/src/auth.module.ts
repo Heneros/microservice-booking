@@ -7,6 +7,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import * as Repository from 'libs/common/src/repository';
 import {
   CommonModule,
+  isDevelopment,
   JwtAuthGuard,
   PrismaService,
   RmqModule,
@@ -52,14 +53,12 @@ import { LogoutHandler } from './handlers/Logout.handler';
         RABBIT_MQ_URI: Joi.string().required(),
         PORT: Joi.number().required(),
       }),
-      // envFilePath: process.env.NODE_ENV === 'local' ? '.env.local' : '.env',
-      envFilePath: './apps/auth/.env',
+      envFilePath: isDevelopment
+        ? './apps/auth/.env.development'
+        : './apps/auth/.env.prod',
     }),
     CqrsModule.forRoot({}),
-    // RmqModule.register({
-    //   name: 'BILLING',
-    // }),
-    RmqModule,
+
     RmqModule.register({
       name: 'USERS',
     }),
