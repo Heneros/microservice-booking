@@ -3,6 +3,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Inject,
   Post,
   Req,
@@ -10,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { LoginUserDto, RegisterUserDto } from './dto';
-import { lastValueFrom, timeout } from 'rxjs';
+import { catchError, lastValueFrom, throwError, timeout } from 'rxjs';
 import { Response } from 'express';
 import {
   AUTH_CONTROLLER,
@@ -23,7 +24,9 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller(AUTH_CONTROLLER)
 export class AuthController {
-  constructor(@Inject('AUTH') private readonly apiService: ClientProxy) {}
+  constructor(
+    @Inject(AUTH_SERVICE.AUTH_MAIN) private readonly apiService: ClientProxy,
+  ) {}
 
   @Post(AUTH_ROUTES.REGISTER)
   @ApiResponse({
@@ -57,11 +60,17 @@ export class AuthController {
     @Body() request: LoginUserDto,
     @Res({ passthrough: true }) res: Response,
   ) {
+    // console.log(6666);
     try {
+      // console.log(123);
       const result = await lastValueFrom(
-        this.apiService
-          .send({ cmd: AUTH_SERVICE.LOGIN_USER }, request)
-          .pipe(timeout(5000)),
+        this.apiService.send({ cmd: AUTH_SERVICE.LOGIN_USER }, request).pipe(
+          ///    timeout(5000),
+          catchError((error) => {
+            console.error(' Login', error);
+            return throwError(() => error);
+          }),
+        ),
       );
 
       res.cookie('jwtBooking', result.refreshToken, {
@@ -114,5 +123,10 @@ export class AuthController {
       }
       throw new BadGatewayException(error.message || 'Logout failed');
     }
+  }
+
+  @Get('ping')
+  async handleGet() {
+    return this.apiService.send({ cmd: 'ping' }, {});
   }
 }

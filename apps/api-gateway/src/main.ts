@@ -4,7 +4,7 @@ import { ApiGatewayModule } from './api-gateway.module';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
-import { domain, RmqService } from '@app/common';
+import { AUTH_SERVICE, domain, RmqService } from '@app/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
@@ -24,10 +24,10 @@ async function bootstrap() {
       },
     }),
   );
-  app.enableCors({
-    origin: domain,
-    credentials: true,
-  });
+  // app.enableCors({
+  //   //   origin: domain,
+  //   credentials: true,
+  // });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -77,11 +77,6 @@ async function bootstrap() {
     },
   });
 
-  const rmqService = app.get(RmqService);
-  app.connectMicroservice(rmqService.getOptions('AUTH'));
-  app.connectMicroservice(rmqService.getOptions('USERS'));
-
-  await app.startAllMicroservices();
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

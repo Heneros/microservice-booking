@@ -4,21 +4,20 @@ services:
     build:
       context: .
       dockerfile: ./apps/api-gateway/Dockerfile
-      target: ${APP_ENV:-development}
+      target: development
+    command: npm run start:dev api-gateway
     restart: always
     ports:
      - "3000:3000"  
     env_file:
-      -  .env
-      - ./apps/api-gateway/.env.${NODE_ENV}
+      - .env
+      - ./apps/api-gateway/.env.development
     volumes:
      - .:/usr/src/app
      - /usr/src/app/node_modules
     depends_on:
-      - rabbitmq
-      - postgres
-      - auth
-      - users
+      rabbitmq:
+        condition: service_healthy
     networks:
        micro_booking:
 
@@ -26,11 +25,11 @@ services:
     build:
      context: .
      dockerfile: ./apps/auth/Dockerfile
-     target: ${APP_ENV:-development}
-    # command: npm run start:dev auth
+     target: development
+    command: npm run start:dev auth
     env_file:
-      -  .env
-      - ./apps/auth/.env.${NODE_ENV}
+       - .env
+       - ./apps/auth/.env.development
     depends_on:
       - postgres
       - pgadmin
@@ -49,11 +48,11 @@ services:
     build:
      context: .
      dockerfile: ./apps/users/Dockerfile
-     target: ${APP_ENV:-development}
-    # command: npm run start:dev users
+     target: development
+    command: npm run start:dev users
     env_file:
       - .env
-      - ./apps/users/.env.${NODE_ENV}
+      - ./apps/users/.env.development
     depends_on:
       - auth
       - postgres
@@ -69,13 +68,20 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
+  # //.  hostname: rabbitmq  
     ports:
       - "5672:5672"
       - "15672:15672"
-    env_file:
-      - ./.env
+    environment:
+       RABBITMQ_DEFAULT_USER: admin
+       RABBITMQ_DEFAULT_PASS: password
     volumes:
       - rabbit_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
     networks:
       micro_booking:
 

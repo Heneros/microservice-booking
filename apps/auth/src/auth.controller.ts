@@ -63,6 +63,7 @@ export class AuthController {
 
   @MessagePattern({ cmd: AUTH_SERVICE.LOGIN_USER })
   async handleLogin(@Payload() data: LoginUserDto, @Ctx() context: RmqContext) {
+    console.log('Received login request');
     //   this.rmqService.ack(context);
     try {
       const result = await this.commandBus.execute(new LoginUserCommand(data));
@@ -79,7 +80,7 @@ export class AuthController {
         },
       };
     } catch (error) {
-      //      this.rmqService.(context);
+      this.rmqService.ack(context);
       throw new RpcException(error.message);
     }
   }
@@ -95,10 +96,9 @@ export class AuthController {
     return user;
   }
 
-  @MessagePattern(AUTH_SERVICE.LOGOUT_USER)
-  async logoutUser(@Payload() data: { req; res }) {
-    const { req, res } = data;
-    const message = await this.commandBus.execute(new LogoutCommand(req, res));
-    res.status(200).json({ message });
+  @MessagePattern({ cmd: 'ping' })
+  ping() {
+    console.log('PING RECEIVED');
+    return 'pong';
   }
 }

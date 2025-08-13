@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import * as Repository from 'libs/common/src/repository';
 import {
+  AUTH_SERVICE,
   CommonModule,
   isDevelopment,
   JwtAuthGuard,
@@ -44,24 +45,28 @@ import { LogoutHandler } from './handlers/Logout.handler';
     // LocalSt
   ],
   imports: [
-    CommonModule,
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
         // MONGODB_URI: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         RABBIT_MQ_URI: Joi.string().required(),
+        RABBIT_MQ_AUTH_QUEUE: Joi.string().required(),
+        RABBIT_MQ_USERS_QUEUE: Joi.string().required(),
+        RABBIT_MQ_AUTH_MAIN_QUEUE: Joi.string().required(),
         PORT: Joi.number().required(),
       }),
       envFilePath: isDevelopment
         ? './apps/auth/.env.development'
         : './apps/auth/.env.prod',
     }),
+    // CommonModule,
+    // RmqModule,
     CqrsModule.forRoot({}),
-
     RmqModule.register({
-      name: 'USERS',
+      name: AUTH_SERVICE.AUTH_MAIN,
     }),
+    // RmqModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),

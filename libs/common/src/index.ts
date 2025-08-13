@@ -24,10 +24,10 @@ export * from './postgresql-database/abstract.repository';
 export * from './rmq/rmq.service';
 export * from './rmq/rmq.module';
 
-export * from './auth/jwt-auth.guard'
+export * from './auth/auth.module';
+export * from './auth/jwt-auth.guard';
 
-export * from './decorator/current-user.decorator'
-
+export * from './decorator/current-user.decorator';
 
 export * from './interfaces/user-request.interface';
 export * from './interfaces/user-jwt.interface';
@@ -35,6 +35,5 @@ export * from './interfaces/user-jwt.interface';
 export * from './repository/Auth.repository';
 export * from './repository/User.repository';
 export * from './repository/VerifyResetToken.repository';
-
 
 export * from './interfaces/cus-request';
