@@ -16,7 +16,9 @@ export class RmqModule {
     return {
       module: RmqModule,
       imports: [
-        ConfigModule,
+        ConfigModule.forRoot({
+          envFilePath: './env',
+        }),
         ClientsModule.registerAsync([
           {
             name,

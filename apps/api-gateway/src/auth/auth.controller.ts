@@ -62,10 +62,10 @@ export class AuthController {
   ) {
     // console.log(6666);
     try {
-      // console.log(123);
+  
       const result = await lastValueFrom(
         this.apiService.send({ cmd: AUTH_SERVICE.LOGIN_USER }, request).pipe(
-          ///    timeout(5000),
+          timeout(5000),
           catchError((error) => {
             console.error(' Login', error);
             return throwError(() => error);
@@ -127,6 +127,7 @@ export class AuthController {
 
   @Get('ping')
   async handleGet() {
+    
     return this.apiService.send({ cmd: 'ping' }, {});
   }
 }

@@ -63,9 +63,7 @@ import { LogoutHandler } from './handlers/Logout.handler';
     // CommonModule,
     // RmqModule,
     CqrsModule.forRoot({}),
-    RmqModule.register({
-      name: AUTH_SERVICE.AUTH_MAIN,
-    }),
+
     // RmqModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({

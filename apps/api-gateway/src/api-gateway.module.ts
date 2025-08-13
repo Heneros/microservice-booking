@@ -37,6 +37,9 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
           urls: ['amqp://user:password@rabbitmq:5672'],
           queue: 'auth_queue',
           queueOptions: { durable: false },
+          prefetchCount: 5,
+          // noAck: true,
+          // persistent: true,
         },
       },
       {
@@ -46,15 +49,12 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
           urls: ['amqp://user:password@rabbitmq:5672'],
           queue: 'users_queue',
           queueOptions: { durable: false },
+          // prefetchCount: 5,
+          // noAck: false,
+          // persistent: false,
         },
       },
     ]),
-
-    // RmqModule.register({ name: AUTH_SERVICE.AUTH_MAIN }),
-    // RmqModule.register({ name: 'USERS' }),
-    // RmqModule,
-    // AuthModule,
-    // UsersModule,
 
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({

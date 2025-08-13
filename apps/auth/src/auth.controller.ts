@@ -68,7 +68,7 @@ export class AuthController {
     try {
       const result = await this.commandBus.execute(new LoginUserCommand(data));
 
-      this.rmqService.ack(context);
+      //  this.rmqService.ack(context);
 
       return {
         accessToken: result.accessToken,

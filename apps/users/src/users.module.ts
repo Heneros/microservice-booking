@@ -11,6 +11,7 @@ import {
 import { CqrsModule } from '@nestjs/cqrs';
 import { ConfigModule } from '@nestjs/config';
 import { GetProfileUserHandler } from './handlers/GetProfile.handler';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -22,9 +23,17 @@ import { GetProfileUserHandler } from './handlers/GetProfile.handler';
         : './apps/users/.env.prod',
     }),
     CqrsModule.forRoot({}),
-    RmqModule.register({
-      name: 'AUTH',
-    }),
+    ClientsModule.register([
+      {
+        name: 'USERS',
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://user:password@rabbitmq:5672'],
+          queue: 'users_queue',
+          queueOptions: { durable: false },
+        },
+      },
+    ]),
   ],
   controllers: [UsersController],
   providers: [

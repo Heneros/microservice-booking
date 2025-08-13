@@ -8,28 +8,17 @@ export class RmqService {
     console.log('RABBIT_MQ_URI:', configService.get('RABBIT_MQ_URI'));
     console.log('AUTH_QUEUE:', configService.get('RABBIT_MQ_AUTH_QUEUE'));
   }
-
   getOptions(queue: string, noAck = false): RmqOptions {
-    const uri = this.configService.get<string>('RABBIT_MQ_URI');
-    const envKey = `RABBIT_MQ_${queue}_QUEUE`;
-    const q = this.configService.get<string>(envKey);
-    console.log(
-      `[RmqService] getOptions name=${queue} envKey=${envKey} uri=${uri} queue=${q}`,
-    );
-    if (!uri) throw new Error('RABBIT_MQ_URI не задан');
-    if (!q) throw new Error(`${envKey} не задан`);
     return {
       transport: Transport.RMQ,
       options: {
-        urls: [uri],
-        queue: q,
+        urls: [this.configService.get<string>('RABBIT_MQ_URI')],
+        queue: this.configService.get<string>(`RABBIT_MQ_${queue}_QUEUE`),
         noAck,
-        persistent: true,
-        queueOptions: { durable: true, prefetchCount: 5 },
+      //  persistent: true,
       },
     };
   }
-
   ack(context: RmqContext) {
     const channel = context.getChannelRef();
     const originalMessage = context.getMessage();
