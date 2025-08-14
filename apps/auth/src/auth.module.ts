@@ -11,7 +11,6 @@ import {
   isDevelopment,
   JwtAuthGuard,
   PrismaService,
-  RmqModule,
   RmqService,
 } from '@app/common';
 

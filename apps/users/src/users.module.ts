@@ -6,7 +6,6 @@ import {
   CommonModule,
   isDevelopment,
   PrismaService,
-  RmqModule,
   RmqService,
 } from '@app/common';
 import { CqrsModule } from '@nestjs/cqrs';

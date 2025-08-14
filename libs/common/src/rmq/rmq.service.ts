@@ -4,23 +4,30 @@ import { RmqContext, RmqOptions, Transport } from '@nestjs/microservices';
 
 @Injectable()
 export class RmqService {
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly configService: ConfigService) {}
 
-  }
-  getOptions(queue: string, noAck = false): RmqOptions {
-    return {
-      transport: Transport.RMQ,
-      options: {
-        urls: [this.configService.get<string>('RABBIT_MQ_URI')],
-        queue: this.configService.get<string>(`RABBIT_MQ_${queue}_QUEUE`),
-        noAck,
-        //  persistent: true,
-      },
-    };
-  }
-  ack(context: RmqContext) {
+  ack(context: RmqContext): void {
     const channel = context.getChannelRef();
-    const originalMessage = context.getMessage();
-    channel.ack(originalMessage);
+    const message = context.getMessage();
+    try {
+      channel.ack(message);
+      console.log(`Message acked: ${message.content.toString()}`);
+    } catch (error) {
+      console.log(`Ack failed: ${error.message}`, error.stack);
+      throw error;
+    }
+  }
+
+  nack(context: RmqContext, requeue = true): void {
+    const channel = context.getChannelRef();
+    const message = context.getMessage();
+
+    try {
+      channel.nack(message, false, requeue);
+      console.log(`Message nack: ${message.content.toString()}`);
+    } catch (error) {
+      console.log(`nack failed: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 }

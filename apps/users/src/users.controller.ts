@@ -40,7 +40,7 @@ export class UsersController {
       const userEntity = plainToInstance(UserEntity, profile, {
         excludeExtraneousValues: true,
       });
-      // this.rmqService.ack(context);
+      this.rmqService.ack(context);
       return userEntity;
     } catch (error) {
       throw new RpcException(error.message);

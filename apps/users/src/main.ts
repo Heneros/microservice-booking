@@ -18,7 +18,7 @@ async function bootstrap() {
         queue: 'users_queue',
         queueOptions: { durable: false },
         prefetchCount: 5,
-        noAck: true,
+        noAck: false,
         // persistent: false,
       },
     },

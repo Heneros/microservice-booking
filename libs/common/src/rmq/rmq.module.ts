@@ -1,39 +1,67 @@
-import { DynamicModule, Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Module } from '@nestjs/common';
+
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { RmqService } from './rmq.service';
 
-interface RmqModuleOptions {
-  name: string;
-}
-
 @Module({
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'AUTH',
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://user:password@rabbitmq:5672'],
+          queue: 'auth_queue',
+          queueOptions: { durable: false },
+          prefetchCount: 5,
+          noAck: true,
+          // persistent: true,
+        },
+      },
+      {
+        name: 'USERS',
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://user:password@rabbitmq:5672'],
+          queue: 'users_queue',
+          queueOptions: { durable: false },
+          prefetchCount: 5,
+          noAck: true,
+          // persistent: false,
+        },
+      },
+    ]),
+  ],
+  controllers: [],
   providers: [RmqService],
-  exports: [RmqService],
+  exports: [
+    RmqService,
+    ClientsModule.register([
+      {
+        name: 'AUTH',
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://user:password@rabbitmq:5672'],
+          queue: 'auth_queue',
+          queueOptions: { durable: false },
+          prefetchCount: 5,
+          noAck: true,
+          // persistent: true,
+        },
+      },
+      {
+        name: 'USERS',
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://user:password@rabbitmq:5672'],
+          queue: 'users_queue',
+          queueOptions: { durable: false },
+          prefetchCount: 5,
+          noAck: false,
+          // persistent: false,
+        },
+      },
+    ]),
+  ],
 })
-export class RmqModule {
-  static register({ name }: RmqModuleOptions): DynamicModule {
-    return {
-      module: RmqModule,
-      imports: [
-        ConfigModule.forRoot({
-          envFilePath: './env',
-        }),
-        ClientsModule.registerAsync([
-          {
-            name,
-            useFactory: (configService: ConfigService) => ({
-              transport: Transport.RMQ,
-              options: {
-                urls: [configService.get<string>('RABBIT_MQ_URI')],
-                queue: configService.get<string>(`RABBIT_MQ_${name}_QUEUE`),
-              },
-            }),
-            inject: [ConfigService],
-          },
-        ]),
-      ],
-      exports: [ClientsModule],
-    };
-  }
-}
+export class RabbitMqModule {}

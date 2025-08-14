@@ -10,7 +10,7 @@ export class GetProfileUserHandler implements IQueryHandler<GetProfileQuery> {
   async execute(query: GetProfileQuery) {
     try {
       const { userId } = query;
-      console.log('userId32', userId);
+      //  console.log('userId32', userId);
       const user = await this.userRepository.findById(userId);
       if (!user) {
         throw new NotFoundException('No user found');
