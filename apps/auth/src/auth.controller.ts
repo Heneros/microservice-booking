@@ -63,8 +63,8 @@ export class AuthController {
 
   @MessagePattern({ cmd: AUTH_SERVICE.LOGIN_USER })
   async handleLogin(@Payload() data: LoginUserDto, @Ctx() context: RmqContext) {
-    console.log('Received login request');
-    //   this.rmqService.ack(context);
+    //  console.log('Received login request');
+    //  this.rmqService.ack(context);
     try {
       const result = await this.commandBus.execute(new LoginUserCommand(data));
 

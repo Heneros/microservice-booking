@@ -1,15 +1,28 @@
 import { NestFactory } from '@nestjs/core';
 import { UsersModule } from './users.module';
 import { RmqService } from '@app/common';
-import { RmqOptions } from '@nestjs/microservices';
+import {
+  MicroserviceOptions,
+  RmqOptions,
+  Transport,
+} from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
 
-
 async function bootstrap() {
-  const app = await NestFactory.create(UsersModule);
-  const rmqService = app.get<RmqService>(RmqService);
-
-  app.connectMicroservice<RmqOptions>(rmqService.getOptions('USERS'));
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    UsersModule,
+    {
+      transport: Transport.RMQ,
+      options: {
+        urls: ['amqp://user:password@rabbitmq:5672'],
+        queue: 'users_queue',
+        queueOptions: { durable: false },
+        prefetchCount: 5,
+        noAck: true,
+        // persistent: false,
+      },
+    },
+  );
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -21,7 +34,7 @@ async function bootstrap() {
       },
     }),
   );
-  await app.startAllMicroservices();
-  await app.init();
+
+  await app.listen();
 }
 bootstrap();

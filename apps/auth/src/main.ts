@@ -20,7 +20,7 @@ async function bootstrap() {
         queue: 'auth_queue',
         queueOptions: { durable: false },
         prefetchCount: 5,
-        noAck: false,
+        noAck: true,
       },
     },
   );

@@ -5,7 +5,7 @@ import { ClientProxy } from '@nestjs/microservices';
 @Controller()
 export class ApiGatewayController {
   constructor(
-    @Inject('AUTH') private readonly apiService: ClientProxy,
+    // @Inject('AUTH') private readonly apiService: ClientProxy,
     private readonly apiGatewayService: ApiGatewayService,
   ) {}
 

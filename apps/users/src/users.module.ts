@@ -7,11 +7,11 @@ import {
   isDevelopment,
   PrismaService,
   RmqModule,
+  RmqService,
 } from '@app/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ConfigModule } from '@nestjs/config';
 import { GetProfileUserHandler } from './handlers/GetProfile.handler';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -23,21 +23,11 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         : './apps/users/.env.prod',
     }),
     CqrsModule.forRoot({}),
-    ClientsModule.register([
-      {
-        name: 'USERS',
-        transport: Transport.RMQ,
-        options: {
-          urls: ['amqp://user:password@rabbitmq:5672'],
-          queue: 'users_queue',
-          queueOptions: { durable: false },
-        },
-      },
-    ]),
   ],
   controllers: [UsersController],
   providers: [
     PrismaService,
+    RmqService,
     GetProfileUserHandler,
     Repository.AuthRepository,
     Repository.VerifyResetTokenRepository,

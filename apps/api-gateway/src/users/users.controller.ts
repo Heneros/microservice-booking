@@ -31,7 +31,7 @@ import { catchError, throwError, lastValueFrom } from 'rxjs';
 
 @Controller(USERS_CONTROLLER)
 export class UsersController {
-  constructor(@Inject('USERS') private readonly apiService: ClientProxy) {}
+  constructor(@Inject(USERS_SERVICE.USERS_MAIN) private readonly apiService: ClientProxy) {}
 
 
  
