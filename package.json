@@ -103,7 +103,6 @@
       "json",
       "ts"
     ],
-    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -120,6 +119,11 @@
     "moduleNameMapper": {
       "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",
       "^@app/postgresql-database(|/.*)$": "<rootDir>/libs/postgresql-database/src/$1"
+    },
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "<rootDir>/tsconfig.json"
+      }
     }
   }
 }
