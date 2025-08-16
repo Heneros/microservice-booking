@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { CommonService } from './common.service';
 import { MongodbModule } from './mongodb-database/monodb.module';
 import { ConfigModule } from '@nestjs/config';
-import { PostgresModule } from './postgresql-database/prisma.module';
+import { PostgresModule } from './postgresql-database/postgres.module';
 
 @Module({
   providers: [CommonService],

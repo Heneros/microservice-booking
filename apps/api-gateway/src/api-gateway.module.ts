@@ -5,10 +5,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import Joi from 'joi';
 // import { RabbitMqModule } from './rabbitmq-client/rabbitmq-client.module';
 import { RabbitMqModule } from '@app/common';
+
 import { AuthController } from './auth/auth.controller';
 import { UsersController } from './users/users.controller';
 import { JwtModule } from '@nestjs/jwt';
-
 @Module({
   imports: [
     RabbitMqModule,

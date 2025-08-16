@@ -24,7 +24,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/nest-microservice/test/jest-e2e.json",
+    "test:e2e": "jest --config ./test/e2e/jest-e2e.json  --forceExit --detectOpenHandles",
     "prisma:prod": "npx prisma migrate deploy --schema=libs/common/src/postgresql-database/prisma/schema.prisma",
     "vercel-build": "npm run prisma:prod && npm run build-all"
   },
@@ -117,6 +117,8 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
+      "^@/api-gateway/(.*)$": "<rootDir>/apps/api-gateway/src/$1",
+      "^@/api-gateway$": "<rootDir>/apps/api-gateway/src/$1",
       "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",
       "^@app/postgresql-database(|/.*)$": "<rootDir>/libs/postgresql-database/src/$1"
     },
