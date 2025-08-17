@@ -16,7 +16,6 @@
         ".ts"
     ],
     "moduleNameMapper": {
-        "^@/(.*)$": "<rootDir>/$1",
         "^@/api-gateway/(.*)$": "<rootDir>/apps/api-gateway/src/$1",
         "^@/api-gateway$": "<rootDir>/apps/api-gateway/src",
         "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",

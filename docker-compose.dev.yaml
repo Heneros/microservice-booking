@@ -4,19 +4,20 @@ services:
     build:
       context: .
       dockerfile: ./apps/api-gateway/Dockerfile
-      target: development
-    command: npm run start:dev api-gateway
+      target: ${NODE_ENV:-development}
     restart: always
     ports:
      - "3000:3000"  
     env_file:
       - .env
-      - ./apps/api-gateway/.env.development
+      - ./apps/api-gateway/.env.${NODE_ENV}
     volumes:
      - .:/usr/src/app
      - /usr/src/app/node_modules
     depends_on:
       rabbitmq:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
     networks:
        micro_booking:
@@ -25,11 +26,10 @@ services:
     build:
      context: .
      dockerfile: ./apps/auth/Dockerfile
-     target: development
-    command: npm run start:dev auth
+     target: ${NODE_ENV-development}
     env_file:
        - .env
-       - ./apps/auth/.env.development
+       - ./apps/auth/.env.${NODE_ENV}
     depends_on:
       - postgres
       - pgadmin
@@ -48,11 +48,10 @@ services:
     build:
      context: .
      dockerfile: ./apps/users/Dockerfile
-     target: development
-    command: npm run start:dev users
+     target: ${NODE_ENV:-development}
     env_file:
       - .env
-      - ./apps/users/.env.development
+      - ./apps/users/.env.${NODE_ENV}
     depends_on:
       - auth
       - postgres

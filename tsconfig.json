@@ -43,10 +43,10 @@
       "@/app/common/*": [
         "libs/common/src/*"
       ],
-      "@api-gateway": [
+      "@/api-gateway": [
         "apps/api-gateway/src"
       ],
-      "@api-gateway/*": [
+      "@/api-gateway/*": [
         "apps/api-gateway/src/*"
       ],
       "@/*": [
