@@ -5,8 +5,9 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { config } from 'dotenv';
-import { resolve } from 'path';
+import dotenv from 'dotenv';
+import path, { resolve } from 'path';
+
 import { ApiGatewayModule } from '@/api-gateway/api-gateway.module';
 
 import { PostgresModule, PrismaService } from '@app/common';
@@ -19,16 +20,13 @@ export let app: INestApplication;
 export let authMicroservice: INestMicroservice;
 export let prisma: PrismaService;
 
-const envPath = resolve(__dirname, '../../.env.test');
-console.log(`Loading env from: ${envPath}`);
-config({ path: envPath });
-
-
+dotenv.config({
+  path: path.resolve(process.cwd(), 'apps/api-gateway/.env.test'),
+});
+process.env.DATABASE_URL =
+  'postgresql://postgres:postgres@localhost:5432/testDB?schema=public';
+process.env.NODE_ENV = 'test';
 beforeAll(async () => {
-  console.log(' Environment check:', {
-    NODE_ENV: process.env.NODE_ENV,
-    DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET',
-  });
   const moduleFixture: TestingModule = await Test.createTestingModule({
     imports: [ApiGatewayModule, PostgresModule],
 
@@ -55,7 +53,7 @@ beforeAll(async () => {
   authMicroservice = moduleFixture.createNestMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
-      urls: ['amqp://user:password@rabbitmq:5672'],
+      urls: ['amqp://user:password@localhost:5672'],
       queue: 'auth_queue',
       queueOptions: { durable: false },
       prefetchCount: 5,
