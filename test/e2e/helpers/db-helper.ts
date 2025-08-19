@@ -1,4 +1,4 @@
-import { PrismaService } from '@app/common';
+import { PrismaService } from '@/app/common';
 
 export async function clearDatabase(prisma: PrismaService) {
   try {

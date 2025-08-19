@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AuthModule } from './auth.module';
 import { ValidationPipe } from '@nestjs/common';
-import { AUTH_SERVICE, RmqService } from '@app/common';
+import { AUTH_SERVICE, RmqService } from '@/app/common';
 import {
   MicroserviceOptions,
   RmqOptions,

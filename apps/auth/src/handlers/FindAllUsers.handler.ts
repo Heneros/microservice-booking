@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { FindAllUsersQuery } from '../queries/GetUsers.query';
-import { UserRepository } from '@app/common';
+import { UserRepository } from '@/app/common';
 import { NotFoundException } from '@nestjs/common';
 
 @QueryHandler(FindAllUsersQuery)

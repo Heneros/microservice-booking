@@ -23,6 +23,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
+    "test:unit": "jest --config ./test/unit/jest.unit.config.js",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/e2e/jest-e2e.json  --forceExit --detectOpenHandles",
     "prisma:push:dev": "cross-env DATABASE_URL='postgresql://postgres:postgres@postgres:5432/bookingApp?schema=public' npx prisma db push --schema=libs/common/src/postgresql-database/prisma/schema.prisma",
@@ -82,6 +83,7 @@
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
     "@types/supertest": "^6.0.2",
+    "ajv": "^8.17.1",
     "cross-env": "^10.0.0",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
@@ -93,13 +95,15 @@
     "prisma": "^6.14.0",
     "rimraf": "^6.0.1",
     "source-map-support": "^0.5.21",
-    "supertest": "^7.0.0",
-    "ts-jest": "^29.2.5",
+    "supertest": "^7.1.4",
+    "testcontainers": "^11.5.1",
+    "ts-jest": "^29.4.1",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.20.0"
+    "typescript-eslint": "^8.20.0",
+    "wait-for-expect": "^4.0.0"
   },
   "jest": {
     "moduleFileExtensions": [

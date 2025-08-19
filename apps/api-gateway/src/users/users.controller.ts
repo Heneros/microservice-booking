@@ -4,7 +4,7 @@ import {
   USER_ROUTES,
   USERS_CONTROLLER,
   USERS_SERVICE,
-} from '@app/common';
+} from '@/app/common';
 
 import {
   BadGatewayException,

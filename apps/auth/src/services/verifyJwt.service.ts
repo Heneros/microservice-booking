@@ -1,4 +1,4 @@
-import { UserEntity, UserJwt } from '@app/common';
+import { UserEntity, UserJwt } from '@/app/common';
 import * as jsonWeb from 'jsonwebtoken';
 import {
   BadRequestException,

@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CurrentUser, RegisterUserDto } from '@app/common';
+import { CurrentUser, RegisterUserDto } from '@/app/common';
 
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 
@@ -25,7 +25,7 @@ import {
   AUTH_SERVICE,
   LoginUserDto,
   RmqService,
-} from '@app/common';
+} from '@/app/common';
 import { RegisterUserCommand } from './commands/RegisterUser.command';
 import { LoginUserCommand } from './commands/LoginUser.command';
 import { JwtGuard } from './guards/jwt.guard';

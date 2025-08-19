@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { UsersModule } from './users.module';
-import { RmqService } from '@app/common';
+import { RmqService } from '@/app/common';
 import {
   MicroserviceOptions,
   RmqOptions,

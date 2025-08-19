@@ -10,7 +10,7 @@ import path, { resolve } from 'path';
 
 import { ApiGatewayModule } from '@/api-gateway/api-gateway.module';
 
-import { PostgresModule, PrismaService } from '@app/common';
+import { PostgresModule, PrismaService } from '@/app/common';
 
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';

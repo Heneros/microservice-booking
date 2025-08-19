@@ -19,7 +19,7 @@ import {
   AUTH_SERVICE,
   CustomRequest,
   isDevelopment,
-} from '@app/common';
+} from '@/app/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller(AUTH_CONTROLLER)
@@ -62,7 +62,6 @@ export class AuthController {
   ) {
     // console.log(6666);
     try {
-  
       const result = await lastValueFrom(
         this.apiService.send({ cmd: AUTH_SERVICE.LOGIN_USER }, request).pipe(
           timeout(5000),
@@ -127,7 +126,6 @@ export class AuthController {
 
   @Get('ping')
   async handleGet() {
-    
     return this.apiService.send({ cmd: 'ping' }, {});
   }
 }

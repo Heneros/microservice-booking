@@ -12,7 +12,7 @@ import {
   UserEntity,
   USERS_CONTROLLER,
   USERS_SERVICE,
-} from '@app/common';
+} from '@/app/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { GetProfileQuery } from './query/GetProfile.query';
 import { plainToInstance } from 'class-transformer';

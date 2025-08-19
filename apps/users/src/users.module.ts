@@ -7,7 +7,7 @@ import {
   isDevelopment,
   PrismaService,
   RmqService,
-} from '@app/common';
+} from '@/app/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ConfigModule } from '@nestjs/config';
 import { GetProfileUserHandler } from './handlers/GetProfile.handler';

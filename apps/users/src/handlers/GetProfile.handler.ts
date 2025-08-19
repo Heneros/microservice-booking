@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetProfileQuery } from '../query/GetProfile.query';
-import { UserRepository } from '@app/common';
+import { UserRepository } from '@/app/common';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 @QueryHandler(GetProfileQuery)

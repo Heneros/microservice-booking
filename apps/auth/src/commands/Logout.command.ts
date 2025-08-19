@@ -1,4 +1,4 @@
-import { CustomRequest } from '@app/common';
+import { CustomRequest } from '@/app/common';
 import { ICommand } from '@nestjs/cqrs';
 import { Response } from 'express';
 

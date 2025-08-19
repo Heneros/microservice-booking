@@ -1,4 +1,4 @@
-import { UserRepository } from '@app/common';
+import { UserRepository } from '@/app/common';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 // import bcrypt from 'bcrypt';
 

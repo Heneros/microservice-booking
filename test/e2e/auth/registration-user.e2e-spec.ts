@@ -1,4 +1,4 @@
-import { PrismaService } from '@app/common';
+import { PrismaService } from '@/app/common';
 import { app } from '../setup';
 import request from 'supertest';
 
@@ -17,10 +17,8 @@ describe('Auth - Register (e2e)', () => {
       passwordConfirm: 'password123',
     };
 
-    const res = await request(app.getHttpServer())
-      .post('/auth')
-      .send(userData)
-      // .expect(201);
+    const res = await request(app.getHttpServer()).post('/auth').send(userData);
+    // .expect(201);
 
     console.log(res.body);
   });

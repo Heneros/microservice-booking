@@ -4,9 +4,13 @@ import { randomBytes } from 'crypto';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { BadRequestException } from '@nestjs/common';
-import { roundsOfHashing, tempRegisterDate } from '@app/common/data/defaultData';
-import { AuthRepository, VerifyResetTokenRepository } from '@app/common';
+import {
+  roundsOfHashing,
+  tempRegisterDate,
+} from '@/app/common/data/defaultData';
+
 import { RegisterUserCommand } from '../commands/RegisterUser.command';
+import { AuthRepository, VerifyResetTokenRepository } from '@/app/common';
 
 @CommandHandler(RegisterUserCommand)
 export class RegisterUserHandler

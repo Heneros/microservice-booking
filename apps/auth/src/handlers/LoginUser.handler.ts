@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import { BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserCommand } from '../commands/LoginUser.command';
-import { AuthRepository, VerifyResetTokenRepository } from '@app/common';
+import { AuthRepository, VerifyResetTokenRepository } from '@/app/common';
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
@@ -48,12 +48,12 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
       await this.verifyResetTokenRepository.delete({ userId: user.id });
 
       await this.verifyResetTokenRepository.updateToken(user.id, refreshToken);
-     
+
       await this.authRepository.updateProfile(user.id, {
         refreshToken: [accessToken],
       });
 
-   //   console.log({ payload });
+      //   console.log({ payload });
       return {
         accessToken,
         refreshToken,

@@ -12,7 +12,7 @@ import {
   JwtAuthGuard,
   PrismaService,
   RmqService,
-} from '@app/common';
+} from '@/app/common';
 
 import { JwtModule } from '@nestjs/jwt';
 import { RegisterUserHandler } from './handlers/RegisterUser.handler';
