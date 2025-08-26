@@ -10,8 +10,13 @@ const RMQ_CLIENTS_CONFIG: ClientProviderOptions[] = [
       urls: ['amqp://user:password@rabbitmq:5672'],
       queue: 'auth_queue',
       queueOptions: { durable: false },
-      prefetchCount: 1,
-      noAck: true,
+      prefetchCount: 5,
+
+      exchange: 'app_change',
+      exchangeType: 'direct',
+      routingKey: 'auth_commands',
+
+            noAck: true,
       socketOptions: {
         heartbeatIntervalInSeconds: 60,
         reconnectTimeInSeconds: 5,
@@ -24,13 +29,17 @@ const RMQ_CLIENTS_CONFIG: ClientProviderOptions[] = [
     options: {
       urls: ['amqp://user:password@rabbitmq:5672'],
       queue: 'users_queue',
-      queueOptions: { durable: false },
-      prefetchCount: 5,
-      noAck: true,
-      socketOptions: {
-        heartbeatIntervalInSeconds: 60,
-        reconnectTimeInSeconds: 5,
-      },
+   //   queueOptions: { durable: false },
+ noAck: true, 
+    ///    prefetchCount: 1,
+      persistent: true,
+       exchange: 'app_change',
+      exchangeType: 'direct',
+           routingKey: 'users_commands',
+      // socketOptions: {
+      //   heartbeatIntervalInSeconds: 60,
+      //   reconnectTimeInSeconds: 5,
+      // },
     },
   },
 ];
@@ -42,8 +51,9 @@ const RMQ_CLIENTS_CONFIG: ClientProviderOptions[] = [
   controllers: [],
   providers: [RmqService],
   exports: [
+        ClientsModule,
     RmqService,
-    ClientsModule.register(RMQ_CLIENTS_CONFIG),
+
   ],
 })
 export class RabbitMqModule {}

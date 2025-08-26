@@ -80,15 +80,16 @@ export class AuthController {
         },
       };
     } catch (error) {
-      this.rmqService.ack(context);
+      this.rmqService.nack(context, true);
       throw new RpcException(error.message);
     }
   }
 
   // @UseGuards(JwtGuard)
   @MessagePattern('validate_user')
-  async validateUser(@Payload() data: { Authentication: string }) {
+  async validateUser(@Payload() data: { Authentication: string }, @Ctx() context: RmqContext) {
     const token = data.Authentication;
+      this.rmqService.ack(context);
 
     const user = this.jwtService.verify(token, {
       secret: process.env.JWT_SECRET,

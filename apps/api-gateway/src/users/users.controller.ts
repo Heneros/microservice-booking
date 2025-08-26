@@ -24,7 +24,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 
-import { catchError, throwError, lastValueFrom } from 'rxjs';
+import { catchError, throwError, lastValueFrom, timeout } from 'rxjs';
 
 @Controller(USERS_CONTROLLER)
 export class UsersController {
@@ -48,7 +48,8 @@ export class UsersController {
       const payload = { userId: user.userId, Authentication: token };
 
       const profile = await lastValueFrom(
-        this.apiService.send({ cmd: USERS_SERVICE.MY_PROFILE }, payload),
+        this.apiService.send({ cmd: USERS_SERVICE.MY_PROFILE }, payload)
+        .pipe(timeout(5000)),
       );
       return profile;
     } catch (err) {

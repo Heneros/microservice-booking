@@ -36,13 +36,15 @@ export class UsersController {
       const profile = await this.queryBus.execute(
         new GetProfileQuery(data.userId),
       );
-
+     this.rmqService.ack(context);
+     
       const userEntity = plainToInstance(UserEntity, profile, {
         excludeExtraneousValues: true,
       });
-      this.rmqService.ack(context);
+ 
       return userEntity;
     } catch (error) {
+     this.rmqService.nack(context, true);
       throw new RpcException(error.message);
     }
   }
