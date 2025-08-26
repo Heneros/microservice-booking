@@ -16,9 +16,8 @@ services:
      - /usr/src/app/node_modules
     depends_on:
       rabbitmq:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
+       condition: service_healthy
+
     networks:
        micro_booking:
 
@@ -148,34 +147,6 @@ services:
       retries: 5
     networks:
       micro_booking:
-
-  prisma-migrate:
-    image: node:21-alpine
-    working_dir: /usr/src/app
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    env_file:
-      - .env
-    depends_on:
-      postgres:
-        condition: service_healthy
-    command: >
-      sh -c "
-        apk add --no-cache bash postgresql-client &&
-        until pg_isready -h postgres -p 5432 -U $${POSTGRES_USER}; do sleep 1; done &&
-        echo 'postgres ready' &&
-        # для bookingApp
-        export DATABASE_URL=\"postgresql://$${POSTGRES_USER}:$${POSTGRES_PASSWORD}@postgres:5432/bookingApp?schema=public\" &&
-        npx prisma db push --schema=libs/common/src/postgresql-database/prisma/schema.prisma &&
-        # для testDB
-        export DATABASE_URL=\"postgresql://$${POSTGRES_USER}:$${POSTGRES_PASSWORD}@postgres:5432/testDb?schema=public\" &&
-        npx prisma db push ---schema=libs/common/src/postgresql-database/prisma/schema.prisma &&
-        echo 'prisma push completed' ;
-        sleep 2
-      "
-    networks:
-       micro_booking:
 
   pgadmin:
    image: dpage/pgadmin4:8

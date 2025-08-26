@@ -8,31 +8,32 @@ import { BadRequestException } from '@nestjs/common';
 
 describe('RegisterUserHandler', () => {
   let handler: RegisterUserHandler;
-  let commandBus: Partial<CommandBus>;
-  let authRepository: Partial<AuthRepository>;
-  let verifyResetToken: Partial<VerifyResetTokenRepository>;
 
-  let rmqService: any;
+  // let authRepository: Partial<AuthRepository>;
+  // let verifyResetToken: Partial<VerifyResetTokenRepository>;
+
+  let authRepository: jest.Mocked<AuthRepository>;
+  let verifyResetTokenRepository: jest.Mocked<VerifyResetTokenRepository>;
 
   beforeEach(() => {
     authRepository = {
       findByEmail: jest.fn(),
       create: jest.fn(),
-    };
-    verifyResetToken = {
+    } as any;
+    verifyResetTokenRepository = {
       createToken: jest.fn(),
-    };
+    } as any;
 
     handler = new RegisterUserHandler(
       authRepository as any,
-      verifyResetToken as any,
+      verifyResetTokenRepository as any,
     );
   });
 
   it('should create a user successfully', async () => {
     (authRepository.findByEmail as jest.Mock).mockResolvedValue(null);
     (authRepository.create as jest.Mock).mockResolvedValue({ id: 1 });
-    (verifyResetToken.createToken as jest.Mock).mockResolvedValue({
+    (verifyResetTokenRepository.createToken as jest.Mock).mockResolvedValue({
       token: 'test-token',
     });
 

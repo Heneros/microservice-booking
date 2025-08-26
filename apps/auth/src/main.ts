@@ -17,10 +17,14 @@ async function bootstrap() {
       transport: Transport.RMQ,
       options: {
         urls: ['amqp://user:password@rabbitmq:5672'],
-        queue: 'auth_queue',
-        queueOptions: { durable: false },
-        prefetchCount: 5,
-        noAck: true,
+                 queue: 'auth_queue',
+          queueOptions: { durable: false },
+          prefetchCount: 1,
+          noAck: false, 
+            socketOptions: {
+    heartbeatIntervalInSeconds: 60,
+    reconnectTimeInSeconds: 5,
+  },
       },
     },
   );

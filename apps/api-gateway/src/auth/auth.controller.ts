@@ -66,7 +66,7 @@ export class AuthController {
         this.apiService.send({ cmd: AUTH_SERVICE.LOGIN_USER }, request).pipe(
           timeout(5000),
           catchError((error) => {
-            console.error(' Login', error);
+            console.error('Error Login', error);
             return throwError(() => error);
           }),
         ),
