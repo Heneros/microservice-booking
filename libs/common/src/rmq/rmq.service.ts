@@ -5,12 +5,11 @@ import { RmqContext, RmqOptions, Transport } from '@nestjs/microservices';
 @Injectable()
 export class RmqService {
   constructor(private readonly configService: ConfigService) {}
-  
-  
+
   ack(context: RmqContext) {
-  const ch = context.getChannelRef();
-  const msg = context.getMessage();
-  if (msg?.fields?.deliveryTag) ch.ack(msg);
+    const ch = context.getChannelRef();
+    const msg = context.getMessage();
+    if (msg?.fields?.deliveryTag) ch.ack(msg);
   }
 
   nack(context: RmqContext, requeue = true): void {

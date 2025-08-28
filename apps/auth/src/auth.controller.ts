@@ -86,10 +86,13 @@ export class AuthController {
   }
 
   // @UseGuards(JwtGuard)
-  @MessagePattern('validate_user')
-  async validateUser(@Payload() data: { Authentication: string }, @Ctx() context: RmqContext) {
+  @MessagePattern(AUTH_SERVICE.VALIDATE_USER)
+  async validateUser(
+    @Payload() data: { Authentication: string },
+    @Ctx() context: RmqContext,
+  ) {
     const token = data.Authentication;
-      this.rmqService.ack(context);
+    this.rmqService.ack(context);
 
     const user = this.jwtService.verify(token, {
       secret: process.env.JWT_SECRET,

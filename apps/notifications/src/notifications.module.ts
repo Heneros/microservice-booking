@@ -1,43 +1,53 @@
 import { Module } from '@nestjs/common';
 import { NotificationsController } from './notifications.controller';
 import { NotificationsService } from './notifications.service';
-  import { MailerModule } from '@nestjs-modules/mailer';
+import { MailerModule } from '@nestjs-modules/mailer';
 import { isDevelopment, isTest } from '@/app/common';
-import path from 'path'
+import path, { join } from 'path';
+import { ConfigModule } from '@nestjs/config';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+
+const templateDir = isDevelopment     
+? join(process.cwd(), 'apps', 'notifications', 'src', 'templates')
+: join(process.cwd(), 'dist', 'apps', 'notifications', 'templates');
+
 
 @Module({
   imports: [
-  MailerModule.forRoot({
-     transport: {
-      host: isDevelopment?   '127.0.0.1' : process.env.SMTP_HOST,
-      secure:   isDevelopment ? false :  true,
-       port: isDevelopment ? 1025 : 587,
-       auth: isDevelopment ? null :  {
-                          user: process.env.SMTP_USER,
-                          pass: process.env.SMTP_PASSWORD,
-                      },
-     },
-            defaults: {
-                from: `"No Replay" <noreply@example.com>`,
+        ConfigModule.forRoot({
+          isGlobal: true,
+          envFilePath: isDevelopment
+            ? './apps/notifications/.env.development'
+            : './apps/notifications/.env.prod',
+        }),
+    MailerModule.forRoot({
+      transport: {
+        host: isDevelopment ? 'maildev' : process.env.SMTP_HOST,
+        secure: isDevelopment ? false : true,
+        port: isDevelopment ? 1025 : 587,
+        auth: isDevelopment
+          ? null
+          : {
+              user: process.env.SMTP_USER,
+              pass: process.env.SMTP_PASSWORD,
             },
-               ...(isTest
-                ? {}
-                : {
-                      template: {
-                          dir: isDevelopment
-                              ? path.join(
-                                    process.cwd(),
-                                    '/dist/apps/notifications/templates',
-                                )
-                                : path.join(__dirname, '/templates'),
-                          adapter:
-                              new (require('@nestjs-modules/mailer/dist/adapters/handlebars.adapter').HandlebarsAdapter)(),
-                          options: {
-                              strict: true,
-                          },
-                      },
-                  }),
-  })
+      },
+      defaults: {
+        from: `"No Replay" <noreply@example.com>`,
+      },
+      ...(isTest
+        ? {}
+        : {
+            template: {
+              dir:templateDir,
+              adapter:
+                new HandlebarsAdapter(),
+              options: {
+                strict: true,
+              },
+            },
+          }),
+    }),
   ],
   controllers: [NotificationsController],
   providers: [NotificationsService],

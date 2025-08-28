@@ -48,8 +48,9 @@ export class UsersController {
       const payload = { userId: user.userId, Authentication: token };
 
       const profile = await lastValueFrom(
-        this.apiService.send({ cmd: USERS_SERVICE.MY_PROFILE }, payload)
-        .pipe(timeout(5000)),
+        this.apiService
+          .send({ cmd: USERS_SERVICE.MY_PROFILE }, payload)
+          .pipe(timeout(5000)),
       );
       return profile;
     } catch (err) {

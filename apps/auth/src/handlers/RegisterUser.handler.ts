@@ -3,7 +3,7 @@ import { randomBytes } from 'crypto';
 
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 import {
   roundsOfHashing,
   tempRegisterDate,
@@ -11,12 +11,14 @@ import {
 
 import { RegisterUserCommand } from '../commands/RegisterUser.command';
 import { AuthRepository, VerifyResetTokenRepository } from '@/app/common';
+import { ClientProxy } from '@nestjs/microservices';
 
 @CommandHandler(RegisterUserCommand)
 export class RegisterUserHandler
   implements ICommandHandler<RegisterUserCommand>
 {
   constructor(
+    @Inject('NOTIFICATIONS') private notificationsClient: ClientProxy,
     private readonly authRepository: AuthRepository,
     private readonly verifyResetToken: VerifyResetTokenRepository,
   ) {}
@@ -32,8 +34,6 @@ export class RegisterUserHandler
     const hashedPassword = await bcrypt.hash(registerUserDto.password, salt);
     const token = randomBytes(32).toString('hex');
     registerUserDto.password = hashedPassword;
-    // let email = registerUserDto.email;
-    // console.log(registerUserDto.email);
 
     const userEmail = await this.authRepository.findByEmail(
       registerUserDto.email,
@@ -61,6 +61,16 @@ export class RegisterUserHandler
       token,
       tempDate: tempRegisterDate,
     });
+
+    const data ={
+        user: createdUser,
+        title:  'Welcome to Booking App! Confirm your Email ',
+        template:    './confirmation',
+        token:     emailVerificationToken,
+    }
+   
+    this.notificationsClient.emit('notifications.user.registered', data)
+
 
     return {
       id: userId,

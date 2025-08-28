@@ -4,7 +4,7 @@
 /build
 *.env.development
 .env
-.env.prod
+*.env.prod
 
 *.pdf
 

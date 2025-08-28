@@ -2,14 +2,13 @@ import { domain } from '@/app/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 
-interface EmailVerificationToken{
+interface EmailVerificationToken {
   token: string;
-
 }
-interface User{
-  id: number, 
-    email: string, 
-    name: string, 
+interface User {
+  id: number;
+  email: string;
+  name: string;
 }
 
 interface ResendEmail {
@@ -17,46 +16,49 @@ interface ResendEmail {
   link: string;
 }
 
-
 @Injectable()
 export class NotificationsService {
-  constructor(private mailerService: MailerService){}
+  constructor(private mailerService: MailerService) {}
 
-
-  async sendEmailVerify(user: User, subject:string, template: string,  emailVerificationToken: string){
+  async sendEmailVerify(
+    user: User,
+    subject: string,
+    template: string,
+    emailVerificationToken: string,
+  ) {
     const link = `${domain}/auth/verify/${emailVerificationToken}/${user.id}`;
     await this.mailerService.sendMail({
       to: user.email,
       subject: subject,
       template: template,
-      context:{
+      context: {
         name: user.name,
-        link
-      }
-    })
+        link,
+      },
+    });
   }
 
-  async welcomeEmail(user: User, subject:string, template: string,){
+  async welcomeEmail(user: User, subject: string, template: string) {
     const link = `${domain}/auth/login`;
-  
+
     await this.mailerService.sendMail({
       to: user.email,
       subject: subject,
       template: template,
-      context:{
+      context: {
         name: user.name,
-        link
-      }
-    })
+        link,
+      },
+    });
   }
 
-    async resendEmail(
+  async resendEmail(
     user: User,
     subject: string,
     template: string,
     payload: ResendEmail,
-  ){
-        await this.mailerService.sendMail({
+  ) {
+    await this.mailerService.sendMail({
       to: user.email,
       subject: subject,
       template: template,

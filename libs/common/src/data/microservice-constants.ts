@@ -3,8 +3,8 @@ export const AUTH_SERVICE = {
   LOGIN_USER: 'login_user',
   LOGOUT_USER: 'logout_user',
   REGISTER_USER: 'register_user',
-  VERIFY_JWT: 'verify-jwt',
-  DECODE_JWT: 'decode-jwt',
+VALIDATE_USER: 'validate_user'
+
 };
 
 export const USERS_SERVICE = {

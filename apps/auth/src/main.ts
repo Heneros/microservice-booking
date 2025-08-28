@@ -17,17 +17,17 @@ async function bootstrap() {
       transport: Transport.RMQ,
       options: {
         urls: ['amqp://user:password@rabbitmq:5672'],
-                 queue: 'auth_queue',
-          queueOptions: { durable: false },
-          prefetchCount: 5,
-          noAck: false, 
-      exchange: 'app_change',
-      exchangeType: 'direct',
-      routingKey: 'auth_commands',
-            socketOptions: {
-    heartbeatIntervalInSeconds: 60,
-    reconnectTimeInSeconds: 5,
-  },
+        queue: 'auth_queue',
+        queueOptions: { durable: false },
+        prefetchCount: 5,
+        noAck: false,
+        exchange: 'app_change',
+        exchangeType: 'direct',
+        routingKey: 'auth_commands',
+        socketOptions: {
+          heartbeatIntervalInSeconds: 60,
+          reconnectTimeInSeconds: 5,
+        },
       },
     },
   );

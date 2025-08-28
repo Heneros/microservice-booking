@@ -3,6 +3,7 @@ with calender (google calendar API) with payment (stripe or paypal)
 and notifications(websocket + email).
 
 ## Modules
+- api-gateway
 - users
 - auth
 - booking 

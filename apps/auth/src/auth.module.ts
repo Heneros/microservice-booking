@@ -11,6 +11,7 @@ import {
   isDevelopment,
   JwtAuthGuard,
   PrismaService,
+  RabbitMqModule,
   RmqService,
 } from '@/app/common';
 
@@ -21,6 +22,7 @@ import { VerifyJWTService } from './services/verifyJwt.service';
 import { JwtStrategy } from './jwt-strategy';
 import { JwtGuard } from './guards/jwt.guard';
 import { LogoutHandler } from './handlers/Logout.handler';
+import { NotificationsService } from '@/apps/notifications/src/notifications.service';
 
 @Module({
   controllers: [AuthController],
@@ -41,6 +43,7 @@ import { LogoutHandler } from './handlers/Logout.handler';
     // ...Object.values(Repository),
 
     RmqService,
+    // NotificationsService
     // LocalSt
   ],
   imports: [
@@ -60,7 +63,8 @@ import { LogoutHandler } from './handlers/Logout.handler';
         : './apps/auth/.env.prod',
     }),
     // CommonModule,
-    // RmqModule,
+     RabbitMqModule,
+  
     CqrsModule.forRoot({}),
 
     // RmqModule,

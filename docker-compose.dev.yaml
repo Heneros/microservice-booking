@@ -74,6 +74,7 @@ services:
        - ./apps/notifications/.env.${NODE_ENV}
     depends_on:
       - maildev
+      - rabbitmq
       - redis
     volumes:
      - .:/usr/src/app

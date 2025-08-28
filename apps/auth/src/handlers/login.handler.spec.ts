@@ -1,4 +1,3 @@
-
 import { AuthRepository, VerifyResetTokenRepository } from '@/app/common';
 import { RegisterUserCommand } from '../commands/RegisterUser.command';
 import { BadRequestException } from '@nestjs/common';

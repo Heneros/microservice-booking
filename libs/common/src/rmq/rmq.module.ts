@@ -1,5 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ClientsModule, Transport, ClientProviderOptions } from '@nestjs/microservices';
+import {
+  ClientsModule,
+  Transport,
+  ClientProviderOptions,
+} from '@nestjs/microservices';
 import { RmqService } from './rmq.service';
 
 const RMQ_CLIENTS_CONFIG: ClientProviderOptions[] = [
@@ -16,7 +20,7 @@ const RMQ_CLIENTS_CONFIG: ClientProviderOptions[] = [
       exchangeType: 'direct',
       routingKey: 'auth_commands',
 
-            noAck: true,
+      noAck: true,
       socketOptions: {
         heartbeatIntervalInSeconds: 60,
         reconnectTimeInSeconds: 5,
@@ -29,31 +33,45 @@ const RMQ_CLIENTS_CONFIG: ClientProviderOptions[] = [
     options: {
       urls: ['amqp://user:password@rabbitmq:5672'],
       queue: 'users_queue',
-   //   queueOptions: { durable: false },
- noAck: true, 
-    ///    prefetchCount: 1,
+      //   queueOptions: { durable: false },
+      noAck: true,
+      ///    prefetchCount: 1,
       persistent: true,
-       exchange: 'app_change',
+      exchange: 'app_change',
       exchangeType: 'direct',
-           routingKey: 'users_commands',
-      // socketOptions: {
-      //   heartbeatIntervalInSeconds: 60,
-      //   reconnectTimeInSeconds: 5,
-      // },
+      routingKey: 'users_commands',
+      socketOptions: {
+        heartbeatIntervalInSeconds: 60,
+        reconnectTimeInSeconds: 5,
+      },
+    },
+  },
+  {
+    name: 'NOTIFICATIONS',
+    transport: Transport.RMQ,
+    options: {
+      urls: ['amqp://user:password@rabbitmq:5672'],
+      queue: 'notifications_queue',
+      //   queueOptions: { durable: false },
+      // noAck: true,
+      ///    prefetchCount: 1,
+
+      persistent: true,
+      exchange: 'events_exchange',
+      exchangeType: 'topic',
+      routingKey: 'notifications.*',
+      socketOptions: {
+        heartbeatIntervalInSeconds: 60,
+        reconnectTimeInSeconds: 5,
+      },
     },
   },
 ];
 
 @Module({
-  imports: [
-    ClientsModule.register(RMQ_CLIENTS_CONFIG),
-  ],
+  imports: [ClientsModule.register(RMQ_CLIENTS_CONFIG)],
   controllers: [],
   providers: [RmqService],
-  exports: [
-        ClientsModule,
-    RmqService,
-
-  ],
+  exports: [ClientsModule, RmqService],
 })
 export class RabbitMqModule {}
