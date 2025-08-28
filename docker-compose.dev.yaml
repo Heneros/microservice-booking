@@ -64,6 +64,23 @@ services:
     networks:
       micro_booking:
 
+  notifications:
+    build: 
+       context: .
+       dockerfile: ./apps/notifications/Dockerfile
+       target: ${NODE_ENV:-development}
+    env_file:
+       - .env
+       - ./apps/notifications/.env.${NODE_ENV}
+    depends_on:
+      - maildev
+      - redis
+    volumes:
+     - .:/usr/src/app
+     - /usr/src/app/node_modules
+    networks:
+      micro_booking:
+
   rabbitmq:
     image: rabbitmq:3-management
   # //.  hostname: rabbitmq  
