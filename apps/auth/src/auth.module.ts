@@ -63,8 +63,8 @@ import { NotificationsService } from '@/apps/notifications/src/notifications.ser
         : './apps/auth/.env.prod',
     }),
     // CommonModule,
-     RabbitMqModule,
-  
+    RabbitMqModule,
+
     CqrsModule.forRoot({}),
 
     // RmqModule,

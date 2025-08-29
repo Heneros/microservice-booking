@@ -27,7 +27,6 @@ describe('RegisterUserHandler', () => {
     handler = new RegisterUserHandler(
       authRepository as any,
       verifyResetTokenRepository as any,
-      
     );
   });
 

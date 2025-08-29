@@ -1,24 +1,35 @@
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
-import { Cache } from 'cache-manager';
+import Redis from 'ioredis';
+import { RedisPrefixEnum } from '../data/redis-prefix-enum';
+import { CACHE_TTL } from '../data/ttl';
 
 @Injectable()
-export class RedisCacheService {
-  constructor(@Inject(CACHE_MANAGER) private readonly cache: Cache) {}
+export class RedisService {
+  constructor(@Inject('REDIS_CLIENT') private readonly redis: Redis) {}
 
-  async get(key: string) {
-    return await this.cache.get(key);
+  private makeKey(prefix: RedisPrefixEnum, key: string | number): string {
+    return `${prefix}:${key}`;
   }
 
-  async set(key: string, value: unknown, ttl = 0) {
-    return await this.cache.set(key, value, ttl);
+  async saveUser<T>(id: number, data: T): Promise<void> {
+    const key = this.makeKey(RedisPrefixEnum.USERS_ID, id);
+    const value = JSON.stringify(data);
+    await this.redis.set(key, value);
+    await this.redis.expire(key, CACHE_TTL.ONE_MINUTE);
   }
 
-  async del(key: string) {
-    await this.cache.del(key);
+  async deleteUser(id: number): Promise<void> {
+    const key = this.makeKey(RedisPrefixEnum.USERS_ID, id);
+    await this.redis.del(key);
   }
 
-  async clear() {
-    await this.cache.clear();
+  async getProfile(id: number): Promise<string | null> {
+    const key = this.makeKey(RedisPrefixEnum.USERS_ID, id);
+    const result = await this.redis.get(key);
+    if (result) {
+      return JSON.parse(result);
+    }
+
+    return null;
   }
 }

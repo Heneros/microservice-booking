@@ -3,23 +3,22 @@ import { NotificationsController } from './notifications.controller';
 import { NotificationsService } from './notifications.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { isDevelopment, isTest } from '@/app/common';
-import path, { join } from 'path';
+import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 
-const templateDir = isDevelopment     
-? join(process.cwd(), 'apps', 'notifications', 'src', 'templates')
-: join(process.cwd(), 'dist', 'apps', 'notifications', 'templates');
-
+const templateDir = isDevelopment
+  ? join(process.cwd(), 'apps', 'notifications', 'src', 'templates')
+  : join(process.cwd(), 'dist', 'apps', 'notifications', 'templates');
 
 @Module({
   imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          envFilePath: isDevelopment
-            ? './apps/notifications/.env.development'
-            : './apps/notifications/.env.prod',
-        }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: isDevelopment
+        ? './apps/notifications/.env.development'
+        : './apps/notifications/.env.prod',
+    }),
     MailerModule.forRoot({
       transport: {
         host: isDevelopment ? 'maildev' : process.env.SMTP_HOST,
@@ -39,9 +38,8 @@ const templateDir = isDevelopment
         ? {}
         : {
             template: {
-              dir:templateDir,
-              adapter:
-                new HandlebarsAdapter(),
+              dir: templateDir,
+              adapter: new HandlebarsAdapter(),
               options: {
                 strict: true,
               },

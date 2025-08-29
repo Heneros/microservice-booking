@@ -6,6 +6,7 @@ export * from './data/microservice-constants';
 export * from './data/constants';
 
 export * from './data/sites';
+export * from './data/redis-prefix-enum';
 
 export * from './entities/index';
 

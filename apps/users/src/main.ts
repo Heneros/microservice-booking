@@ -10,7 +10,6 @@ import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
-
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     UsersModule,
     {
@@ -21,7 +20,7 @@ async function bootstrap() {
         queueOptions: { durable: true },
         prefetchCount: 1,
         noAck: false,
-        persistent: true,
+        // persistent: true,
         exchange: 'app_change',
         exchangeType: 'direct',
         routingKey: 'users_commands',
@@ -34,7 +33,6 @@ async function bootstrap() {
     },
   );
 
-
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -45,7 +43,6 @@ async function bootstrap() {
       },
     }),
   );
-
 
   await app.listen();
 }

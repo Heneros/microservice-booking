@@ -10,12 +10,12 @@ async function bootstrap() {
       options: {
         urls: ['amqp://user:password@rabbitmq:5672'],
         queue: 'notifications_queue',
-        queueOptions: { durable: true, 
-        //   arguments: {
-        //   'x-message-ttl': 6000
-        // }
-      
-      },
+        queueOptions: {
+          durable: true,
+          //   arguments: {
+          //   'x-message-ttl': 6000
+          // }
+        },
         prefetchCount: 5,
         noAck: false,
         exchange: 'events_exchange',

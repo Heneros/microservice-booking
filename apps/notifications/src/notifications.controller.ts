@@ -6,17 +6,19 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 
-  
   @MessagePattern('notifications.user.registered')
-  async handleUserVerifyEmail(@Payload() data: any){
-try {
-     const {user, title , template, token} = data
-    await this.notificationsService.sendEmailVerify(user, title , template, token)
-   console.log('Email was sent!')
-} catch (error) {
-  console.error('Err', error);
-}
-
+  async handleUserVerifyEmail(@Payload() data: any) {
+    try {
+      const { user, title, template, token } = data;
+      await this.notificationsService.sendEmailVerify(
+        user,
+        title,
+        template,
+        token,
+      );
+      /////console.log('Email was sent!');
+    } catch (error) {
+      console.error('Err', error);
+    }
   }
-  
 }

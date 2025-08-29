@@ -11,6 +11,8 @@ import {
 import { CqrsModule } from '@nestjs/cqrs';
 import { ConfigModule } from '@nestjs/config';
 import { GetProfileUserHandler } from './handlers/GetProfile.handler';
+import { RedisModule } from '@/app/common/redis/redis.module';
+import { RedisService } from '@/app/common/redis/redis.service';
 
 @Module({
   imports: [
@@ -22,11 +24,13 @@ import { GetProfileUserHandler } from './handlers/GetProfile.handler';
         : './apps/users/.env.prod',
     }),
     CqrsModule.forRoot({}),
+    RedisModule,
   ],
   controllers: [UsersController],
   providers: [
     PrismaService,
     RmqService,
+    RedisService,
     GetProfileUserHandler,
     Repository.AuthRepository,
     Repository.VerifyResetTokenRepository,

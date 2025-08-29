@@ -62,15 +62,14 @@ export class RegisterUserHandler
       tempDate: tempRegisterDate,
     });
 
-    const data ={
-        user: createdUser,
-        title:  'Welcome to Booking App! Confirm your Email ',
-        template:    './confirmation',
-        token:     emailVerificationToken,
-    }
-   
-    this.notificationsClient.emit('notifications.user.registered', data)
+    const data = {
+      user: createdUser,
+      title: 'Welcome to Booking App! Confirm your Email ',
+      template: './confirmation',
+      token: emailVerificationToken,
+    };
 
+    this.notificationsClient.emit('notifications.user.registered', data);
 
     return {
       id: userId,
