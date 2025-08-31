@@ -91,6 +91,13 @@ jobs:
       - name: Run Tests  
         run: npm run test:unit
 
+      - name: Cleanup Redis Ci keys
+        if: always()
+        run: |
+          echo "Cleaning up CI keys..."
+          redis-cli -h 127.0.0.1 -p 6379 --scan --pattern "ci:*" | xargs -r redis-cli -h 127.0.0.1 -p 6379 del || true
+
+
       
 
 
