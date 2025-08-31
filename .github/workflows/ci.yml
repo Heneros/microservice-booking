@@ -34,7 +34,7 @@ jobs:
             --health-cmd "redis-cli ping"
             --health-interval 10s
             --health-timeout 5s
-            --health-timeout 5
+            --health-retries 5
 
       maildev:  
         image: maildev/maildev
