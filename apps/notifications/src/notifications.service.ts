@@ -2,13 +2,10 @@ import { domain } from '@/app/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 
-interface EmailVerificationToken {
-  token: string;
-}
 interface User {
   id: number;
   email: string;
-  name: string;
+  username: string;
 }
 
 interface ResendEmail {
@@ -27,12 +24,13 @@ export class NotificationsService {
     emailVerificationToken: string,
   ) {
     const link = `${domain}/auth/verify/${emailVerificationToken}/${user.id}`;
+
     await this.mailerService.sendMail({
       to: user.email,
       subject: subject,
       template: template,
       context: {
-        name: user.name,
+        name: user.username,
         link,
       },
     });
@@ -46,7 +44,7 @@ export class NotificationsService {
       subject: subject,
       template: template,
       context: {
-        name: user.name,
+        name: user.username,
         link,
       },
     });

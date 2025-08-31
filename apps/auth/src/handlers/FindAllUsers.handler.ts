@@ -1,11 +1,15 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { FindAllUsersQuery } from '../queries/GetUsers.query';
 import { UserRepository } from '@/app/common';
-import { NotFoundException } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
+import { RedisService } from '@/app/common/redis/redis.service';
 
 @QueryHandler(FindAllUsersQuery)
 export class FindAllUsersHandler implements IQueryHandler<FindAllUsersQuery> {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    @Inject(RedisService) private readonly redisService: RedisService,
+    private readonly userRepository: UserRepository,
+  ) {}
   async execute(query: FindAllUsersQuery) {
     const { page } = query;
 

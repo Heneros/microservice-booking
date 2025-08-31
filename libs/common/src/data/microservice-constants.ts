@@ -11,3 +11,7 @@ export const USERS_SERVICE = {
   MY_PROFILE: 'my-profile',
   UPDATE_PROFILE: 'update-profile',
 };
+
+export const NOTIFY_SERVICE ={
+  NOTIFY_USER_REGISTER: 'notifications.user.registered',
+}

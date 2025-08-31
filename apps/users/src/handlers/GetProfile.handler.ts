@@ -19,11 +19,11 @@ export class GetProfileUserHandler implements IQueryHandler<GetProfileQuery> {
       const userCached = await this.redisService.getProfile(Number(userId));
       //  console.log('userId32', userId);
       if (userCached) {
-                    console.log(
-                'Cache Hit35:',
-                (performance.now() - start).toFixed(2),
-                'ms',
-            );
+        // console.log(
+        //   'Cache Hit35:',
+        //   (performance.now() - start).toFixed(2),
+        //   'ms',
+        // );
         return userCached;
       }
 

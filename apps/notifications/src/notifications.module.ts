@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { NotificationsController } from './notifications.controller';
 import { NotificationsService } from './notifications.service';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { isDevelopment, isTest } from '@/app/common';
+import { isDevelopment, isTest, RabbitMqModule } from '@/app/common';
 import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { RedisModule } from '@/app/common/redis/redis.module';
 
 const templateDir = isDevelopment
   ? join(process.cwd(), 'apps', 'notifications', 'src', 'templates')
@@ -46,6 +47,8 @@ const templateDir = isDevelopment
             },
           }),
     }),
+    RedisModule,
+    RabbitMqModule
   ],
   controllers: [NotificationsController],
   providers: [NotificationsService],

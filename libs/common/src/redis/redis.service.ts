@@ -32,4 +32,21 @@ export class RedisService {
 
     return null;
   }
+
+  async getEmailNotify(id: string): Promise<string | null> {
+    const key = this.makeKey(RedisPrefixEnum.NOTIFICATION_SEND_EMAIL, id);
+    const result = await this.redis.get(key);
+    if (result) {
+      return JSON.parse(result);
+    }
+
+    return null;
+  }
+
+  async saveNotifyEmail<T>(id: string, data: T): Promise<void> {
+    const key = this.makeKey(RedisPrefixEnum.NOTIFICATION_SEND_EMAIL, id);
+    const value = JSON.stringify(data);
+    await this.redis.set(key, value);
+    await this.redis.expire(key, CACHE_TTL.THREE_HOUR);
+  }
 }

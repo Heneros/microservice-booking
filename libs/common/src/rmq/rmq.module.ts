@@ -55,7 +55,13 @@ const RMQ_CLIENTS_CONFIG: ClientProviderOptions[] = [
       //   queueOptions: { durable: false },
       // noAck: true,
       ///    prefetchCount: 1,
-
+      queueOptions: {
+        durable: true,
+        arguments: {
+          'x-message-ttl': 60000,
+          'x-dead-letter-exchange': 'dead_letter_exchange',
+        },
+      },
       persistent: true,
       exchange: 'events_exchange',
       exchangeType: 'topic',

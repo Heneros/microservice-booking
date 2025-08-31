@@ -12,15 +12,16 @@ async function bootstrap() {
         queue: 'notifications_queue',
         queueOptions: {
           durable: true,
-          //   arguments: {
-          //   'x-message-ttl': 6000
-          // }
+          arguments: {
+            'x-message-ttl': 60000,
+            'x-dead-letter-exchange': 'dead_letter_exchange',
+          },
         },
         prefetchCount: 5,
         noAck: false,
         exchange: 'events_exchange',
         exchangeType: 'topic',
-        persistent: true,
+        // persistent: true,
       },
     },
   );
