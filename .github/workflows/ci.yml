@@ -72,7 +72,13 @@ jobs:
           cache: 'npm'
 
       - name: Install deps 
-        run: npm ci  
+        run:  npm ci --legacy-peer-deps
+
+      - name: Setup database
+        run: |
+         npx prisma generate
+         npx prisma migrate reset --force --skip-seed
+         npx prisma migrate deploy
 
       - name: Run Format  
         run: npm run format     
