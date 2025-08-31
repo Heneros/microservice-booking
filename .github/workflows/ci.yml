@@ -61,6 +61,13 @@ jobs:
          --health-timeout 5s
          --health-retries 10  
 
+    env:
+      DATABASE_URL: "postgres://postgres:postgres@localhost:5432/bookingApp"
+      NODE_ENV: development
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      RABBIT_MQ_URI: amqp://user:password@localhost:5672
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
