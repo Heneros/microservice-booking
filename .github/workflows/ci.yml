@@ -76,9 +76,7 @@ jobs:
 
       - name: Setup database
         run: |
-         npx prisma generate
-         npx prisma migrate reset --force --skip-seed
-         npx prisma migrate deploy
+          npm run prisma:build
 
       - name: Run Format  
         run: npm run format     
