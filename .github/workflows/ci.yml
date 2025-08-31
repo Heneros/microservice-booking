@@ -1,0 +1,79 @@
+name: Microservice Booking Nest.js
+
+on: 
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+
+jobs:
+  basic:
+    runs-on: ubuntu-latest
+    services:
+      
+      postgres: 
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: bookingApp
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+        
+      redis:
+          image: redis:7.4-alpine
+          ports:
+            - 6379:6379
+          options: >-
+            --health-cmd "redis-cli ping"
+            --health-interval 10s
+            --health-timeout 5s
+            --health-timeout 5
+
+      maildev:  
+        image: maildev/maildev
+        ports:
+          - 1080:1080
+          - 1025:1025
+        options: >-
+          --health-cmd "wget --quiet --tries=1 --spider http://localhost:1080 || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      rabbitmq:
+        image: rabbitmq:3.11-management
+        ports:
+          - 5672:5672
+          - 15672:15672
+        env:
+          RABBIT_DEFAULT_USER: user
+          RABBIT_DEFAULT_PASS: password
+        options: >-
+         --health-cmd "rabbitmq-diagnostics ping"
+         --health-interval 10s
+         --health-timeout 5s
+         --health-retries 10  
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 
+        uses: actions/checkout@v5
+        with: 
+          node-version: '22'
+          cache: 'npm'
+
+
+
+      
+        
+        
+
