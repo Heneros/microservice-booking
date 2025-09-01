@@ -10,7 +10,11 @@ import {
 } from '@/app/common/data/defaultData';
 
 import { RegisterUserCommand } from '../commands/RegisterUser.command';
-import { AuthRepository, NOTIFY_SERVICE, VerifyResetTokenRepository } from '@/app/common';
+import {
+  AuthRepository,
+  NOTIFY_SERVICE,
+  VerifyResetTokenRepository,
+} from '@/app/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 @CommandHandler(RegisterUserCommand)

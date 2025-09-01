@@ -1,28 +1,42 @@
 import {
   CurrentUser,
   JwtAuthGuard,
+  Roles,
   USER_ROUTES,
+  UserEntity,
   USERS_CONTROLLER,
   USERS_SERVICE,
 } from '@/app/common';
+import { AuthGuard } from '@/app/common/guards/auth.guard';
+import { RolesGuard } from '@/app/common/guards/roles.guard';
 
 import {
   BadGatewayException,
   BadRequestException,
   Body,
   Controller,
+  DefaultValuePipe,
   Get,
   Inject,
   Param,
   ParseIntPipe,
   Post,
+  Query,
   Req,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCookieAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { User } from '@prisma/client';
+import { randomUUID } from 'crypto';
 
 import { catchError, throwError, lastValueFrom, timeout } from 'rxjs';
 
@@ -63,5 +77,37 @@ export class UsersController {
     }
   }
 
-  // @Get(USER_ROUTES.GET_ALL)
+  @Get(USER_ROUTES.GET_ALL)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('Admin', 'Editor')
+  @ApiCookieAuth('cookie-auth')
+  @ApiOperation({ summary: 'For admin. Get All User' })
+  @ApiOkResponse({ type: UserEntity, isArray: true })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number for pagination',
+    type: Number,
+  })
+  async findAllUsers(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+  ) {
+    try {
+          const correlationId = randomUUID();
+    const payload = { page, correlationId };
+
+    const users = await lastValueFrom(
+      this.apiService.send({ cmd: USERS_SERVICE.ALL_USERS },  page)    
+        .pipe(timeout(5000)),
+
+    );
+
+
+    return users;
+    } catch (error) {
+    console.log('error.message ', error.message)
+    throw error;
+    }
+
+  }
 }

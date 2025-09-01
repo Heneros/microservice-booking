@@ -1,20 +1,23 @@
 import { AuthRepository, UserRepository } from '@/app/common';
 import { FindAllUsersHandler } from './FindAllUsers.handler';
 import bcrypt from 'bcryptjs';
-import { FindAllUsersQuery } from '../queries/GetUsers.query';
+import { FindAllUsersQuery } from '../query/FindAllUsers.query';
 import { NotFoundException } from '@nestjs/common';
 import { RedisService } from '@/app/common/redis/redis.service';
 
 describe('FindAllUsersHandler', () => {
   let handler: FindAllUsersHandler;
   let userRepository: jest.Mocked<UserRepository>;
- let redisService: jest.Mocked<RedisService>
+  let redisService: jest.Mocked<RedisService>;
   beforeEach(() => {
     userRepository = {
       findAllUser: jest.fn(),
     } as any;
 
-    handler = new FindAllUsersHandler(redisService as any, userRepository as any);
+    handler = new FindAllUsersHandler(
+      redisService as any,
+      userRepository as any,
+    );
   });
 
   it('FindAllUsers', async () => {

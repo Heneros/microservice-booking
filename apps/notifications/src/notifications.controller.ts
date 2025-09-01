@@ -1,32 +1,40 @@
 import { BadRequestException, Controller, Get, Inject } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
-import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
+import {
+  Ctx,
+  MessagePattern,
+  Payload,
+  RmqContext,
+} from '@nestjs/microservices';
 import { RedisService } from '@/app/common/redis/redis.service';
 import { NOTIFY_SERVICE, RedisPrefixEnum, RmqService } from '@/app/common';
 
 @Controller()
 export class NotificationsController {
   constructor(
-   private readonly rmqService: RmqService,
+    private readonly rmqService: RmqService,
     @Inject(RedisService) private readonly redisService: RedisService,
     private readonly notificationsService: NotificationsService,
   ) {}
 
   @MessagePattern(NOTIFY_SERVICE.NOTIFY_USER_REGISTER)
-  async handleUserVerifyEmail(@Payload() data: any, @Ctx() context: RmqContext) {
+  async handleUserVerifyEmail(
+    @Payload() data: any,
+    @Ctx() context: RmqContext,
+  ) {
     try {
       const { title, template, token } = data;
       // console.log('data', data);
       // console.log('datats', title, template, token )
       const emailId = `${RedisPrefixEnum.NOTIFICATION_SEND_EMAIL}:${data.user.email}:${data.user.id}`;
-  // const msg = context.getMessage();
+      // const msg = context.getMessage();
       const alreadySent = await this.redisService.getEmailNotify(emailId);
 
       if (alreadySent) {
-        console.log('Sent Already', alreadySent)
+        console.log('Sent Already', alreadySent);
         return;
       }
-  // console.log('Test', alreadySent)
+      // console.log('Test', alreadySent)
       try {
         await this.notificationsService.sendEmailVerify(
           data.user,

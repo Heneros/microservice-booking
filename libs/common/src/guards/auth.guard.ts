@@ -41,7 +41,7 @@ export class AuthGuard implements CanActivate {
     // console.log('jwt', jwt);
 
     return this.authService
-      .send({ cmd: AUTH_SERVICE.VERIFY_JWT }, { jwt })
+      .send({ cmd: AUTH_SERVICE.VALIDATE_USER }, { jwt })
       .pipe(
         switchMap((response: any) => {
           if (response?.status === 'error') {
@@ -53,7 +53,7 @@ export class AuthGuard implements CanActivate {
           return of(isJwtValid);
         }),
         catchError((error) => {
-          console.log('error123', error);
+          console.log('error', error);
           throw new UnauthorizedException();
         }),
       );

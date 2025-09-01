@@ -10,8 +10,9 @@ export const USERS_SERVICE = {
   USERS_MAIN: 'USERS',
   MY_PROFILE: 'my-profile',
   UPDATE_PROFILE: 'update-profile',
+  ALL_USERS: 'all-users',
 };
 
-export const NOTIFY_SERVICE ={
+export const NOTIFY_SERVICE = {
   NOTIFY_USER_REGISTER: 'notifications.user.registered',
-}
+};

@@ -18,11 +18,11 @@ import {
 import { JwtModule } from '@nestjs/jwt';
 import { RegisterUserHandler } from './handlers/RegisterUser.handler';
 import { LoginUserHandler } from './handlers/LoginUser.handler';
-import { VerifyJWTService } from './services/verifyJwt.service';
+// import { VerifyJWTService } from './services/verifyJwt.service';
 import { JwtStrategy } from './jwt-strategy';
 import { JwtGuard } from './guards/jwt.guard';
 import { LogoutHandler } from './handlers/Logout.handler';
-import { NotificationsService } from '@/apps/notifications/src/notifications.service';
+// import { NotificationsService } from '@/apps/notifications/src/notifications.service';
 
 @Module({
   controllers: [AuthController],
@@ -38,7 +38,7 @@ import { NotificationsService } from '@/apps/notifications/src/notifications.ser
     RegisterUserHandler,
     LoginUserHandler,
     LogoutHandler,
-    VerifyJWTService,
+    // VerifyJWTService,
     // ...Object.values(Handlers),
     // ...Object.values(Repository),
 

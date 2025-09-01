@@ -52,6 +52,7 @@
     "test/**/*",
     "apps/**/*",
     "libs/**/*",
-    "types"
+    "types",
+    "apps/users/src/query/FindAllUsers.query.ts"
   ],
 }

@@ -9,7 +9,8 @@ export class RmqService {
   ack(context: RmqContext) {
     const ch = context.getChannelRef();
     const msg = context.getMessage();
-    if (msg?.fields?.deliveryTag) ch.ack(msg);
+    //if (msg?.fields?.deliveryTag) ch.ack(msg);
+    ch.ack(msg);
   }
 
   nack(context: RmqContext, requeue = true): void {

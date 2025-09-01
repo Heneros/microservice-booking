@@ -2,7 +2,6 @@ import { Controller, Get, Req } from '@nestjs/common';
 
 import {
   Ctx,
-  EventPattern,
   MessagePattern,
   Payload,
   RmqContext,
@@ -17,6 +16,7 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { GetProfileQuery } from './query/GetProfile.query';
 import { plainToInstance } from 'class-transformer';
+import { FindAllUsersQuery } from './query/FindAllUsers.query';
 
 @Controller(USERS_CONTROLLER)
 export class UsersController {
@@ -48,5 +48,23 @@ export class UsersController {
       this.rmqService.nack(context, true);
       throw new RpcException(error.message);
     }
+  }
+
+  @MessagePattern({ cmd: USERS_SERVICE.ALL_USERS })
+  async getAllUsers(
+    @Payload() data:  any,
+    @Ctx() context: RmqContext,
+  ) {
+    try {
+          const users = await this.queryBus.execute(new FindAllUsersQuery(data));
+
+    this.rmqService.ack(context);
+
+    return plainToInstance(UserEntity, users);
+    } catch (error) {
+      this.rmqService.nack(context, false,)
+      throw new RpcException(error.message)
+    }
+
   }
 }

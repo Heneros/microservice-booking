@@ -13,6 +13,7 @@ import { ConfigModule } from '@nestjs/config';
 import { GetProfileUserHandler } from './handlers/GetProfile.handler';
 import { RedisModule } from '@/app/common/redis/redis.module';
 import { RedisService } from '@/app/common/redis/redis.service';
+import { FindAllUsersHandler } from './handlers/FindAllUsers.handler';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { RedisService } from '@/app/common/redis/redis.service';
     RmqService,
     RedisService,
     GetProfileUserHandler,
+    FindAllUsersHandler,
     Repository.AuthRepository,
     Repository.VerifyResetTokenRepository,
     Repository.UserRepository,

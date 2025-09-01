@@ -28,8 +28,7 @@ import {
 } from '@/app/common';
 import { RegisterUserCommand } from './commands/RegisterUser.command';
 import { LoginUserCommand } from './commands/LoginUser.command';
-import { JwtGuard } from './guards/jwt.guard';
-import { VerifyJWTService } from './services/verifyJwt.service';
+
 import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { LogoutCommand } from './commands/Logout.command';
@@ -41,7 +40,6 @@ export class AuthController {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
     private readonly rmqService: RmqService,
-    private readonly verifyJwtService: VerifyJWTService,
     private readonly jwtService: JwtService,
     // @Inject(BILLING_SERVICE) private billingClient: ClientProxy,
   ) {}

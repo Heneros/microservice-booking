@@ -1,5 +1,5 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { FindAllUsersQuery } from '../queries/GetUsers.query';
+import { FindAllUsersQuery } from '../query/FindAllUsers.query';
 import { UserRepository } from '@/app/common';
 import { Inject, NotFoundException } from '@nestjs/common';
 import { RedisService } from '@/app/common/redis/redis.service';

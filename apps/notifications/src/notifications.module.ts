@@ -48,7 +48,7 @@ const templateDir = isDevelopment
           }),
     }),
     RedisModule,
-    RabbitMqModule
+    RabbitMqModule,
   ],
   controllers: [NotificationsController],
   providers: [NotificationsService],
