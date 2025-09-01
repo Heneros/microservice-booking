@@ -1,10 +1,10 @@
 import { ClientProxy, RmqContext } from '@nestjs/microservices';
 import { RegisterUserHandler } from './RegisterUser.handler';
-import { CommandBus } from '@nestjs/cqrs';
-import { RpcException } from '@nestjs/microservices';
 import { AuthRepository, NOTIFY_SERVICE, VerifyResetTokenRepository } from '@/app/common';
 import { RegisterUserCommand } from '../commands/RegisterUser.command';
 import { BadRequestException } from '@nestjs/common';
+
+
 const makeAuthRepoMock = () => ({
   findByEmail: jest.fn(),
   create: jest.fn(),
