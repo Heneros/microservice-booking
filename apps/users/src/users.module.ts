@@ -14,6 +14,7 @@ import { GetProfileUserHandler } from './handlers/GetProfile.handler';
 import { RedisModule } from '@/app/common/redis/redis.module';
 import { RedisService } from '@/app/common/redis/redis.service';
 import { FindAllUsersHandler } from './handlers/FindAllUsers.handler';
+import { RedisRepository } from '@/app/common/redis/redis.repository';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { FindAllUsersHandler } from './handlers/FindAllUsers.handler';
     PrismaService,
     RmqService,
     RedisService,
+    RedisRepository,
     GetProfileUserHandler,
     FindAllUsersHandler,
     Repository.AuthRepository,

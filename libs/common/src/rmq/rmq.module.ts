@@ -33,7 +33,7 @@ const RMQ_CLIENTS_CONFIG: ClientProviderOptions[] = [
     options: {
       urls: ['amqp://user:password@rabbitmq:5672'],
       queue: 'users_queue',
-      //   queueOptions: { durable: false },
+      queueOptions: { durable: true },
       // noAck: true,
       ///    prefetchCount: 1,
       persistent: true,

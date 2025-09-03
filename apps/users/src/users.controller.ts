@@ -1,4 +1,4 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Req } from '@nestjs/common';
 
 import {
   Ctx,
@@ -45,26 +45,39 @@ export class UsersController {
 
       return userEntity;
     } catch (error) {
-      this.rmqService.nack(context, true);
+      this.rmqService.nack(context, false);
       throw new RpcException(error.message);
     }
   }
 
   @MessagePattern({ cmd: USERS_SERVICE.ALL_USERS })
-  async getAllUsers(
-    @Payload() data:  any,
-    @Ctx() context: RmqContext,
-  ) {
+  async getAllUsers(@Payload() data: any, @Ctx() context: RmqContext) {
     try {
-          const users = await this.queryBus.execute(new FindAllUsersQuery(data));
+      const users = await this.queryBus.execute(new FindAllUsersQuery(data));
 
-    this.rmqService.ack(context);
+      if (users.length === 0) {
+        throw new NotFoundException('No users found');
+      }
 
-    return plainToInstance(UserEntity, users);
+      this.rmqService.ack(context);
+
+      return plainToInstance(UserEntity, users);
     } catch (error) {
-      this.rmqService.nack(context, false,)
-      throw new RpcException(error.message)
-    }
+      this.rmqService.nack(context, false);
 
+      if (error instanceof RpcException) {
+        throw error;
+      }
+
+      const errorResponse = {
+        status: 'error',
+        message: error.message || 'Internal server error',
+        statusCode: error.statusCode || 500,
+      };
+      throw new RpcException(errorResponse);
+
+      // this.rmqService.nack(context, false);
+      // throw new RpcException(error.message);
+    }
   }
 }

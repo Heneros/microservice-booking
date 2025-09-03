@@ -28,6 +28,7 @@ export class UserEntity implements User {
 
   @Expose()
   email: string;
+
   @Expose()
   roles: string[];
 

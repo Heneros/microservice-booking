@@ -7,7 +7,7 @@ import {
   USERS_CONTROLLER,
   USERS_SERVICE,
 } from '@/app/common';
-import { AuthGuard } from '@/app/common/guards/auth.guard';
+// import { AuthGuard } from '@/app/common/guards/auth.guard';
 import { RolesGuard } from '@/app/common/guards/roles.guard';
 
 import {
@@ -78,8 +78,8 @@ export class UsersController {
   }
 
   @Get(USER_ROUTES.GET_ALL)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('Admin', 'Editor')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiCookieAuth('cookie-auth')
   @ApiOperation({ summary: 'For admin. Get All User' })
   @ApiOkResponse({ type: UserEntity, isArray: true })
@@ -93,21 +93,19 @@ export class UsersController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
   ) {
     try {
-          const correlationId = randomUUID();
-    const payload = { page, correlationId };
+      const correlationId = randomUUID();
+      const payload = { page, correlationId };
+      // console.log(3211);
+      const users = await lastValueFrom(
+        this.apiService
+          .send({ cmd: USERS_SERVICE.ALL_USERS }, page)
+          .pipe(timeout(5000)),
+      );
 
-    const users = await lastValueFrom(
-      this.apiService.send({ cmd: USERS_SERVICE.ALL_USERS },  page)    
-        .pipe(timeout(5000)),
-
-    );
-
-
-    return users;
+      return users;
     } catch (error) {
-    console.log('error.message ', error.message)
-    throw error;
+      console.log('error.message ', error.message);
+      throw error;
     }
-
   }
 }

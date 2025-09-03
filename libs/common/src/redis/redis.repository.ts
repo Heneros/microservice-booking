@@ -10,16 +10,53 @@ export class RedisRepository {
     return `${prefix}:${key}`;
   }
 
-  async get(prefix: RedisPrefixEnum, key: string): Promise<string | null> {
+  async get<T>(prefix: RedisPrefixEnum, key: string): Promise<T | null> {
     const fullKey = this.generateKey(prefix, key);
-    return await this.redis.get(fullKey);
+
+    try {
+      const raw = await this.redis.get(fullKey);
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw) as T;
+      } catch (error) {
+        return raw as unknown as T;
+      }
+    } catch (err) {
+      console.error(`Redis GET failed for ${fullKey}: ${err.message}`);
+      return null;
+    }
   }
 
-  async delete(prefix: string, key: string): Promise<void> {
+  async set<T>(
+    prefix: RedisPrefixEnum,
+    key: string,
+    value: T,
+    ttlSeconds?: number,
+  ): Promise<void> {
+    const fullKey = this.generateKey(prefix, key);
+
+    const serialized =
+      typeof value === 'string' ? (value as any) : JSON.stringify(value);
+    try {
+      if (ttlSeconds && ttlSeconds > 0) {
+        await this.redis.set(fullKey, serialized, 'EX', ttlSeconds);
+      } else {
+        await this.redis.set(fullKey, serialized);
+      }
+    } catch (err) {
+      console.error(`Redis SET failed for ${fullKey}: ${err.message}`);
+    }
+  }
+
+  async delete(prefix: RedisPrefixEnum, key: string): Promise<void> {
     await this.redis.del(`${prefix}:${key}`);
   }
 
   async flushAll(): Promise<void> {
-    await this.redis.flushall();
+    try {
+      await this.redis.flushall();
+    } catch (err) {
+      console.error('Redis FLUSHALL failed', err);
+    }
   }
 }

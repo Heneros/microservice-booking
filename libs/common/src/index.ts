@@ -28,7 +28,7 @@ export * from './rmq/rmq.module';
 // export * from './auth/auth.module';
 export * from './auth/jwt-auth.guard';
 
-export * from './guards/auth.guard';
+// export * from './guards/auth.guard';
 
 export * from './decorator/current-user.decorator';
 export * from './decorator/roles.decorator';
