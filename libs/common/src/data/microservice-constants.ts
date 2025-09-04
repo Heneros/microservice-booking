@@ -4,6 +4,7 @@ export const AUTH_SERVICE = {
   LOGOUT_USER: 'logout_user',
   REGISTER_USER: 'register_user',
   VALIDATE_USER: 'validate_user',
+  VERIFY_USER: 'verify_user',
 };
 
 export const USERS_SERVICE = {
@@ -15,4 +16,5 @@ export const USERS_SERVICE = {
 
 export const NOTIFY_SERVICE = {
   NOTIFY_USER_REGISTER: 'notifications.user.registered',
+  NOTIFY_USER_WELCOME: 'notifications.user.welcome',
 };

@@ -9,7 +9,11 @@ export class RmqService {
   ack(context: RmqContext) {
     const ch = context.getChannelRef();
     const msg = context.getMessage();
+      const deliveryTag = msg?.fields?.deliveryTag;
     //if (msg?.fields?.deliveryTag) ch.ack(msg);
+    if(!ch || !msg || !deliveryTag ){
+      return 
+    }
     ch.ack(msg);
   }
 

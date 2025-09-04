@@ -20,8 +20,9 @@ import { RegisterUserHandler } from './handlers/RegisterUser.handler';
 import { LoginUserHandler } from './handlers/LoginUser.handler';
 // import { VerifyJWTService } from './services/verifyJwt.service';
 import { JwtStrategy } from './jwt-strategy';
-import { JwtGuard } from './guards/jwt.guard';
+// import { JwtGuard } from './guards/jwt.guard';
 import { LogoutHandler } from './handlers/Logout.handler';
+import { VerifyUserlHandler } from './handlers/VerifyUser.handler';
 // import { NotificationsService } from '@/apps/notifications/src/notifications.service';
 
 @Module({
@@ -30,7 +31,7 @@ import { LogoutHandler } from './handlers/Logout.handler';
     PrismaService,
     // JwtAuthGuard,
     // RegisterUserHandler,
-    JwtGuard,
+    // JwtGuard,
     JwtStrategy,
     Repository.AuthRepository,
     Repository.VerifyResetTokenRepository,
@@ -38,6 +39,7 @@ import { LogoutHandler } from './handlers/Logout.handler';
     RegisterUserHandler,
     LoginUserHandler,
     LogoutHandler,
+    VerifyUserlHandler,
     // VerifyJWTService,
     // ...Object.values(Handlers),
     // ...Object.values(Repository),

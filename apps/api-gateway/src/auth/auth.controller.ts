@@ -5,6 +5,7 @@ import {
   Controller,
   Get,
   Inject,
+  Param,
   Post,
   Req,
   Res,
@@ -17,10 +18,16 @@ import {
   AUTH_CONTROLLER,
   AUTH_ROUTES,
   AUTH_SERVICE,
+  AuthEntity,
   CustomRequest,
   isDevelopment,
 } from '@/app/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 
 @Controller(AUTH_CONTROLLER)
 export class AuthController {
@@ -121,6 +128,40 @@ export class AuthController {
         throw error;
       }
       throw new BadGatewayException(error.message || 'Logout failed');
+    }
+  }
+
+  @Get(AUTH_ROUTES.VERIFY)
+  @ApiOperation({ summary: 'Verify email. Enter id user and token' })
+  @ApiCreatedResponse({
+    description: 'The user has been successfully verified email.',
+    type: AuthEntity,
+  })
+  @ApiNotFoundResponse({
+    description: 'Invalid or expired token.',
+  })
+  async verifyEmail(
+    @Param('emailToken') token: string,
+    @Param('userId') userId: number,
+  ) {
+    const payload = { token, userId };
+    try {
+      const res = await lastValueFrom(
+        this.apiService.send({ cmd: AUTH_SERVICE.VERIFY_USER }, payload).pipe(
+          timeout(5000),
+          catchError((error) => {
+            console.error('Error Verify', error);
+            return throwError(() => error);
+          }),
+        ),
+      );
+
+      return res;
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadGatewayException(error.message || 'Verify failed');
     }
   }
 

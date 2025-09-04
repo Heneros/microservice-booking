@@ -28,4 +28,21 @@ export class AuthRepository extends AbstractRepositoryPostgres<User> {
   async updateProfile(id: number, data): Promise<User | null> {
     return this.update({ id }, data);
   }
+  async verifyUser(userId: number) {
+    const updatedUser = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        isEmailVerified: true,
+      },
+    });
+    return updatedUser;
+  }
+
+  async findById(id) {
+    return await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
 }

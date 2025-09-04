@@ -32,6 +32,7 @@ import { LoginUserCommand } from './commands/LoginUser.command';
 import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { LogoutCommand } from './commands/Logout.command';
+import { VerifyUserQuery } from './queries/VerifyUser.query';
 // import { LoginUserCommand, RegisterUserCommand } from './commands/index';
 
 @Controller(AUTH_CONTROLLER)
@@ -102,5 +103,23 @@ export class AuthController {
   ping() {
     console.log('PING RECEIVED');
     return 'pong';
+  }
+
+  @MessagePattern({ cmd: AUTH_SERVICE.VERIFY_USER })
+  async verifyEmail(
+    @Payload() data: { token; userId },
+    @Ctx() context: RmqContext,
+  ) {
+    try {
+      const { token, userId } = data;
+      const result = await this.queryBus.execute(
+        new VerifyUserQuery(token, userId),
+      );
+         this.rmqService.ack(context);
+      return result;
+    } catch (error) {
+      this.rmqService.nack(context, false);
+      throw new RpcException(error.message);
+    }
   }
 }

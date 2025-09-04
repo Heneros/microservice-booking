@@ -55,10 +55,42 @@ export class NotificationsController {
 
         throw error;
       }
-
-      /////console.log('Email was sent!');
     } catch (error) {
       console.error('Err', error);
     }
   }
+@MessagePattern(NOTIFY_SERVICE.NOTIFY_USER_WELCOME)
+async welcomeEmail(@Payload() data: any, @Ctx() context: RmqContext) {
+  const channel = context.getChannelRef();
+  const originalMsg = context.getMessage();
+  
+  try {
+    const {  subject, template, user } = data;
+
+
+ 
+    // if (!user || !user.email || !user.username) {
+    //   throw new BadRequestException('Invalid user data');
+    // }
+
+    await this.notificationsService.welcomeEmail(
+
+      subject,
+          template,
+       user,
+  
+    );
+
+    channel.ack(originalMsg);
+    return user;
+  } catch (error) {
+    console.error('Error in welcomeEmail:', error);
+    channel.nack(originalMsg, false, false);
+    
+    if (error instanceof BadRequestException) {
+      throw error;
+    }
+    throw error;
+  }
+}
 }

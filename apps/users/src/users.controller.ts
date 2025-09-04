@@ -75,9 +75,6 @@ export class UsersController {
         statusCode: error.statusCode || 500,
       };
       throw new RpcException(errorResponse);
-
-      // this.rmqService.nack(context, false);
-      // throw new RpcException(error.message);
     }
   }
 }

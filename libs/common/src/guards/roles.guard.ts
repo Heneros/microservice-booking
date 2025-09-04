@@ -11,20 +11,16 @@ import { Reflector } from '@nestjs/core';
 export class RolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
-
   canActivate(context: ExecutionContext) {
     if (context.getType() === 'rpc') {
       return true;
-    }   
-
-
+    }
 
     const requiredRoles = this.reflector.getAllAndOverride('roles', [
       context.getHandler(),
       context.getClass(),
     ]);
     // console.log(requiredRoles);
-
 
     if (!requiredRoles || requiredRoles.length === 0) {
       return true;
