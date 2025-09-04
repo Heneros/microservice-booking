@@ -36,7 +36,7 @@ export class NotificationsService {
     });
   }
 
-  async welcomeEmail( subject: string, template: string, user: User) {
+  async welcomeEmail(subject: string, template: string, user: User) {
     const link = `${domain}/auth/login`;
 
     await this.mailerService.sendMail({

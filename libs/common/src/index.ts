@@ -12,6 +12,7 @@ export * from './entities/index';
 
 export * from './dtos/CreateUser.dto';
 export * from './dtos/LoginUser.dto';
+export * from './dtos/Email.dto';
 
 export * from './mongodb-database/monodb.module';
 export * from './mongodb-database/abstract.repository';
@@ -26,7 +27,7 @@ export * from './rmq/rmq.service';
 export * from './rmq/rmq.module';
 
 // export * from './auth/auth.module';
-export * from './auth/jwt-auth.guard';
+export * from './guards/jwt-auth.guard';
 
 // export * from './guards/auth.guard';
 

@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { LoginUserDto, RegisterUserDto } from './dto';
-import { catchError, lastValueFrom, throwError, timeout } from 'rxjs';
+import { catchError, last, lastValueFrom, throwError, timeout } from 'rxjs';
 import { Response } from 'express';
 import {
   AUTH_CONTROLLER,
@@ -20,6 +20,7 @@ import {
   AUTH_SERVICE,
   AuthEntity,
   CustomRequest,
+  EmailDto,
   isDevelopment,
 } from '@/app/common';
 import {
@@ -163,6 +164,38 @@ export class AuthController {
       }
       throw new BadGatewayException(error.message || 'Verify failed');
     }
+  }
+
+  @Post(AUTH_ROUTES.RESEND_EMAIL)
+  @ApiOperation({ summary: 'Action to resend email to receive token' })
+  @ApiCreatedResponse({
+    description: 'Email was successfully sent to user.',
+    type: AuthEntity,
+  })
+  async resendEmail(
+    @Body()
+    emailDto: EmailDto,
+  ) {
+    try {
+      const res = await lastValueFrom(
+        this.apiService
+          .send({ cmd: AUTH_SERVICE.RESEND_EMAIL }, emailDto.email)
+          .pipe(
+            timeout(5000),
+            catchError((error) => {
+              console.error('Error Verify', error);
+              return throwError(() => error);
+            }),
+          ),
+      );
+      return res;
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadGatewayException(error.message || 'Resend failed');
+    }
+    // console.log(emailDto.email)
   }
 
   @Get('ping')

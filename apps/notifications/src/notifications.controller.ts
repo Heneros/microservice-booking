@@ -59,38 +59,30 @@ export class NotificationsController {
       console.error('Err', error);
     }
   }
-@MessagePattern(NOTIFY_SERVICE.NOTIFY_USER_WELCOME)
-async welcomeEmail(@Payload() data: any, @Ctx() context: RmqContext) {
-  const channel = context.getChannelRef();
-  const originalMsg = context.getMessage();
-  
-  try {
-    const {  subject, template, user } = data;
+  @MessagePattern(NOTIFY_SERVICE.NOTIFY_USER_WELCOME)
+  async welcomeEmail(@Payload() data: any, @Ctx() context: RmqContext) {
+    const channel = context.getChannelRef();
+    const originalMsg = context.getMessage();
 
+    try {
+      const { subject, template, user } = data;
 
- 
-    // if (!user || !user.email || !user.username) {
-    //   throw new BadRequestException('Invalid user data');
-    // }
+      // if (!user || !user.email || !user.username) {
+      //   throw new BadRequestException('Invalid user data');
+      // }
 
-    await this.notificationsService.welcomeEmail(
+      await this.notificationsService.welcomeEmail(subject, template, user);
 
-      subject,
-          template,
-       user,
-  
-    );
+      channel.ack(originalMsg);
+      return user;
+    } catch (error) {
+      console.error('Error in welcomeEmail:', error);
+      channel.nack(originalMsg, false, false);
 
-    channel.ack(originalMsg);
-    return user;
-  } catch (error) {
-    console.error('Error in welcomeEmail:', error);
-    channel.nack(originalMsg, false, false);
-    
-    if (error instanceof BadRequestException) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
       throw error;
     }
-    throw error;
   }
-}
 }

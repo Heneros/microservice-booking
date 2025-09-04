@@ -10,7 +10,7 @@ import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 @QueryHandler(VerifyUserQuery)
-export class VerifyUserlHandler implements IQueryHandler<VerifyUserQuery> {
+export class VerifyUserHandler implements IQueryHandler<VerifyUserQuery> {
   constructor(
     @Inject('NOTIFICATIONS') private notificationsClient: ClientProxy,
     private readonly verifyResetTokenRepository: VerifyResetTokenRepository,
@@ -51,10 +51,9 @@ export class VerifyUserlHandler implements IQueryHandler<VerifyUserQuery> {
     );
 
     const data = {
-    
       subject: 'Your email is verified!',
       template: './welcome',
-        user: user,
+      user: user,
       //   token: emailVerificationToken.token,
     };
 

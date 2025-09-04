@@ -5,9 +5,11 @@ export const AUTH_ROUTES = {
   LOGIN: 'login',
   LOGOUT: 'logout',
   VERIFY: 'verify/:emailToken/:userId',
-  RESEND_EMAIL: 'resend_email_token/:userId',
+  RESEND_EMAIL: 'resend_email_verify',
+  RESEND_PASS: 'resend_password',
   RESET_PASSWORD: 'reset_password',
   RESET_PASSWORD_REQUEST: 'reset_password_request/:userId',
+
   GOOGLE: 'google',
   GOOGLE_CALLBACK: 'google/callback',
   GOOGLE_REDIRECT: 'google/redirect',

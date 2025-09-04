@@ -5,6 +5,7 @@ export const AUTH_SERVICE = {
   REGISTER_USER: 'register_user',
   VALIDATE_USER: 'validate_user',
   VERIFY_USER: 'verify_user',
+  RESEND_EMAIL: 'resend_email',
 };
 
 export const USERS_SERVICE = {

@@ -33,6 +33,7 @@ import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { LogoutCommand } from './commands/Logout.command';
 import { VerifyUserQuery } from './queries/VerifyUser.query';
+import { ResendEmailCommand } from './commands/ResendEmail.command';
 // import { LoginUserCommand, RegisterUserCommand } from './commands/index';
 
 @Controller(AUTH_CONTROLLER)
@@ -115,7 +116,22 @@ export class AuthController {
       const result = await this.queryBus.execute(
         new VerifyUserQuery(token, userId),
       );
-         this.rmqService.ack(context);
+      this.rmqService.ack(context);
+      return result;
+    } catch (error) {
+      this.rmqService.nack(context, false);
+      throw new RpcException(error.message);
+    }
+  }
+
+  @MessagePattern({ cmd: AUTH_SERVICE.RESEND_EMAIL })
+  async resendEmail(@Payload() email, @Ctx() context: RmqContext) {
+    try {
+      // console.log(email);
+      const result = await this.commandBus.execute(
+        new ResendEmailCommand(email),
+      );
+      this.rmqService.ack(context);
       return result;
     } catch (error) {
       this.rmqService.nack(context, false);

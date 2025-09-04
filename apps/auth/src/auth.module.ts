@@ -22,7 +22,8 @@ import { LoginUserHandler } from './handlers/LoginUser.handler';
 import { JwtStrategy } from './jwt-strategy';
 // import { JwtGuard } from './guards/jwt.guard';
 import { LogoutHandler } from './handlers/Logout.handler';
-import { VerifyUserlHandler } from './handlers/VerifyUser.handler';
+import { VerifyUserHandler } from './handlers/VerifyUser.handler';
+import { ResendEmailHandler } from './handlers/ResendEmail.handler';
 // import { NotificationsService } from '@/apps/notifications/src/notifications.service';
 
 @Module({
@@ -39,7 +40,8 @@ import { VerifyUserlHandler } from './handlers/VerifyUser.handler';
     RegisterUserHandler,
     LoginUserHandler,
     LogoutHandler,
-    VerifyUserlHandler,
+    VerifyUserHandler,
+    ResendEmailHandler,
     // VerifyJWTService,
     // ...Object.values(Handlers),
     // ...Object.values(Repository),
