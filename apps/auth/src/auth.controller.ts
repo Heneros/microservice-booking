@@ -34,6 +34,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LogoutCommand } from './commands/Logout.command';
 import { VerifyUserQuery } from './queries/VerifyUser.query';
 import { ResendEmailCommand } from './commands/ResendEmail.command';
+import { ResetPasswordRequestCommand } from './commands/RequestResetPassword.command';
 // import { LoginUserCommand, RegisterUserCommand } from './commands/index';
 
 @Controller(AUTH_CONTROLLER)
@@ -80,7 +81,7 @@ export class AuthController {
         },
       };
     } catch (error) {
-      this.rmqService.nack(context, true);
+      this.rmqService.nack(context, false);
       throw new RpcException(error.message);
     }
   }
@@ -130,6 +131,21 @@ export class AuthController {
       // console.log(email);
       const result = await this.commandBus.execute(
         new ResendEmailCommand(email),
+      );
+      this.rmqService.ack(context);
+      return result;
+    } catch (error) {
+      this.rmqService.nack(context, false);
+      throw new RpcException(error.message);
+    }
+  }
+
+  @MessagePattern({ cmd: AUTH_SERVICE.RESET_REQUEST_PASSWORD })
+  async resetRequestPassword(@Payload() email, @Ctx() context: RmqContext) {
+    try {
+      // console.log(email);
+      const result = await this.commandBus.execute(
+        new ResetPasswordRequestCommand(email),
       );
       this.rmqService.ack(context);
       return result;

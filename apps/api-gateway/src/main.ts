@@ -1,10 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import session from 'express-session';
 import { ApiGatewayModule } from './api-gateway.module';
-import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
-import { AUTH_SERVICE, domain, RmqService } from '@/app/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {

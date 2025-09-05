@@ -14,6 +14,8 @@ export * from './dtos/CreateUser.dto';
 export * from './dtos/LoginUser.dto';
 export * from './dtos/Email.dto';
 
+export * from './pipe/EmailValidation.pipe';
+
 export * from './mongodb-database/monodb.module';
 export * from './mongodb-database/abstract.repository';
 export * from './mongodb-database/abstract.schema';

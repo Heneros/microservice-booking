@@ -6,9 +6,10 @@ export const AUTH_ROUTES = {
   LOGOUT: 'logout',
   VERIFY: 'verify/:emailToken/:userId',
   RESEND_EMAIL: 'resend_email_verify',
+
   RESEND_PASS: 'resend_password',
   RESET_PASSWORD: 'reset_password',
-  RESET_PASSWORD_REQUEST: 'reset_password_request/:userId',
+  RESET_PASSWORD_REQUEST: 'reset_password_request',
 
   GOOGLE: 'google',
   GOOGLE_CALLBACK: 'google/callback',

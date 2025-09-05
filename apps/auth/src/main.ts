@@ -18,7 +18,7 @@ async function bootstrap() {
       options: {
         urls: ['amqp://user:password@rabbitmq:5672'],
         queue: 'auth_queue',
-        queueOptions: { durable: false },
+        queueOptions: { durable: true },
         prefetchCount: 5,
         noAck: false,
         exchange: 'app_change',

@@ -63,4 +63,21 @@ export class NotificationsService {
       context: payload,
     });
   }
+
+  async requestPassword(
+    subject: string,
+    template: string,
+    user: User,
+    link: string,
+  ) {
+    await this.mailerService.sendMail({
+      to: user.email,
+      subject: subject,
+      template: template,
+      context: {
+        username: user.username,
+        link,
+      },
+    });
+  }
 }

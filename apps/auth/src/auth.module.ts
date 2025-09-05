@@ -24,6 +24,7 @@ import { JwtStrategy } from './jwt-strategy';
 import { LogoutHandler } from './handlers/Logout.handler';
 import { VerifyUserHandler } from './handlers/VerifyUser.handler';
 import { ResendEmailHandler } from './handlers/ResendEmail.handler';
+import { ResetPasswordRequestHandler } from './handlers/RequestResetPassword.handler';
 // import { NotificationsService } from '@/apps/notifications/src/notifications.service';
 
 @Module({
@@ -42,7 +43,9 @@ import { ResendEmailHandler } from './handlers/ResendEmail.handler';
     LogoutHandler,
     VerifyUserHandler,
     ResendEmailHandler,
+    ResetPasswordRequestHandler,
     // VerifyJWTService,
+
     // ...Object.values(Handlers),
     // ...Object.values(Repository),
 

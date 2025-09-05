@@ -66,17 +66,41 @@ export class NotificationsController {
 
     try {
       const { subject, template, user } = data;
-
-      // if (!user || !user.email || !user.username) {
-      //   throw new BadRequestException('Invalid user data');
-      // }
-
       await this.notificationsService.welcomeEmail(subject, template, user);
 
       channel.ack(originalMsg);
       return user;
     } catch (error) {
       console.error('Error in welcomeEmail:', error);
+      channel.nack(originalMsg, false, false);
+
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw error;
+    }
+  }
+
+  @MessagePattern(NOTIFY_SERVICE.NOTIFY_USER_REQUEST_PASS)
+  async requestPassword(@Payload() data: any, @Ctx() context: RmqContext) {
+    const channel = context.getChannelRef();
+    const originalMsg = context.getMessage();
+
+    try {
+      const { subject, template, user, link } = data;
+
+      console.log('data',data)
+      await this.notificationsService.requestPassword(
+        subject,
+        template,
+        user,
+        link,
+      );
+
+      channel.ack(originalMsg);
+      return user;
+    } catch (error) {
+      console.error('Error in requestPassword:', error);
       channel.nack(originalMsg, false, false);
 
       if (error instanceof BadRequestException) {

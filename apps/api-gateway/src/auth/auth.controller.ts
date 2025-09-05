@@ -21,11 +21,13 @@ import {
   AuthEntity,
   CustomRequest,
   EmailDto,
+  EmailValidationPipe,
   isDevelopment,
 } from '@/app/common';
 import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
@@ -196,6 +198,37 @@ export class AuthController {
       throw new BadGatewayException(error.message || 'Resend failed');
     }
     // console.log(emailDto.email)
+  }
+
+  @Post(AUTH_ROUTES.RESET_PASSWORD_REQUEST)
+  @ApiOperation({
+    summary: 'Request for users who wants receive in email to change password',
+  })
+  @ApiCreatedResponse({
+    description: 'On email was sent request to reset password',
+    type: AuthEntity,
+  })
+  @ApiOkResponse({ type: AuthEntity })
+  async requestResetPassword(@Body(EmailValidationPipe) emailDto: EmailDto) {
+    try {
+      const res = await lastValueFrom(
+        this.apiService
+          .send({ cmd: AUTH_SERVICE.RESET_REQUEST_PASSWORD }, emailDto.email)
+          .pipe(
+            timeout(5000),
+            catchError((error) => {
+              console.error('Error Verify', error);
+              return throwError(() => error);
+            }),
+          ),
+      );
+      return res;
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadGatewayException(error.message || 'Resend failed');
+    }
   }
 
   @Get('ping')

@@ -42,10 +42,10 @@ export class ResendEmailHandler implements ICommandHandler<ResendEmailCommand> {
       }
 
       const token = randomBytes(32).toString('hex');
-const userId = user.id
-      const userToken = await this.verifyResetToken.findUnique({userId})
-      if(userToken){
-         await this.verifyResetToken.deleteToken(userId)
+      const userId = user.id;
+      const userToken = await this.verifyResetToken.findUnique({ userId });
+      if (userToken) {
+        await this.verifyResetToken.deleteToken(userId);
       }
 
       const emailVerificationToken = await this.verifyResetToken.createToken({
@@ -62,10 +62,10 @@ const userId = user.id
 
       this.notificationsClient.emit(NOTIFY_SERVICE.NOTIFY_USER_REGISTER, data);
 
-               return {
-                message: 'Email was successfully sent',
-                status: 200,
-            };
+      return {
+        message: 'Email was successfully sent',
+        status: 200,
+      };
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
