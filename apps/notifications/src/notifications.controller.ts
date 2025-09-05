@@ -89,7 +89,7 @@ export class NotificationsController {
     try {
       const { subject, template, user, link } = data;
 
-      console.log('data',data)
+      console.log('data', data);
       await this.notificationsService.requestPassword(
         subject,
         template,

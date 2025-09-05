@@ -5,5 +5,4 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 @Injectable()
 export class AuthService {
   constructor(private readonly userRepository: UserRepository) {}
-
 }

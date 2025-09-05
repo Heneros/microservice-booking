@@ -10,7 +10,7 @@ import { PrismaService } from '../postgresql-database/postgres.service';
 @Injectable()
 export class EmailValidationPipe implements PipeTransform {
   constructor(
-  private prisma : PrismaService,
+    private prisma: PrismaService,
     // private authRepository: AuthRepository,
   ) {}
   async transform(value: { email: string }) {
@@ -19,9 +19,9 @@ export class EmailValidationPipe implements PipeTransform {
     }
 
     const user = await this.prisma.user.findUnique({
-      where:{
-        email: value.email
-      }
+      where: {
+        email: value.email,
+      },
     });
 
     if (!user) {
