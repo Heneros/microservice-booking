@@ -3,7 +3,7 @@ import { ApiGatewayController } from './api-gateway.controller';
 import { ApiGatewayService } from './api-gateway.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import Joi from 'joi';
- import { ThrottlerModule } from '@nestjs/throttler';
+// import { ThrottlerModule } from '@nestjs/throttler';
 import {
   isDevelopment,
   isTest,
@@ -41,9 +41,9 @@ import { JwtModule } from '@nestjs/jwt';
       }),
       inject: [ConfigService],
     }),
-    ThrottlerModule.forRoot({
-      throttlers: [{ ttl: 60, limit: 5 }],
-    }),
+    // ThrottlerModule.forRoot({
+    //   throttlers: [{ ttl: 60, limit: 5 }],
+    // }),
   ],
   controllers: [ApiGatewayController, AuthController, UsersController],
   providers: [
