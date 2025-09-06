@@ -25,6 +25,9 @@ import { LogoutHandler } from './handlers/Logout.handler';
 import { VerifyUserHandler } from './handlers/VerifyUser.handler';
 import { ResendEmailHandler } from './handlers/ResendEmail.handler';
 import { ResetPasswordRequestHandler } from './handlers/RequestResetPassword.handler';
+import { ResetPasswordHandler } from './handlers/ResetPassword.handler';
+// import { APP_GUARD } from '@nestjs/core';
+// import { ThrottlerGuard } from '@nestjs/throttler';
 // import { NotificationsService } from '@/apps/notifications/src/notifications.service';
 
 @Module({
@@ -44,14 +47,17 @@ import { ResetPasswordRequestHandler } from './handlers/RequestResetPassword.han
     VerifyUserHandler,
     ResendEmailHandler,
     ResetPasswordRequestHandler,
+    ResetPasswordHandler,
     // VerifyJWTService,
 
     // ...Object.values(Handlers),
     // ...Object.values(Repository),
 
     RmqService,
-    // NotificationsService
-    // LocalSt
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: ThrottlerGuard,
+    // },
   ],
   imports: [
     ConfigModule.forRoot({

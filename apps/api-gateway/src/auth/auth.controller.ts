@@ -6,7 +6,9 @@ import {
   Get,
   Inject,
   Param,
+  ParseIntPipe,
   Post,
+  Query,
   Req,
   Res,
 } from '@nestjs/common';
@@ -23,6 +25,7 @@ import {
   EmailDto,
   EmailValidationPipe,
   isDevelopment,
+  ResetPasswordDto,
 } from '@/app/common';
 import {
   ApiCreatedResponse,
@@ -218,6 +221,43 @@ export class AuthController {
             timeout(5000),
             catchError((error) => {
               console.error('Error Verify', error);
+              return throwError(() => error);
+            }),
+          ),
+      );
+      return res;
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadGatewayException(error.message || 'Resend failed');
+    }
+  }
+
+  @Post(AUTH_ROUTES.RESET_PASSWORD)
+  @ApiOperation({
+    summary: 'Request for users who wants receive in email to change password',
+  })
+  @ApiCreatedResponse({
+    description: 'On email was sent request to reset password',
+    type: AuthEntity,
+  })
+  @ApiOkResponse({ type: AuthEntity })
+  async resetPassword(
+    @Query('emailToken') emailToken: string,
+    @Query('userId', ParseIntPipe) userId: number,
+
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ) {
+    const payload = { userId, emailToken, resetPasswordDto };
+    try {
+      const res = await lastValueFrom(
+        this.apiService
+          .send({ cmd: AUTH_SERVICE.RESET_PASSWORD }, payload)
+          .pipe(
+            timeout(5000),
+            catchError((error) => {
+              console.error('Error Reset', error);
               return throwError(() => error);
             }),
           ),

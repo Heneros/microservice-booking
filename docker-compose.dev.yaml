@@ -195,6 +195,7 @@ services:
    volumes:
      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
      - ./docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+     - ./logs/nginx:/var/log/nginx
    networks:
       micro_booking:
     

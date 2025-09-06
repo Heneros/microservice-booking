@@ -7,6 +7,7 @@ export const AUTH_SERVICE = {
   VERIFY_USER: 'verify_user',
   RESEND_EMAIL: 'resend_email',
   RESET_REQUEST_PASSWORD: 'reset_request_password',
+  RESET_PASSWORD: 'reset_password',
 };
 
 export const USERS_SERVICE = {
@@ -20,4 +21,5 @@ export const NOTIFY_SERVICE = {
   NOTIFY_USER_REGISTER: 'notifications.user.registered',
   NOTIFY_USER_WELCOME: 'notifications.user.welcome',
   NOTIFY_USER_REQUEST_PASS: 'notifications.user.request',
+  NOTIFY_USER_SUCCESS_PASS: 'notifications.user.password.success',
 };

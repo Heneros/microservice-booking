@@ -94,10 +94,11 @@ describe('VerifyUser', () => {
     (authRepository.findById as jest.Mock).mockResolvedValue(mockUser);
     const query = new VerifyUserQuery('12qw', 123);
     await expect(handler.execute(query)).rejects.toThrow(BadRequestException);
-    await expect(handler.execute(query)).rejects.toThrow('Email already verified');
+    await expect(handler.execute(query)).rejects.toThrow(
+      'Email already verified',
+    );
   });
 
-  
   it('should throw BadRequestException if token expired', async () => {
     const mockUser = {
       id: 123,

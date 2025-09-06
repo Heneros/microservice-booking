@@ -36,11 +36,18 @@ export class AuthRepository extends AbstractRepositoryPostgres<User> {
     return updatedUser;
   }
 
-  async findById(id) {
+  async findById(id: number) {
     return await this.prisma.user.findUnique({
       where: {
         id,
       },
+    });
+  }
+
+  async updatePassword(userId: number, newPassword: string) {
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: { password: newPassword },
     });
   }
 }

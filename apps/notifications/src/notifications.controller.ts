@@ -24,14 +24,12 @@ export class NotificationsController {
   ) {
     try {
       const { title, template, token } = data;
-      // console.log('data', data);
-      // console.log('datats', title, template, token )
       const emailId = `${RedisPrefixEnum.NOTIFICATION_SEND_EMAIL}:${data.user.email}:${data.user.id}`;
       // const msg = context.getMessage();
       const alreadySent = await this.redisService.getEmailNotify(emailId);
 
       if (alreadySent) {
-        console.log('Sent Already', alreadySent);
+        //   console.log('Sent Already', alreadySent);
         return;
       }
       // console.log('Test', alreadySent)
@@ -89,7 +87,7 @@ export class NotificationsController {
     try {
       const { subject, template, user, link } = data;
 
-      console.log('data', data);
+      // console.log('data', data);
       await this.notificationsService.requestPassword(
         subject,
         template,
@@ -101,6 +99,35 @@ export class NotificationsController {
       return user;
     } catch (error) {
       console.error('Error in requestPassword:', error);
+      channel.nack(originalMsg, false, false);
+
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw error;
+    }
+  }
+
+  @MessagePattern(NOTIFY_SERVICE.NOTIFY_USER_SUCCESS_PASS)
+  async resetPassword(@Payload() data: any, @Ctx() context: RmqContext) {
+    const channel = context.getChannelRef();
+    const originalMsg = context.getMessage();
+
+    try {
+      const { subject, template, user, link } = data;
+
+      // console.log('data', data);
+      await this.notificationsService.requestPassword(
+        subject,
+        template,
+        user,
+        link,
+      );
+
+      channel.ack(originalMsg);
+      return user;
+    } catch (error) {
+      console.error('Error in resetPassword:', error);
       channel.nack(originalMsg, false, false);
 
       if (error instanceof BadRequestException) {

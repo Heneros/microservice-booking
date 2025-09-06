@@ -3,7 +3,7 @@ import { ApiGatewayController } from './api-gateway.controller';
 import { ApiGatewayService } from './api-gateway.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import Joi from 'joi';
-
+ import { ThrottlerModule } from '@nestjs/throttler';
 import {
   isDevelopment,
   isTest,
@@ -22,6 +22,7 @@ import { JwtModule } from '@nestjs/jwt';
       validationSchema: Joi.object({
         RABBIT_MQ_URI: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
+        NODE_ENV: Joi.string().required(),
         // RABBIT_MQ_API_QUEUE: Joi.string().required(),
       }),
       envFilePath: isTest
@@ -39,6 +40,9 @@ import { JwtModule } from '@nestjs/jwt';
         // },
       }),
       inject: [ConfigService],
+    }),
+    ThrottlerModule.forRoot({
+      throttlers: [{ ttl: 60, limit: 5 }],
     }),
   ],
   controllers: [ApiGatewayController, AuthController, UsersController],

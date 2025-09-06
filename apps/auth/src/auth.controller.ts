@@ -29,12 +29,12 @@ import {
 import { RegisterUserCommand } from './commands/RegisterUser.command';
 import { LoginUserCommand } from './commands/LoginUser.command';
 
-import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
-import { LogoutCommand } from './commands/Logout.command';
 import { VerifyUserQuery } from './queries/VerifyUser.query';
 import { ResendEmailCommand } from './commands/ResendEmail.command';
 import { ResetPasswordRequestCommand } from './commands/RequestResetPassword.command';
+import { ResetPasswordCommand } from './commands/ResetPassword.command';
+
 // import { LoginUserCommand, RegisterUserCommand } from './commands/index';
 
 @Controller(AUTH_CONTROLLER)
@@ -146,6 +146,22 @@ export class AuthController {
       // console.log(email);
       const result = await this.commandBus.execute(
         new ResetPasswordRequestCommand(email),
+      );
+      this.rmqService.ack(context);
+      return result;
+    } catch (error) {
+      this.rmqService.nack(context, false);
+      throw new RpcException(error.message);
+    }
+  }
+
+  @MessagePattern({ cmd: AUTH_SERVICE.RESET_PASSWORD })
+  async resetPassword(@Payload() data, @Ctx() context: RmqContext) {
+    try {
+      // console.log(email);
+      const { userId, emailToken, resetPasswordDto } = data;
+      const result = await this.commandBus.execute(
+        new ResetPasswordCommand(userId, emailToken, resetPasswordDto),
       );
       this.rmqService.ack(context);
       return result;
