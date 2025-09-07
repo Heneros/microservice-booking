@@ -34,6 +34,7 @@ import {
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller(AUTH_CONTROLLER)
 export class AuthController {
@@ -63,6 +64,7 @@ export class AuthController {
     }
   }
 
+  @Throttle({ default: { limit: 5, ttl: 600 } })
   @Post(AUTH_ROUTES.LOGIN)
   @ApiResponse({
     status: 200,
