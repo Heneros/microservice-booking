@@ -1,13 +1,20 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetProfileQuery } from '../query/GetProfile.query';
-import { UserRepository } from '@/app/common';
-import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
+import { RedisPrefixEnum, UserRepository } from '@/app/common';
+import {
+  BadRequestException,
+  HttpException,
+  Inject,
+  NotFoundException,
+} from '@nestjs/common';
 import { RedisService } from '@/app/common/redis/redis.service';
+import { RedisRepository } from '@/app/common/redis/redis.repository';
+import { CACHE_TTL } from '@/app/common/data/ttl';
 
 @QueryHandler(GetProfileQuery)
 export class GetProfileUserHandler implements IQueryHandler<GetProfileQuery> {
   constructor(
-    @Inject(RedisService) private readonly redisService: RedisService,
+    private readonly redisRepository: RedisRepository,
     private readonly userRepository: UserRepository,
   ) {}
 
@@ -16,7 +23,11 @@ export class GetProfileUserHandler implements IQueryHandler<GetProfileQuery> {
       const { userId } = query;
 
       const start = performance.now();
-      const userCached = await this.redisService.getProfile(Number(userId));
+      const userCached = await this.redisRepository.get(
+        RedisPrefixEnum.USERS_ID,
+        String(userId),
+      );
+
       //  console.log('userId32', userId);
       if (userCached) {
         // console.log(
@@ -34,11 +45,16 @@ export class GetProfileUserHandler implements IQueryHandler<GetProfileQuery> {
 
       // console.log('query', query);
 
-      await this.redisService.saveUser(Number(user.id), user);
-
+      // await this.redisService.saveUser(Number(user.id), user);
+      await this.redisRepository.set(
+        RedisPrefixEnum.USERS_ID,
+        String(userId),
+        user,
+        CACHE_TTL.HALF_HOUR,
+      );
       return user;
     } catch (error) {
-      if (error instanceof BadRequestException) {
+      if (error instanceof BadRequestException || HttpException) {
         throw error;
       }
 

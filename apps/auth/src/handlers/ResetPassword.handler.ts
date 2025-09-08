@@ -36,7 +36,6 @@ export class ResetPasswordHandler
       throw new BadRequestException(
         'Your token is either invalid or expired. Try resetting your password again',
       );
-      return;
     }
     const user = await this.authRepository.findById(userId);
     if (user && verificationToken) {

@@ -1,10 +1,10 @@
 import { AuthRepository, VerifyResetTokenRepository } from '@/app/common';
-import { RegisterUserCommand } from '../commands/RegisterUser.command';
-import { BadRequestException } from '@nestjs/common';
+
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserHandler } from './LoginUser.handler';
 import { LoginUserCommand } from '../commands/LoginUser.command';
 import bcrypt from 'bcryptjs';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('LoginUserHandler', () => {
   let handler: LoginUserHandler;
@@ -94,5 +94,49 @@ describe('LoginUserHandler', () => {
     expect(authRepository.updateProfile).toHaveBeenCalledWith(1, {
       refreshToken: ['access-token'],
     });
+  });
+
+  it('Throws NotFoundException when user not found', async () => {
+    const loginDto = {
+      email: 'nonexistent@example.com',
+      password: 'password123',
+    };
+
+    authRepository.findByEmail.mockResolvedValue(null);
+    await expect(
+      handler.execute(new LoginUserCommand(loginDto)),
+    ).rejects.toThrow(NotFoundException);
+    expect(authRepository.findByEmail).toHaveBeenCalledWith(loginDto.email);
+  });
+
+  it('Throws BadRequestException when password is invalid', async () => {
+    const loginDto = {
+      email: 'user@example.com',
+      password: 'wrong_password',
+    };
+
+    const user = {
+      id: 1,
+      email: 'user@example.com',
+      password: await bcrypt.hash('correct_password', 10),
+      blocked: false,
+      username: 'test_user',
+      roles: ['user'],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isEmailVerified: true,
+      avatarId: null,
+      refreshToken: [],
+      provider: 'local',
+      googleId: null,
+      githubId: null,
+      discordId: null,
+    };
+
+    authRepository.findByEmail.mockResolvedValue(user);
+
+    await expect(
+      handler.execute(new LoginUserCommand(loginDto)),
+    ).rejects.toThrow(BadRequestException);
   });
 });

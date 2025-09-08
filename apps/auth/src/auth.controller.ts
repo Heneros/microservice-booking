@@ -159,9 +159,9 @@ export class AuthController {
   async resetPassword(@Payload() data, @Ctx() context: RmqContext) {
     try {
       // console.log(email);
-      const { userId, emailToken, resetPasswordDto } = data;
+      const { userId, resetPasswordDto } = data;
       const result = await this.commandBus.execute(
-        new ResetPasswordCommand(userId, emailToken, resetPasswordDto),
+        new ResetPasswordCommand(userId, resetPasswordDto),
       );
       this.rmqService.ack(context);
       return result;

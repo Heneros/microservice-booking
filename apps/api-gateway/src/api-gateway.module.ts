@@ -3,7 +3,7 @@ import { ApiGatewayController } from './api-gateway.controller';
 import { ApiGatewayService } from './api-gateway.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import Joi from 'joi';
- import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import {
   isDevelopment,
   isTest,
@@ -53,7 +53,7 @@ import { APP_GUARD } from '@nestjs/core';
     //   provide: APP_INTERCEPTOR,
     //   useClass: UserInterceptor,
     // },
-     { provide: APP_GUARD, useClass: ThrottlerGuard },
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
 })
 export class ApiGatewayModule {}

@@ -2,7 +2,7 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { FindAllUsersQuery } from '../query/FindAllUsers.query';
 import { RedisPrefixEnum, UserRepository } from '@/app/common';
 import { Inject, NotFoundException } from '@nestjs/common';
-import { RedisService } from '@/app/common/redis/redis.service';
+
 import { RedisRepository } from '@/app/common/redis/redis.repository';
 import { CACHE_TTL } from '@/app/common/data/ttl';
 
@@ -25,7 +25,7 @@ export class FindAllUsersHandler implements IQueryHandler<FindAllUsersQuery> {
     if (cached) {
       const end = Date.now();
 
-      console.log(`Cache HIT for page ${page}, took ${end - start}ms`);
+      // console.log(`Cache HIT for page ${page}, took ${end - start}ms`);
       return cached;
     }
 

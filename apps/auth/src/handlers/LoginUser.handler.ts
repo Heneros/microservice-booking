@@ -1,7 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import bcrypt from 'bcryptjs';
 
-import { BadRequestException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserCommand } from '../commands/LoginUser.command';
 import { AuthRepository, VerifyResetTokenRepository } from '@/app/common';
@@ -20,7 +24,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
       const user = await this.authRepository.findByEmail(logInDto.email);
 
       if (!user) {
-        throw new BadRequestException('User not found');
+        throw new NotFoundException('User not found');
       }
       if (user.blocked) {
         throw new BadRequestException('User is blocked');
@@ -66,7 +70,7 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
         },
       };
     } catch (error) {
-      if (error instanceof BadRequestException) {
+      if (error instanceof BadRequestException || HttpException) {
         throw error;
       }
 
