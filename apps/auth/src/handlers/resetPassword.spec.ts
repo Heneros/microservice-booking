@@ -1,7 +1,6 @@
 import { AuthRepository, VerifyResetTokenRepository } from '@/app/common';
 
 import { ResetPasswordHandler } from './ResetPassword.handler';
-import { ClientProxy } from '@nestjs/microservices';
 
 jest.mock('bcrypt', () => ({
   hash: jest.fn().mockResolvedValue('hashedpwd'),
@@ -16,16 +15,15 @@ describe('ResetPasswordHandler', () => {
 
   let authRepository: {
     findById: jest.Mock;
-    updatePassword: jest.Mock,
-  }
+    updatePassword: jest.Mock;
+  };
   let verifyResetTokenRepository: {
-    findUnique: jest.Mock,
-  }
+    findUnique: jest.Mock;
+  };
 
-  let notificationsClient :{
-    emit: jest.Mock,
-  } ;
-
+  let notificationsClient: {
+    emit: jest.Mock;
+  };
 
   beforeEach(() => {
     notificationsClient = { emit: jest.fn() };
@@ -85,39 +83,40 @@ describe('ResetPasswordHandler', () => {
       'hashedpwd',
     );
     expect(notificationsClient.emit).toHaveBeenCalledTimes(1);
-    (expect.any(String), expect.objectContaining({
-      user,
-      subject: expect.any(String),
-      template: expect.any(String),
-    }))
-    expect(result).toEqual({ message: 'Your password was reset successfully!' });
-
+    expect.any(String),
+      expect.objectContaining({
+        user,
+        subject: expect.any(String),
+        template: expect.any(String),
+      });
+    expect(result).toEqual({
+      message: 'Your password was reset successfully!',
+    });
   });
 
-  it("Passwords don't match ", async() =>{
-        const dto = { password: 'a', passwordConfirm: 'b' };
+  it("Passwords don't match ", async () => {
+    const dto = { password: 'a', passwordConfirm: 'b' };
     const cmd = new ResetPasswordCommand(1, dto);
 
     await expect(handler.execute(cmd)).rejects.toThrow(BadRequestException);
     await expect(handler.execute(cmd)).rejects.toThrow('Password do not match');
-    expect(verifyResetTokenRepository.findUnique).not.toHaveBeenCalled()
+    expect(verifyResetTokenRepository.findUnique).not.toHaveBeenCalled();
     expect(authRepository.findById).not.toHaveBeenCalled();
-    expect(notificationsClient.emit).not.toHaveBeenCalled()
-  })
+    expect(notificationsClient.emit).not.toHaveBeenCalled();
+  });
 
-
-  it("Throws  if BadRequestException, if token not exist", async() =>{
-        const dto = { password: 'a', passwordConfirm: 'a' };
+  it('Throws  if BadRequestException, if token not exist', async () => {
+    const dto = { password: 'a', passwordConfirm: 'a' };
     const cmd = new ResetPasswordCommand(5, dto);
 
-  verifyResetTokenRepository.findUnique.mockResolvedValue(null)
-   await expect(handler.execute(cmd)).rejects.toThrow(BadRequestException)
+    verifyResetTokenRepository.findUnique.mockResolvedValue(null);
+    await expect(handler.execute(cmd)).rejects.toThrow(BadRequestException);
 
+    await expect(handler.execute(cmd)).rejects.toThrow(
+      'Your token is either invalid or expired. Try resetting your password again',
+    );
 
-   await expect(handler.execute(cmd)).rejects.toThrow('Your token is either invalid or expired. Try resetting your password again');
-
-   expect(authRepository.findById).not.toHaveBeenCalled()
-   expect(notificationsClient.emit).not.toHaveBeenCalled()
-  })
-
+    expect(authRepository.findById).not.toHaveBeenCalled();
+    expect(notificationsClient.emit).not.toHaveBeenCalled();
+  });
 });
