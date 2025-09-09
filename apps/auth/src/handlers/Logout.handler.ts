@@ -4,7 +4,7 @@ import { AuthRepository } from '@/app/common';
 
 @CommandHandler(LogoutCommand)
 export class LogoutHandler implements ICommandHandler<LogoutCommand> {
-  constructor(private readonly authRepository: AuthRepository) {}
+  constructor() {}
 
   async execute(command: LogoutCommand) {
     const { req, res } = command;
