@@ -15,6 +15,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/apps/nest-microservice/main",
     "docker:dev:build": "docker compose -f docker-compose.dev.yaml up -d --build ",
+    "docker:prod:build": "docker compose -f docker-compose.dev.yaml up -d --build ",
     "docker:dev:run": "docker compose -f docker-compose.dev.yaml up -d",
     "docker:dev:down": "docker compose -f docker-compose.dev.yaml down",
     "docker:dev:remove": "docker-compose -f docker-compose.dev.yaml down --volumes --remove-orphans",

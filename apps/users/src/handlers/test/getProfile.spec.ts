@@ -4,8 +4,8 @@ import bcrypt from 'bcryptjs';
 import { NotFoundException } from '@nestjs/common';
 import { RedisRepository } from '@/app/common/redis/redis.repository';
 import { CACHE_TTL } from '@/app/common/data/ttl';
-import { GetProfileUserHandler } from './GetProfile.handler';
-import { GetProfileQuery } from '../query/GetProfile.query';
+import { GetProfileUserHandler } from '../GetProfile.handler';
+import { GetProfileQuery } from '../../query/GetProfile.query';
 
 describe('GetProfileUserHandler', () => {
   let handler: GetProfileUserHandler;

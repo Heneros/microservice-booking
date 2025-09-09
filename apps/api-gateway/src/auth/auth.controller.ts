@@ -15,17 +15,23 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { LoginUserDto, RegisterUserDto } from './dto';
 import { catchError, last, lastValueFrom, throwError, timeout } from 'rxjs';
-import { Response } from 'express';
+import type { Response } from 'express';
 import {
   AUTH_CONTROLLER,
   AUTH_ROUTES,
   AUTH_SERVICE,
   AuthEntity,
-  CustomRequest,
+
   EmailDto,
   EmailValidationPipe,
   isDevelopment,
   ResetPasswordDto,
+} from '@/app/common';
+
+import  type{
+
+  CustomRequest,
+
 } from '@/app/common';
 import {
   ApiCreatedResponse,

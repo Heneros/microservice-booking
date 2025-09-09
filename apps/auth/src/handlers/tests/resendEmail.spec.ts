@@ -3,13 +3,11 @@ import { AuthRepository, VerifyResetTokenRepository } from '@/app/common';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { ResendEmailHandler } from '../ResendEmail.handler';
 import { ResendEmailCommand } from '../../commands/ResendEmail.command';
-
+import * as crypto from 'crypto';
 
 if (!(crypto as any).randomUUID) {
   (crypto as any).randomUUID = () => '00000000-0000-4000-8000-000000000000';
 }
-import * as crypto from 'crypto';
-
 
 describe('resendEmail', () => {
   let handler: ResendEmailHandler;

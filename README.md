@@ -1,23 +1,80 @@
-Microservice app for booking hotels/apartments, 
-with calender (google calendar API) with payment (stripe or paypal)
-and notifications(websocket + email).
+Microservice app for booking hotels/apartments, with elements E-commerce. using RMQ with RBAC.
+Architecture CQRS.
+Testing Unit(jest).
+Swagger  Documentation
+
+
+
+## Functionality.IN module Auth 
+- Register with validation email. with DTO/Entity
+- Login.
+- Resend Email with validation code
+- Logout
+- Reset password
+- Request Password
+- Verify User. In mailbox user should receive valid token during 15 min, he should visit this link.
+
+
+## Functionality.IN module Users
+
+- Get
+
+
+
+## Installation with docker-compose
+
+Rename file .env.example to .env 
+
+```bash
+mv .env.example .env
+```
+
+Build project
+
+
+```bash
+  npm run docker:prod:build
+```
+
+
+Initialized Prisma 
+
+
+```bash
+  docker-compose -f docker-compose.dev.yaml exec auth npm run prisma:build
+  docker-compose -f docker-compose.dev.yaml exec users npm run prisma:build
+```
+
+Unit tests
+
+```bash
+ npm run test:unit
+
+```
+
 
 ## Modules
 - api-gateway
-- users
-- auth
+- users (for only admin and users)
+- auth (registration, login, resend email, reset-password, request-resend-password)
 - booking 
 - payment 
-- notifications
+- notifications (SMTP module to send email to users)
 
 
-## Packages
+## Packages/Libraries
 - RabbitMQ
 - PostgreSQL ORM(Prisma) 
 - Redis
 - Nginx
+- Swagger
+- Nest.js
 - Mongodb
+- Nodemailer
+- JWT
+- Throttler
 - Passport.js
+- Jest
 
 
 ## In Future: 
