@@ -1,6 +1,6 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { VerifyUserQuery } from '../queries/VerifyUser.query';
-import { VerifyUserHandler } from './VerifyUser.handler';
+import { VerifyUserQuery } from '../../queries/VerifyUser.query';
+import { VerifyUserHandler } from '../VerifyUser.handler';
 
 const makeAuthRepoMock = () => ({
   findById: jest.fn(),

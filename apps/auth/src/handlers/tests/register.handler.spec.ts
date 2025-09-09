@@ -1,11 +1,11 @@
 import { ClientProxy, RmqContext } from '@nestjs/microservices';
-import { RegisterUserHandler } from './RegisterUser.handler';
+import { RegisterUserHandler } from '../RegisterUser.handler';
 import {
   AuthRepository,
   NOTIFY_SERVICE,
   VerifyResetTokenRepository,
 } from '@/app/common';
-import { RegisterUserCommand } from '../commands/RegisterUser.command';
+import { RegisterUserCommand } from '../../commands/RegisterUser.command';
 import { BadRequestException } from '@nestjs/common';
 
 const makeAuthRepoMock = () => ({

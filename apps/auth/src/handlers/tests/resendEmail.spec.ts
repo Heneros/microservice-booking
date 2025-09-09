@@ -1,17 +1,15 @@
 import { AuthRepository, VerifyResetTokenRepository } from '@/app/common';
 
-import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
-import { LoginUserCommand } from '../commands/LoginUser.command';
-
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { ResendEmailHandler } from './ResendEmail.handler';
-import { ResendEmailCommand } from '../commands/ResendEmail.command';
-import * as crypto from 'crypto';
+import { ResendEmailHandler } from '../ResendEmail.handler';
+import { ResendEmailCommand } from '../../commands/ResendEmail.command';
+
 
 if (!(crypto as any).randomUUID) {
   (crypto as any).randomUUID = () => '00000000-0000-4000-8000-000000000000';
 }
+import * as crypto from 'crypto';
+
 
 describe('resendEmail', () => {
   let handler: ResendEmailHandler;

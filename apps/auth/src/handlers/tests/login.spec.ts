@@ -1,8 +1,8 @@
 import { AuthRepository, VerifyResetTokenRepository } from '@/app/common';
 
 import { JwtService } from '@nestjs/jwt';
-import { LoginUserHandler } from './LoginUser.handler';
-import { LoginUserCommand } from '../commands/LoginUser.command';
+import { LoginUserHandler } from '../LoginUser.handler';
+import { LoginUserCommand } from '../../commands/LoginUser.command';
 import bcrypt from 'bcryptjs';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 

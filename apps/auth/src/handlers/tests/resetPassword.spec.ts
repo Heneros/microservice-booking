@@ -1,23 +1,20 @@
+import { AuthRepository, VerifyResetTokenRepository } from '@/app/common';
 
-
-import { ResetPasswordHandler } from './ResetPassword.handler';
+import { ResetPasswordHandler } from '../ResetPassword.handler';
 
 jest.mock('bcrypt', () => ({
   hash: jest.fn().mockResolvedValue('hashedpwd'),
   compare: jest.fn(),
 }));
 import * as bcrypt from 'bcrypt';
-import { ResetPasswordCommand } from '../commands/ResetPassword.command';
+import { ResetPasswordCommand } from '../../commands/ResetPassword.command';
 import { BadRequestException } from '@nestjs/common';
-import { ResetPasswordRequestHandler } from './RequestResetPassword.handler';
-import { ResetPasswordRequestCommand } from '../commands/RequestResetPassword.command';
 
 describe('ResetPasswordHandler', () => {
-  let handler: ResetPasswordRequestHandler;
+  let handler: ResetPasswordHandler;
 
   let authRepository: {
     findById: jest.Mock;
-    findByEmail: jest.Mock;
     updatePassword: jest.Mock;
   };
   let verifyResetTokenRepository: {
@@ -35,11 +32,10 @@ describe('ResetPasswordHandler', () => {
     };
     authRepository = {
       findById: jest.fn(),
-      findByEmail: jest.fn(),
       updatePassword: jest.fn().mockResolvedValue(undefined),
     };
 
-    handler = new ResetPasswordRequestHandler(
+    handler = new ResetPasswordHandler(
       notificationsClient as any,
       verifyResetTokenRepository as any,
       authRepository as any,
@@ -50,7 +46,7 @@ describe('ResetPasswordHandler', () => {
     jest.clearAllMocks();
   });
 
-  it('should send Request password', async () => {
+  it('should update password', async () => {
     const userId = 42;
     const dto = { password: 'newpass', passwordConfirm: 'newpass' };
     const future = new Date(Date.now() + 1000 * 60 * 10);
@@ -80,7 +76,7 @@ describe('ResetPasswordHandler', () => {
       discordId: null,
     };
     authRepository.findById.mockResolvedValue(user);
-    const result = await handler.execute(new ResetPasswordRequestCommand(userId, dto));
+    const result = await handler.execute(new ResetPasswordCommand(userId, dto));
     expect(bcrypt.hash).toHaveBeenCalledWith('newpass', expect.any(Number));
     expect(authRepository.updatePassword).toHaveBeenCalledWith(
       user.id,

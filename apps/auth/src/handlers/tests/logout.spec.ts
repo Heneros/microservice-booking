@@ -1,13 +1,13 @@
 import { Response } from 'express';
-import { LogoutHandler } from './Logout.handler';
-import { LogoutCommand } from '../commands/Logout.command';
+import { LogoutHandler } from '../Logout.handler';
+import { LogoutCommand } from '../../commands/Logout.command';
 
 describe('Logout', () => {
   let handler: LogoutHandler;
   let req: Request;
   let res: Response;
   beforeEach(() => {
-        handler = new LogoutHandler();
+    handler = new LogoutHandler();
   });
   afterEach(() => {
     jest.clearAllMocks();
@@ -38,11 +38,11 @@ describe('Logout', () => {
     expect(result).toBe('Logged out successfully');
   });
   it('should return error response when session not found', async () => {
-        const mockClearCookie = jest.fn();
+    const mockClearCookie = jest.fn();
 
-        const mockRequest ={
-            session: null
-        }
+    const mockRequest = {
+      session: null,
+    };
     const mockResponse = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
@@ -50,11 +50,12 @@ describe('Logout', () => {
     };
     const command = new LogoutCommand(mockRequest as any, mockResponse as any);
 
-
-    const result = await handler.execute(command)
+    const result = await handler.execute(command);
     expect(mockResponse.status).toHaveBeenCalledWith(400);
-    expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Session not found' });
-    expect(mockClearCookie).not.toHaveBeenCalled(); 
-        expect(result).toBeUndefined();
-  })
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      message: 'Session not found',
+    });
+    expect(mockClearCookie).not.toHaveBeenCalled();
+    expect(result).toBeUndefined();
+  });
 });
