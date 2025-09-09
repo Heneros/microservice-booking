@@ -5,7 +5,7 @@ Swagger  Documentation
 
 
 
-## Functionality.IN module Auth 
+## Functionality.In module Auth 
 - Register with validation email. with DTO/Entity
 - Login.
 - Resend Email with validation code
@@ -15,11 +15,17 @@ Swagger  Documentation
 - Verify User. In mailbox user should receive valid token during 15 min, he should visit this link.
 
 
-## Functionality.IN module Users
+## Functionality.In module Users
 
-- Get
+- Get Profile(only logged user with cookie can see his page)
+- Get AllUsers for only admin available 
 
 
+## Functionality.In module Notifications 
+
+- Registration  Send email to user
+- Resend Email. Send email to user
+- Request Password.  Send email to user
 
 ## Installation with docker-compose
 

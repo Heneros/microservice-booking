@@ -1,10 +1,11 @@
 import { AuthRepository, RedisPrefixEnum, UserRepository } from '@/app/common';
-import { FindAllUsersHandler } from './FindAllUsers.handler';
+
 import bcrypt from 'bcryptjs';
-import { FindAllUsersQuery } from '../query/FindAllUsers.query';
+import { FindAllUsersQuery } from '../../query/FindAllUsers.query';
 import { NotFoundException } from '@nestjs/common';
 import { RedisRepository } from '@/app/common/redis/redis.repository';
 import { CACHE_TTL } from '@/app/common/data/ttl';
+import { FindAllUsersHandler } from './../FindAllUsers.handler';
 
 describe('FindAllUsersHandler', () => {
   let handler: FindAllUsersHandler;
