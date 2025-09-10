@@ -21,18 +21,13 @@ import {
   AUTH_ROUTES,
   AUTH_SERVICE,
   AuthEntity,
-
   EmailDto,
   EmailValidationPipe,
   isDevelopment,
   ResetPasswordDto,
 } from '@/app/common';
 
-import  type{
-
-  CustomRequest,
-
-} from '@/app/common';
+import type { CustomRequest } from '@/app/common';
 import {
   ApiCreatedResponse,
   ApiNotFoundResponse,

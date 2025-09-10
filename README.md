@@ -13,7 +13,8 @@ Swagger  Documentation
 - Reset password
 - Request Password
 - Verify User. In mailbox user should receive valid token during 15 min, he should visit this link.
-
+- Verify Access user to account.
+ 
 
 ## Functionality.In module Users
 

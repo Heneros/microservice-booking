@@ -13,9 +13,11 @@ import { RegisterUserCommand } from '../commands/RegisterUser.command';
 import {
   AuthRepository,
   NOTIFY_SERVICE,
+  RedisPrefixEnum,
   VerifyResetTokenRepository,
 } from '@/app/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { RedisRepository } from '@/app/common/redis/redis.repository';
 
 @CommandHandler(RegisterUserCommand)
 export class RegisterUserHandler
@@ -25,30 +27,29 @@ export class RegisterUserHandler
     @Inject('NOTIFICATIONS') private notificationsClient: ClientProxy,
     private readonly authRepository: AuthRepository,
     private readonly verifyResetToken: VerifyResetTokenRepository,
+    private readonly redisRepository: RedisRepository,
   ) {}
 
   async execute(command: RegisterUserCommand) {
     const { registerUserDto } = command;
 
+
     if (registerUserDto.password !== registerUserDto.passwordConfirm) {
       throw new BadRequestException('Confirm password');
+    }
+
+    const userEmail = await this.authRepository.findByEmail(
+      registerUserDto.email,
+    );
+    if (userEmail) {
+      throw new BadRequestException('User already exists with this email');
+   
     }
 
     const salt = await bcrypt.genSalt(roundsOfHashing);
     const hashedPassword = await bcrypt.hash(registerUserDto.password, salt);
     const token = randomBytes(32).toString('hex');
     registerUserDto.password = hashedPassword;
-
-    const userEmail = await this.authRepository.findByEmail(
-      registerUserDto.email,
-    );
-
-    if (userEmail) {
-      throw new BadRequestException('User already exists with this email', {
-        cause: new Error(),
-        description: 'Try another email',
-      });
-    }
 
     const userData = {
       username: registerUserDto.username,
@@ -75,11 +76,28 @@ export class RegisterUserHandler
 
     this.notificationsClient.emit(NOTIFY_SERVICE.NOTIFY_USER_REGISTER, data);
 
+    await this.invalidateUserCaches();
+
     return {
       id: userId,
       email: registerUserDto.email,
       name: registerUserDto.username,
       accessToken: emailVerificationToken.token,
     };
+  }
+
+  private async invalidateUserCaches(): Promise<void> {
+    try {
+      const keysPattern = `${RedisPrefixEnum.USERS_LIST}:*`;
+      await this.redisRepository.deleteByPattern(keysPattern);
+
+      await this.redisRepository.deleteByPattern(
+        `${RedisPrefixEnum.USERS_ID}:*`,
+      );
+
+      console.log('User caches invalidated successfully');
+    } catch (error) {
+      console.error('Error invalidating user caches:', error);
+    }
   }
 }

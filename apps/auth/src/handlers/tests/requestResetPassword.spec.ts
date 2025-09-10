@@ -7,14 +7,12 @@ jest.mock('crypto', () => ({
   randomUUID: jest.fn().mockReturnValue('00000000-0000-4000-8000-000000000000'),
 }));
 
-
 describe('ResetPasswordHandler', () => {
   let handler: ResetPasswordRequestHandler;
 
   let authRepository: {
     findById: jest.Mock;
     findByEmail: jest.Mock;
-
   };
   let verifyResetTokenRepository: {
     findUnique: jest.Mock;
@@ -36,14 +34,12 @@ describe('ResetPasswordHandler', () => {
     authRepository = {
       findById: jest.fn(),
       findByEmail: jest.fn(),
-
     };
 
     handler = new ResetPasswordRequestHandler(
       notificationsClient as any,
-        authRepository as any,
+      authRepository as any,
       verifyResetTokenRepository as any,
-   
     );
   });
 
@@ -114,11 +110,11 @@ describe('ResetPasswordHandler', () => {
     expect(verifyResetTokenRepository.deleteToken).toHaveBeenCalledWith(
       user.id,
     );
-    
+
     expect(verifyResetTokenRepository.createToken).toHaveBeenCalledWith({
       userId: user.id,
-      token: '746573742d746f6b656e2d686578', 
-      tempDate: expect.any(Date), 
+      token: '746573742d746f6b656e2d686578',
+      tempDate: expect.any(Date),
     });
     expect(notificationsClient.emit).toHaveBeenCalled();
     expect(result).toEqual({
@@ -127,20 +123,19 @@ describe('ResetPasswordHandler', () => {
     });
   });
 
-  
   it('should throw BadRequestException when user not found', async () => {
-      const email = 'nonexistent@example.com';
+    const email = 'nonexistent@example.com';
 
-      authRepository.findByEmail.mockResolvedValue(null)
+    authRepository.findByEmail.mockResolvedValue(null);
 
-      await expect(handler.execute(new ResetPasswordRequestCommand(email))).rejects.toThrow(BadRequestException)
-      await expect(handler.execute(new ResetPasswordRequestCommand(email)))
-      .rejects.toThrow('No user exist');
-      expect(authRepository.findByEmail).toHaveBeenCalledWith(email);
+    await expect(
+      handler.execute(new ResetPasswordRequestCommand(email)),
+    ).rejects.toThrow(BadRequestException);
+    await expect(
+      handler.execute(new ResetPasswordRequestCommand(email)),
+    ).rejects.toThrow('No user exist');
+    expect(authRepository.findByEmail).toHaveBeenCalledWith(email);
 
-    expect(verifyResetTokenRepository.findUnique).not.toHaveBeenCalled()
-    
-  })
-
-  
+    expect(verifyResetTokenRepository.findUnique).not.toHaveBeenCalled();
+  });
 });

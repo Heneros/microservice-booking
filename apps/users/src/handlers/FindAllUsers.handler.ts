@@ -14,16 +14,16 @@ export class FindAllUsersHandler implements IQueryHandler<FindAllUsersQuery> {
   ) {}
   async execute(query: FindAllUsersQuery) {
     const { page } = query;
-    Number(page);
+
     // const key =  `${RedisPrefixEnum.USERS_LIST}:${page}`
     const cached = await this.redisRepository.get(
       RedisPrefixEnum.USERS_LIST,
       String(page),
     );
 
-    const start = Date.now();
+    /// const start = Date.now();
     if (cached) {
-      const end = Date.now();
+      // const end = Date.now();
 
       // console.log(`Cache HIT for page ${page}, took ${end - start}ms`);
       return cached;

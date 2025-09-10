@@ -32,7 +32,6 @@ export class NotificationsController {
         //   console.log('Sent Already', alreadySent);
         return;
       }
-      // console.log('Test', alreadySent)
       try {
         await this.notificationsService.sendEmailVerify(
           data.user,

@@ -59,4 +59,11 @@ export class RedisRepository {
       console.error('Redis FLUSHALL failed', err);
     }
   }
+
+  async deleteByPattern(pattern: string) {
+    const keys = await this.redis.keys(pattern);
+    if (keys.length > 0) {
+      await this.redis.del(...keys);
+    }
+  }
 }

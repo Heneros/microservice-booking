@@ -26,6 +26,8 @@ import { VerifyUserHandler } from './handlers/VerifyUser.handler';
 import { ResendEmailHandler } from './handlers/ResendEmail.handler';
 import { ResetPasswordRequestHandler } from './handlers/RequestResetPassword.handler';
 import { ResetPasswordHandler } from './handlers/ResetPassword.handler';
+import { RedisRepository } from '@/app/common/redis/redis.repository';
+import { RedisModule } from '@/app/common/redis/redis.module';
 // import { APP_GUARD } from '@nestjs/core';
 // import { ThrottlerGuard } from '@nestjs/throttler';
 // import { NotificationsService } from '@/apps/notifications/src/notifications.service';
@@ -37,7 +39,7 @@ import { ResetPasswordHandler } from './handlers/ResetPassword.handler';
     // JwtAuthGuard,
     // RegisterUserHandler,
     // JwtGuard,
-    JwtStrategy,
+    // JwtStrategy,
     Repository.AuthRepository,
     Repository.VerifyResetTokenRepository,
 
@@ -54,6 +56,7 @@ import { ResetPasswordHandler } from './handlers/ResetPassword.handler';
     // ...Object.values(Repository),
 
     RmqService,
+    RedisRepository,
     // {
     //   provide: APP_GUARD,
     //   useClass: ThrottlerGuard,
@@ -79,7 +82,7 @@ import { ResetPasswordHandler } from './handlers/ResetPassword.handler';
     RabbitMqModule,
 
     CqrsModule.forRoot({}),
-
+    RedisModule,
     // RmqModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({

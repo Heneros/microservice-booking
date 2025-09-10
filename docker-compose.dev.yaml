@@ -82,6 +82,14 @@ services:
     networks:
       micro_booking:
 
+  # analytics_rep:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/analytics/Dockerfile
+  #   env_file:
+  #     - ./apps/analytics/.env
+
+
   rabbitmq:
     image: rabbitmq:3-management
   # //.  hostname: rabbitmq  
