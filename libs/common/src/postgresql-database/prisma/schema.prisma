@@ -49,6 +49,9 @@ model Avatar{
   id       Int    @id @default(autoincrement())
   url      String
   publicId String
+
+  userId Int?  @unique()
+
   user User? @relation(name: "AvatarUser")
   createdAt DateTime @default(now())
 }

@@ -1,4 +1,7 @@
-import { AbstractRepositoryPostgres, PrismaService } from '@/app/common';
+import {
+  AbstractRepositoryPostgres,
+  PrismaService,
+} from '../postgresql-database';
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaClient, User } from '@prisma/client';
 

@@ -21,10 +21,7 @@ export * from './mongodb-database/monodb.module';
 export * from './mongodb-database/abstract.repository';
 export * from './mongodb-database/abstract.schema';
 
-export * from './postgresql-database/postgres.module';
-
-export * from './postgresql-database/postgres.service';
-export * from './postgresql-database/abstract.repository';
+export * from './postgresql-database';
 
 export * from './rmq/rmq.service';
 export * from './rmq/rmq.module';
@@ -43,5 +40,6 @@ export * from './interfaces/user-jwt.interface';
 export * from './repository/Auth.repository';
 export * from './repository/User.repository';
 export * from './repository/VerifyResetToken.repository';
+export * from './repository/Avatar.repository';
 
 export * from './interfaces/cus-request';

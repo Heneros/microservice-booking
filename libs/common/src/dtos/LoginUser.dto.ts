@@ -26,4 +26,6 @@ export class LoginUserDto {
     example: '*******',
   })
   public password: string;
+
+
 }

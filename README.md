@@ -14,7 +14,7 @@ Swagger  Documentation
 - Request Password
 - Verify User. In mailbox user should receive valid token during 15 min, he should visit this link.
 - Verify Access user to account.
- 
+
 
 ## Functionality.In module Users
 
@@ -62,8 +62,8 @@ Unit tests
 
 ## Modules
 - api-gateway
-- users (for only admin and users)
-- auth (registration, login, resend email, reset-password, request-resend-password)
+- users (for only admin and users and etc)
+- auth (registration, login, resend email, reset-password, request-resend-password and etc)
 - booking 
 - payment 
 - notifications (SMTP module to send email to users)
@@ -82,6 +82,9 @@ Unit tests
 - Throttler
 - Passport.js
 - Jest
+- class-transformer
+- class-validator
+
 
 
 ## In Future: 

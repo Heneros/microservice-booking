@@ -2,6 +2,7 @@ FROM node:alpine AS development
 
 WORKDIR /usr/src/app 
 COPY package*.json ./
+COPY  tsconfig.json ./
 RUN npm install 
 COPY . .
 

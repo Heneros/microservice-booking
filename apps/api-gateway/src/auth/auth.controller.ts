@@ -36,6 +36,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
+import { randomUUID } from 'crypto';
 
 @Controller(AUTH_CONTROLLER)
 export class AuthController {
@@ -65,7 +66,7 @@ export class AuthController {
     }
   }
 
-  @Throttle({ default: { limit: 5, ttl: 600 } })
+@Throttle({ default: { limit: 15, ttl: 60000 } })
   @Post(AUTH_ROUTES.LOGIN)
   @ApiResponse({
     status: 200,
@@ -78,11 +79,14 @@ export class AuthController {
   ) {
     // console.log(6666);
     try {
+    const correlationId = randomUUID();
+
+    const payload = {...request, correlationId}
       const result = await lastValueFrom(
-        this.apiService.send({ cmd: AUTH_SERVICE.LOGIN_USER }, request).pipe(
+        this.apiService.send({ cmd: AUTH_SERVICE.LOGIN_USER }, payload).pipe(
           timeout(5000),
           catchError((error) => {
-            console.error('Error Login', error);
+             console.error(`Error Login [correlationId: ${correlationId}]`, error);
             return throwError(() => error);
           }),
         ),
@@ -95,7 +99,7 @@ export class AuthController {
         secure: !isDevelopment,
       });
 
-      return result;
+      return { ...result, correlationId }; 
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;

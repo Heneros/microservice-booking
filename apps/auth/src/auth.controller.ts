@@ -63,24 +63,30 @@ export class AuthController {
   }
 
   @MessagePattern({ cmd: AUTH_SERVICE.LOGIN_USER })
-  async handleLogin(@Payload() data: LoginUserDto, @Ctx() context: RmqContext) {
+  async handleLogin(@Payload() data: LoginUserDto & { correlationId?: string }, @Ctx() context: RmqContext) {
     //  console.log('Received login request');
     //  this.rmqService.ack(context);
     try {
       const result = await this.commandBus.execute(new LoginUserCommand(data));
-
+    
+      console.log(`Handling login with correlationId: ${data.correlationId}`);
       this.rmqService.ack(context);
 
       return {
+      
         accessToken: result.accessToken,
         refreshToken: result.refreshToken,
-        user: {
+         correlationId: data.correlationId,
+        user: {    
+        
           id: result.user.id,
           name: result.user.name,
           email: result.user.email,
         },
+ 
       };
     } catch (error) {
+        console.error(`Login failed [correlationId: ${data.correlationId || 'unknown'}]`, error);
       this.rmqService.nack(context, false);
       throw new RpcException(error.message);
     }

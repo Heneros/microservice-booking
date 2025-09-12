@@ -15,6 +15,9 @@ import { AuthController } from './auth/auth.controller';
 import { UsersController } from './users/users.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
+import { PassportModule } from '@nestjs/passport';
+import { CloudinaryModule } from '@/app/common/cloudinary/cloudinary.module';
+
 @Module({
   imports: [
     RabbitMqModule,
@@ -42,7 +45,11 @@ import { APP_GUARD } from '@nestjs/core';
       }),
       inject: [ConfigService],
     }),
-    ThrottlerModule.forRoot(),
+    ThrottlerModule.forRoot({
+      throttlers: [{ ttl: 180, limit: 25 }],
+    }),
+    PassportModule,
+    CloudinaryModule,
   ],
   controllers: [ApiGatewayController, AuthController, UsersController],
   providers: [

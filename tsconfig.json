@@ -25,6 +25,7 @@
       "express",
       "express-session",
       "jest",
+      "multer",
       "node"
     ],
     "typeRoots": [
@@ -56,4 +57,11 @@
     "types",
     "apps/users/src/query/FindAllUsers.query.ts"
   ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "out",
+    "ignore"
+  ]
 }

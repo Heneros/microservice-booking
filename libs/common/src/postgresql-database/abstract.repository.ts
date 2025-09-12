@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 export abstract class AbstractRepositoryPostgres<T> {
   protected abstract readonly prisma: PrismaClient;

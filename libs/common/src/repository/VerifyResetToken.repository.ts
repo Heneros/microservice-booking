@@ -1,4 +1,7 @@
-import { AbstractRepositoryPostgres, PrismaService } from '@/app/common';
+import {
+  AbstractRepositoryPostgres,
+  PrismaService,
+} from '../postgresql-database';
 import { Injectable } from '@nestjs/common';
 import { PrismaClient, VerifyResetToken } from '@prisma/client';
 import { CreateTokenInput } from '@/app/common/interfaces/model.interface';
