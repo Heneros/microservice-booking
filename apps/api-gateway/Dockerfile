@@ -1,4 +1,4 @@
-FROM node:alpine AS development
+FROM node:alpine as development
 
 WORKDIR /usr/src/app 
 COPY package*.json ./
@@ -17,7 +17,7 @@ RUN npm run build api-gateway
 CMD ["npm", "run", "start:dev", "api-gateway"]
 
 #-----------------------------------builder-----------------------------------
-FROM node:alpine AS builder
+FROM node:alpine as builder
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
