@@ -33,8 +33,9 @@ export class HandleIOAuth {
     // protected readonly prisma: PrismaService,
   ) {}
 
-  protected async handleOauthLogin(email: string): Promise<User> {
-    let user = await this.authRepository.findByEmail(email);
+  protected async handleOauthLogin(profile): Promise<User> {
+    // console.log(email);
+    let user = await this.authRepository.findByEmail(profile.email);
 
     const payload = {
       id: user.id,
@@ -48,7 +49,9 @@ export class HandleIOAuth {
       expiresIn: '31d',
     });
 
-    const token = await this.verifyResetTokenRepository.findUnique(user.id);
+    const token = await this.verifyResetTokenRepository.findUnique({
+      userId: user.id,
+    });
 
     if (!token) {
       await this.verifyResetTokenRepository.createToken({
@@ -97,22 +100,20 @@ export class HandleIOAuth {
     }
 
     return this.authRepository.create({
-      data: {
-        email,
-        username,
-        isEmailVerified: true,
-        password: hashedPassword,
-        provider,
-        ...providerField,
-        avatar: cloudinaryAvatar
-          ? {
-              create: {
-                url: cloudinaryAvatar.url,
-                publicId: cloudinaryAvatar.publicId,
-              },
-            }
-          : undefined,
-      },
+      email,
+      username,
+      isEmailVerified: true,
+      password: hashedPassword,
+      provider,
+      ...providerField,
+      avatar: cloudinaryAvatar
+        ? {
+            create: {
+              url: cloudinaryAvatar.url,
+              publicId: cloudinaryAvatar.publicId,
+            },
+          }
+        : undefined,
     });
   }
 }

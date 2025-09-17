@@ -11,6 +11,7 @@ import {
   Query,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { LoginUserDto, RegisterUserDto } from './dto';
@@ -37,11 +38,16 @@ import {
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { randomUUID } from 'crypto';
+import { GoogleService } from './services/Google.service';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller(AUTH_CONTROLLER)
 export class AuthController {
   constructor(
     @Inject(AUTH_SERVICE.AUTH_MAIN) private readonly apiService: ClientProxy,
+    private jwt: JwtService,
+    private readonly googleService: GoogleService,
   ) {}
 
   @Post(AUTH_ROUTES.REGISTER)
@@ -66,7 +72,7 @@ export class AuthController {
     }
   }
 
-@Throttle({ default: { limit: 15, ttl: 60000 } })
+  @Throttle({ default: { limit: 15, ttl: 60000 } })
   @Post(AUTH_ROUTES.LOGIN)
   @ApiResponse({
     status: 200,
@@ -79,14 +85,17 @@ export class AuthController {
   ) {
     // console.log(6666);
     try {
-    const correlationId = randomUUID();
+      const correlationId = randomUUID();
 
-    const payload = {...request, correlationId}
+      const payload = { ...request, correlationId };
       const result = await lastValueFrom(
         this.apiService.send({ cmd: AUTH_SERVICE.LOGIN_USER }, payload).pipe(
           timeout(5000),
           catchError((error) => {
-             console.error(`Error Login [correlationId: ${correlationId}]`, error);
+            console.error(
+              `Error Login [correlationId: ${correlationId}]`,
+              error,
+            );
             return throwError(() => error);
           }),
         ),
@@ -99,7 +108,7 @@ export class AuthController {
         secure: !isDevelopment,
       });
 
-      return { ...result, correlationId }; 
+      return { ...result, correlationId };
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;
@@ -278,6 +287,56 @@ export class AuthController {
     }
   }
 
+  @Get(AUTH_ROUTES.GOOGLE)
+  @ApiOperation({
+    summary: 'Google log in for application ',
+  })
+  @ApiResponse({
+    status: 302,
+    description: 'Redirects to Google OAuth login',
+  })
+  @UseGuards(AuthGuard('google'))
+  async googleAuth() {}
+
+  @Get(AUTH_ROUTES.GOOGLE_CALLBACK)
+  @ApiOperation({ summary: 'Callback from Google OAuth' })
+  @ApiResponse({
+    status: 302,
+    description: 'Sets cookie and redirects to frontend',
+  })
+  @UseGuards(AuthGuard('google'))
+  async googleAuthRedirect(@Req() req: CustomRequest, @Res() res: Response) {
+    try {
+      console.log(req.user);
+      const user = await this.googleService.validateGoogleUser(req.user);
+
+      if (!user) {
+        return res.status(400).json({ message: 'User not found' });
+      }
+
+      const token = this.jwt.sign({
+        userId: user.id,
+        username: user.username,
+        roles: user.roles,
+      });
+
+      return res
+        .cookie('jwtBooking', token, {
+          httpOnly: true,
+          sameSite: !isDevelopment ? 'lax' : 'strict',
+          maxAge: 31 * 24 * 60 * 60 * 1000,
+          secure: !isDevelopment,
+        })
+        .redirect('/');
+    } catch (error) {
+      console.error('Google Auth Error:', error);
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+
+      throw new BadGatewayException(error.message || 'Authentication failed');
+    }
+  }
   @Get('ping')
   async handleGet() {
     return this.apiService.send({ cmd: 'ping' }, {});

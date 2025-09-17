@@ -5,10 +5,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import Joi from 'joi';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import {
+  AuthRepository,
   isDevelopment,
   isTest,
   PrismaService,
   RabbitMqModule,
+  UserRepository,
+  VerifyResetTokenRepository,
 } from '@/app/common';
 
 import { AuthController } from './auth/auth.controller';
@@ -17,28 +20,27 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { PassportModule } from '@nestjs/passport';
 import { CloudinaryModule } from '@/app/common/cloudinary/cloudinary.module';
+import { GoogleService } from './auth/services/Google.service';
+import { GoogleStrategy } from './auth/passport/GoogleStrategy';
+import { HandleIOAuth } from './auth/passport/HandleOAuth';
 
 @Module({
   imports: [
     RabbitMqModule,
+
     ConfigModule.forRoot({
       isGlobal: true,
-      validationSchema: Joi.object({
-        RABBIT_MQ_URI: Joi.string().required(),
-        JWT_SECRET: Joi.string().required(),
-        NODE_ENV: Joi.string().required(),
-        // RABBIT_MQ_API_QUEUE: Joi.string().required(),
-      }),
       envFilePath: isTest
         ? './apps/api-gateway/.env.test'
         : isDevelopment
           ? './apps/api-gateway/.env.development'
           : './apps/api-gateway/.env.prod',
     }),
-
     JwtModule.registerAsync({
+      global: true,
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '31d' },
         // signOptions: {
         //   expiresIn: `${configService.get('JWT_EXPIRATION')}s`,
         // },
@@ -55,6 +57,12 @@ import { CloudinaryModule } from '@/app/common/cloudinary/cloudinary.module';
   providers: [
     ApiGatewayService,
     PrismaService,
+    GoogleService,
+    UserRepository,
+    AuthRepository,
+    VerifyResetTokenRepository,
+    HandleIOAuth,
+    GoogleStrategy,
     // UserInterceptor,
     // {
     //   provide: APP_INTERCEPTOR,
