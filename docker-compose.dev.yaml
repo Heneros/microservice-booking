@@ -109,20 +109,33 @@ services:
     networks:
       micro_booking:
 
-  # mongodb-primary:
-  #   image: docker.io/bitnami/mongodb:5.0
-  #   environment:
-  #     - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
-  #     - MONGODB_REPLICA_SET_MODE=primary
-  #     - MONGODB_ROOT_PASSWORD=password123
-  #     - MONGODB_REPLICA_SET_KEY=replicasetkey123
-  #   volumes:
-  #     - 'mongodb_master_data:/bitnami/mongodb'
-  #   ports:
-  #     - '27017:27017'
-  #   networks:
-  #     micro_booking:
+  mongodb:
+    image: mongo:noble
+    restart: always
+    env_file:
+     - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+    volumes:
+     - mongo-data:/data/db 
+    ports:
+      - '27017:27017'
+    networks:
+      micro_booking:
 
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+    - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${ME_CONFIG_MONGODB_ADMINUSERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${ME_CONFIG_MONGODB_ADMINPASSWORD}
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_OPTIONS_EDITORTHEME: default
+    depends_on:
+     - mongodb
 
   postgres:
     restart: always
@@ -212,9 +225,9 @@ volumes:
   postgres_data:
   redis_data:
   pgadmin-data:
-  mongodb_master_data:
+  mongo-data:
   rabbit_data:
-  redis_insight_data:
+
 
 networks:
    micro_booking:

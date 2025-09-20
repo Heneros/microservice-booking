@@ -4,7 +4,7 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/auth/tsconfig.app.json"
+    "tsConfigPath": "apps/nest-microservice/tsconfig.app.json"
   },
   "projects": {
     "api-gateway": {
@@ -43,6 +43,15 @@
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
     },
+    "feedback": {
+      "type": "application",
+      "root": "apps/feedback",
+      "entryFile": "main",
+      "sourceRoot": "apps/feedback/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/feedback/tsconfig.app.json"
+      }
+    },
     "notifications": {
       "type": "application",
       "root": "apps/notifications",
@@ -70,5 +79,8 @@
         "tsConfigPath": "apps/users/tsconfig.app.json"
       }
     }
-  }
+  },
+  "monorepo": true,
+  "root": "apps/nest-microservice",
+  "sourceRoot": "apps/nest-microservice/src"
 }

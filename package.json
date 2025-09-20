@@ -26,7 +26,7 @@
     "test:cov": "jest --coverage",
     "test:unit": "jest --config ./test/unit/jest.unit.config.js",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/e2e/jest-e2e.json  --forceExit --detectOpenHandles",
+    "test:e2e": "jest --config ./apps/nest-microservice/test/e2e/jest-e2e.json  --forceExit --detectOpenHandles",
     "prisma:push:dev": "cross-env DATABASE_URL='postgresql://postgres:postgres@postgres:5432/bookingApp?schema=public' npx prisma db push --schema=libs/common/src/postgresql-database/prisma/schema.prisma",
     "prisma:push:test": "cross-env DATABASE_URL=postgresql://postgres:postgres@localhost:5432/testDb?schema=public npx prisma generate --schema=libs/common/src/postgresql-database/prisma/schema.prisma && cross-env DATABASE_URL=postgresql://postgres:postgres@localhost:5432/testDb?schema=public npx prisma migrate reset --schema=libs/common/src/postgresql-database/prisma/schema.prisma",
     "prisma:push:all": "npm run prisma:push:dev && npm run prisma:test",
@@ -48,6 +48,7 @@
     "@nestjs/platform-express": "^11.1.6",
     "@nestjs/swagger": "github:nestjs/swagger",
     "@nestjs/throttler": "^6.4.0",
+    "@nestjs/typeorm": "^11.0.0",
     "@prisma/client": "^6.14.0",
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.9",
@@ -61,6 +62,7 @@
     "handlebars": "^4.7.8",
     "ioredis": "^5.7.0",
     "joi": "^17.13.3",
+    "mongodb": "^6.20.0",
     "mongoose": "^8.13.2",
     "multer": "^2.0.2",
     "nodemailer": "^7.0.5",
@@ -75,7 +77,8 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "streamifier": "^0.1.1",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "typeorm": "^0.3.27"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
@@ -133,9 +136,10 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@/api-gateway/(.*)$": "<rootDir>/apps/api-gateway/src/$1",
       "^@/api-gateway$": "<rootDir>/apps/api-gateway/src/$1",
+      "^@/api-gateway/(.*)$": "<rootDir>/apps/api-gateway/src/$1",
       "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",
+      "^@app/feedback(|/.*)$": "<rootDir>/libs/feedback/src/$1",
       "^@app/postgresql-database(|/.*)$": "<rootDir>/libs/postgresql-database/src/$1"
     },
     "globals": {

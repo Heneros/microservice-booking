@@ -30,14 +30,11 @@
     ],
     "typeRoots": [
       "./node_modules/@types",
-      "libs/common/src/interfaces",
+      "libs/common/src/interfaces"
     ],
     "paths": {
-      "@/app/common": [
-        "libs/common/src"
-      ],
-      "@/app/common/*": [
-        "libs/common/src/*"
+      "@/*": [
+        "*"
       ],
       "@/api-gateway": [
         "apps/api-gateway/src"
@@ -45,8 +42,17 @@
       "@/api-gateway/*": [
         "apps/api-gateway/src/*"
       ],
-      "@/*": [
-        "*"
+      "@/app/common": [
+        "libs/common/src"
+      ],
+      "@/app/common/*": [
+        "libs/common/src/*"
+      ],
+      "@app/feedback": [
+        "libs/feedback/src"
+      ],
+      "@app/feedback/*": [
+        "libs/feedback/src/*"
       ]
     }
   },

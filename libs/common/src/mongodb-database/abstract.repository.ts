@@ -75,9 +75,9 @@ export abstract class AbstractRepositoryMongodb<
     return this.model.find(filterQuery).lean().exec() as Promise<TDocument[]>;
   }
 
-  async startTransaction() {
-    const session = await this.connection.startSession();
-    session.startTransaction();
-    return session;
-  }
+  // async startTransaction() {
+  //   const session = await this.connection.startSession();
+  //   session.startTransaction();
+  //   return session;
+  // }
 }
