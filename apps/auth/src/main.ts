@@ -1,14 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AuthModule } from './auth.module';
-import { ValidationPipe } from '@nestjs/common';
-import { AUTH_SERVICE, RmqService } from '@/app/common';
-import {
-  MicroserviceOptions,
-  RmqOptions,
-  Transport,
-} from '@nestjs/microservices';
-import cookieParser from 'cookie-parser';
-import { ConfigService } from '@nestjs/config';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(

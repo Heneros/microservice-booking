@@ -7,7 +7,7 @@ export const RedisProvider: Provider = {
   useFactory: (configService: ConfigService) => {
     const env = configService.get('NODE_ENV');
 
-    console.log('env redis', env);
+    // console.log('env redis', env);
 
     if (env === 'production') {
       const redisUrl = configService.get<string>('REDIS_URL_ORIGINAL');

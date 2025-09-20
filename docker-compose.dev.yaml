@@ -13,7 +13,7 @@ services:
       - ./apps/api-gateway/.env.${NODE_ENV}
     volumes:
      - .:/usr/src/app
-     - /usr/src/app/node_modules
+     - common_node_modules:/usr/src/app/node_modules
     depends_on:
       rabbitmq:
        condition: service_healthy
@@ -37,11 +37,33 @@ services:
       - maildev
     volumes:
      - .:/usr/src/app
-     - /usr/src/app/node_modules
+     - common_node_modules:/usr/src/app/node_modules
     # ports:
     #   - '3000:3000'
     networks:
       micro_booking:
+
+
+  feedback:
+    build:
+     context: .
+     dockerfile: ./apps/feedback/Dockerfile
+     target: ${NODE_ENV-development}
+    env_file:
+       - .env
+       - ./apps/auth/.env.${NODE_ENV}
+    depends_on:
+      - postgres
+      - pgadmin
+      - redis
+      - rabbitmq
+      - maildev
+    volumes:
+     - .:/usr/src/app
+     - common_node_modules:/usr/src/app/node_modules
+    networks:
+      micro_booking:
+
 
   users:
     build:
@@ -60,7 +82,7 @@ services:
       - rabbitmq
     volumes:
      - .:/usr/src/app
-     - /usr/src/app/node_modules
+     - common_node_modules:/usr/src/app/node_modules
     networks:
       micro_booking:
 
@@ -78,7 +100,7 @@ services:
       - redis
     volumes:
      - .:/usr/src/app
-     - /usr/src/app/node_modules
+     - common_node_modules:/usr/src/app/node_modules
     networks:
       micro_booking:
 
@@ -109,33 +131,47 @@ services:
     networks:
       micro_booking:
 
-  mongodb:
-    image: mongo:noble
+  mongo:
+    image: mongo:6
     restart: always
     env_file:
      - .env
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
     volumes:
      - mongo-data:/data/db 
     ports:
       - '27017:27017'
+    healthcheck:                 
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     networks:
       micro_booking:
 
+
   mongo-express:
-    image: mongo-express
+    image: mongo-express:latest
+    container_name: mongo_express_container
     restart: always
     ports:
-    - "8081:8081"
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${ME_CONFIG_MONGODB_ADMINUSERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${ME_CONFIG_MONGODB_ADMINPASSWORD}
-      ME_CONFIG_MONGODB_SERVER: mongo
-      ME_CONFIG_OPTIONS_EDITORTHEME: default
+      - "8081:8081"
     depends_on:
-     - mongodb
+      mongo:
+        condition: service_healthy
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin123456
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+    networks:
+      micro_booking:
 
   postgres:
     restart: always
@@ -227,6 +263,7 @@ volumes:
   pgadmin-data:
   mongo-data:
   rabbit_data:
+  common_node_modules:
 
 
 networks:

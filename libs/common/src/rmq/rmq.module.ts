@@ -47,6 +47,24 @@ const RMQ_CLIENTS_CONFIG: ClientProviderOptions[] = [
     },
   },
   {
+    name: 'FEEDBACK',
+    transport: Transport.RMQ,
+    options: {
+      urls: ['amqp://user:password@rabbitmq:5672'],
+      queue: 'feedback_queue',
+      queueOptions: { durable: true },
+
+      persistent: true,
+      exchange: 'app_change',
+      exchangeType: 'direct',
+      routingKey: 'feedback_commands',
+      socketOptions: {
+        heartbeatIntervalInSeconds: 60,
+        reconnectTimeInSeconds: 5,
+      },
+    },
+  },
+  {
     name: 'NOTIFICATIONS',
     transport: Transport.RMQ,
     options: {
