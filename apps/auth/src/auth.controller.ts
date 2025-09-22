@@ -69,7 +69,7 @@ export class AuthController {
     try {
       const result = await this.commandBus.execute(new LoginUserCommand(data));
     
-      console.log(`Handling login with correlationId: ${data.correlationId}`);
+      // console.log(`Handling login with correlationId: ${data.correlationId}`);
       this.rmqService.ack(context);
 
       return {
