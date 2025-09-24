@@ -8,6 +8,7 @@ import {
   AuthRepository,
   isDevelopment,
   isTest,
+  MongodbModule,
   PrismaService,
   RabbitMqModule,
   UserRepository,
@@ -23,6 +24,10 @@ import { CloudinaryModule } from '@/app/common/cloudinary/cloudinary.module';
 import { GoogleService } from './auth/services/Google.service';
 import { GoogleStrategy } from './auth/passport/GoogleStrategy';
 import { HandleIOAuth } from './auth/passport/HandleOAuth';
+import { FeedbackController } from './feedback/feedback.controller';
+import { FeedbackService } from './feedback/feedback.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommentEntity } from './feedback/entities/Comment.entity';
 
 @Module({
   imports: [
@@ -47,13 +52,20 @@ import { HandleIOAuth } from './auth/passport/HandleOAuth';
       }),
       inject: [ConfigService],
     }),
+    MongodbModule,
     ThrottlerModule.forRoot({
       throttlers: [{ ttl: 180, limit: 25 }],
     }),
+    TypeOrmModule.forFeature([CommentEntity]),
     PassportModule,
     CloudinaryModule,
   ],
-  controllers: [ApiGatewayController, AuthController, UsersController],
+  controllers: [
+    ApiGatewayController,
+    AuthController,
+    UsersController,
+    FeedbackController,
+  ],
   providers: [
     ApiGatewayService,
     PrismaService,
@@ -63,6 +75,7 @@ import { HandleIOAuth } from './auth/passport/HandleOAuth';
     VerifyResetTokenRepository,
     HandleIOAuth,
     GoogleStrategy,
+    FeedbackService,
     // UserInterceptor,
     // {
     //   provide: APP_INTERCEPTOR,

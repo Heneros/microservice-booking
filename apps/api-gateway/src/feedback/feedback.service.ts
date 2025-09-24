@@ -10,7 +10,11 @@ export class FeedbackService {
     private commentRepository: MongoRepository<CommentEntity>,
   ) {}
 
-  createComment(data: any) {
-    return this.commentRepository.save(data);
+  createComment(data: Partial<CommentEntity>) {
+    const comment = this.commentRepository.create({
+      ...data,
+      createdAt: new Date(),
+    });
+    return this.commentRepository.save(comment);
   }
 }
