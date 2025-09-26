@@ -35,3 +35,16 @@ export const USER_ROUTES = {
   UPLOAD_AVATAR_USER: 'upload/:userId',
   SEND_COMPLAINT: ':userId/complaint',
 };
+
+export const FEEDBACK_CONTROLLER = 'feedback' as const;
+
+export const FEEDBACK_ROUTES = {
+  GET_ALL: '',
+  CREATE_FEEDBACK: '',
+  EDIT_FEEDBACK: '',
+  DELETE_FEEDBACK: '',
+  GET_ID: ':feedbackId',
+  COMPLAINT_FEEDBACK: ':feedbackId/report',
+  
+  ADMIN_GET_ALL: 'admin/feedback',
+};

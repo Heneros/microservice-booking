@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentEntity } from './entities/Comment.entity';
 import { MongoRepository } from 'typeorm';
+import { CreateFeedback } from './dto/CreateFeedback.dto';
 
 @Injectable()
 export class FeedbackService {
@@ -10,7 +11,7 @@ export class FeedbackService {
     private commentRepository: MongoRepository<CommentEntity>,
   ) {}
 
-  createComment(data: Partial<CommentEntity>) {
+  createComment(data: CreateFeedback) {
     const comment = this.commentRepository.create({
       ...data,
       createdAt: new Date(),

@@ -7,7 +7,10 @@ export class CommentEntity {
   id: ObjectId;
 
   @Column()
-  username: string;
+  message: string;
+
+  @Column()
+  imageUrl: string;
 
   @Column()
   createdAt: Date;

@@ -6,13 +6,15 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { Request } from 'express';
+import type { Request } from 'express';
 import { catchError, map, Observable, tap } from 'rxjs';
 import { AUTH_SERVICE } from '../data/microservice-constants';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  constructor(@Inject('AUTH') private authClient: ClientProxy) {}
+  constructor(
+    @Inject(AUTH_SERVICE.AUTH_MAIN) private authClient: ClientProxy,
+  ) {}
 
   canActivate(ctx: ExecutionContext): boolean | Observable<boolean> {
     if (ctx.getType() === 'rpc') {

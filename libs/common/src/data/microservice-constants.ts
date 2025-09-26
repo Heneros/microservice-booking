@@ -18,8 +18,14 @@ export const USERS_SERVICE = {
 };
 
 export const NOTIFY_SERVICE = {
+  NOTIFY_MAIN: 'NOTIFY',
   NOTIFY_USER_REGISTER: 'notifications.user.registered',
   NOTIFY_USER_WELCOME: 'notifications.user.welcome',
   NOTIFY_USER_REQUEST_PASS: 'notifications.user.request',
   NOTIFY_USER_SUCCESS_PASS: 'notifications.user.password.success',
+};
+
+export const FEEDBACK_SERVICE = {
+  FEEDBACK_MAIN: 'FEEDBACK',
+  FEEDBACK_CREATE: 'feedback_create',
 };

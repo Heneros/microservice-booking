@@ -29,6 +29,11 @@ export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
       if (user.blocked) {
         throw new BadRequestException('User is blocked');
       }
+
+      if (!user.isEmailVerified) {
+        throw new BadRequestException('User not verified');
+      }
+
       const isPasswordValid = await bcrypt.compare(
         logInDto.password,
         user.password,

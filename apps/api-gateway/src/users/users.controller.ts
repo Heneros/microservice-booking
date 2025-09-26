@@ -93,8 +93,8 @@ export class UsersController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
   ) {
     try {
-      const correlationId = randomUUID();
-      const payload = { page, correlationId };
+      // const correlationId = randomUUID();
+      // const payload = { page, correlationId };
       // console.log(3211);
       const users = await lastValueFrom(
         this.apiService
