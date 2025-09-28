@@ -8,5 +8,11 @@ export class CreateCommandHandler
 {
   constructor(private readonly feedbackRepository: FeedbackRepository) {}
 
-  async execute(command: CreateCommentCommand) {}
+  async execute(command: CreateCommentCommand) {
+    const { message } = command;
+
+    // console.log(message);
+
+    return message;
+  }
 }

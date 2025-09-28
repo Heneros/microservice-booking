@@ -11,3 +11,5 @@ export const isTest = process.env.NODE_ENV === 'test';
 export const CLOUDINARY = 'CLOUDINARY';
 
 export const PAGINATION_LIMIT = 12;
+
+export const MONGODB_URI = process.env.MONGODB_URI;

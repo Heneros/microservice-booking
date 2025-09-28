@@ -14,12 +14,7 @@ const templateDir = isDevelopment
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: isDevelopment
-        ? './apps/notifications/.env.development'
-        : './apps/notifications/.env.prod',
-    }),
+    ConfigModule,
     MailerModule.forRoot({
       transport: {
         host: isDevelopment ? 'maildev' : process.env.SMTP_HOST,

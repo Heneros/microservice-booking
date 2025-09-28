@@ -4,14 +4,18 @@ import {
   MessagePattern,
   Payload,
   RmqContext,
+  RpcException,
 } from '@nestjs/microservices';
 import {
+  Comments,
   FEEDBACK_CONTROLLER,
   FEEDBACK_SERVICE,
   RmqService,
 } from '@/libs/common/src';
 import { CreateCommentDto } from '@/libs/common/src/dtos';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { plainToInstance } from 'class-transformer';
+import { CreateCommentCommand } from './commands/CreateComment.command';
 
 @Controller(FEEDBACK_CONTROLLER)
 export class FeedbackController {
@@ -26,7 +30,17 @@ export class FeedbackController {
     @Payload() createCommentDto: CreateCommentDto,
     @Ctx() context: RmqContext,
   ) {
-    const res = await this.commandBus.execute(createCommentDto);
-    this.rmqService.ack(context);
+    try {
+      const res = await this.commandBus.execute(
+        new CreateCommentCommand(createCommentDto),
+      );
+      this.rmqService.ack(context);
+      console.log('val', res);
+      return plainToInstance(Comments, res);
+    } catch (error) {
+      this.rmqService.nack(context, false);
+      console.error(error);
+      throw new RpcException(error.message);
+    }
   }
 }

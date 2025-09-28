@@ -35,11 +35,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: isTest
-        ? './apps/api-gateway/.env.test'
-        : isDevelopment
-          ? './apps/api-gateway/.env.development'
-          : './apps/api-gateway/.env.prod',
+      validationSchema: Joi.object({
+        // MONGODB_URI: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
+        RABBIT_MQ_URI: Joi.string().required(),
+        RABBIT_MQ_AUTH_QUEUE: Joi.string().required(),
+        RABBIT_MQ_USERS_QUEUE: Joi.string().required(),
+        RABBIT_MQ_AUTH_MAIN_QUEUE: Joi.string().required(),
+        PORT: Joi.number().required(),
+      }),
+      envFilePath: isDevelopment ? '.env.development' : '.env.prod',
     }),
     JwtModule.registerAsync({
       global: true,

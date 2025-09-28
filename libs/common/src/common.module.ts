@@ -9,7 +9,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
   providers: [CommonService],
   exports: [CommonService],
   imports: [
-    ConfigModule.forRoot({}),
+    ConfigModule,
     //MongodbModule,
     PostgresModule,
     CloudinaryModule,

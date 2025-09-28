@@ -6,12 +6,12 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FeedbackController } from './feedback.controller';
 import { FeedbackService } from './feedback.service';
-import { CommentEntity } from './entities/Comment.entity';
+// import { CommentEntity } from './entities/Comment.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([CommentEntity]),
-    // ConfigModule.forRoot({}),
+    // TypeOrmModule.forFeature([CommentEntity]),
+ 
   ],
   controllers: [FeedbackController],
   providers: [],

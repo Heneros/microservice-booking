@@ -17,17 +17,7 @@ import { FindAllUsersHandler } from './handlers/FindAllUsers.handler';
 import { RedisRepository } from '@/app/common/redis/redis.repository';
 
 @Module({
-  imports: [
-    CommonModule,
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: isDevelopment
-        ? './apps/users/.env.development'
-        : './apps/users/.env.prod',
-    }),
-    CqrsModule.forRoot({}),
-    RedisModule,
-  ],
+  imports: [CommonModule, ConfigModule, , CqrsModule.forRoot({}), RedisModule],
   controllers: [UsersController],
   providers: [
     PrismaService,

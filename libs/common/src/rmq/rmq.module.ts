@@ -5,6 +5,7 @@ import {
   ClientProviderOptions,
 } from '@nestjs/microservices';
 import { RmqService } from './rmq.service';
+import { ConfigModule } from '@nestjs/config';
 
 const RMQ_CLIENTS_CONFIG: ClientProviderOptions[] = [
   {
@@ -89,7 +90,7 @@ const RMQ_CLIENTS_CONFIG: ClientProviderOptions[] = [
 ];
 
 @Module({
-  imports: [ClientsModule.register(RMQ_CLIENTS_CONFIG)],
+  imports: [ConfigModule, ClientsModule.register(RMQ_CLIENTS_CONFIG)],
   controllers: [],
   providers: [RmqService],
   exports: [ClientsModule, RmqService],
