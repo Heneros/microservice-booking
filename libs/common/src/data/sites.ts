@@ -45,6 +45,6 @@ export const FEEDBACK_ROUTES = {
   DELETE_FEEDBACK: '',
   GET_ID: ':feedbackId',
   COMPLAINT_FEEDBACK: ':feedbackId/report',
-  
+
   ADMIN_GET_ALL: 'admin/feedback',
 };

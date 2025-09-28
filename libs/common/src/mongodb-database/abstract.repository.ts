@@ -1,83 +1,54 @@
-import { AbstractDocument } from './abstract.schema';
-import { Logger, NotFoundException } from '@nestjs/common';
-import {
-  FilterQuery,
-  Model,
-  Types,
-  UpdateQuery,
-  SaveOptions,
-  Connection,
-} from 'mongoose';
+import { Injectable } from '@nestjs/common';
+import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
 
-export abstract class AbstractRepositoryMongodb<
-  TDocument extends AbstractDocument,
-> {
-  protected abstract readonly logger: Logger;
+@Injectable()
+export abstract class AbstractMongoRepository<T> {
+  protected abstract readonly repository: Repository<T>;
 
-  constructor(
-    protected readonly model: Model<TDocument>,
-    private readonly connection: Connection,
-  ) {}
-
-  async create(
-    document: Omit<TDocument, '_id'>,
-    options?: SaveOptions,
-  ): Promise<TDocument> {
-    const createdDocument = new this.model({
-      ...document,
-      _id: new Types.ObjectId(),
-    });
-    return (
-      await createdDocument.save(options)
-    ).toJSON() as unknown as TDocument;
+  async findOne(where: FindOptionsWhere<T>): Promise<T | null> {
+    return this.repository.findOne({ where });
+  }
+  async find(where: FindOptionsWhere<T>): Promise<T[]> {
+    return this.repository.find({ where });
   }
 
-  async findOne(filterQuery: FilterQuery<TDocument>): Promise<TDocument> {
-    const document = await this.model.findOne(filterQuery, {}, { lean: true });
-    if (!document) {
-      this.logger.warn('Document not found with filterQuery', filterQuery);
-      throw new NotFoundException('Document not found');
-    }
+  async create(entityData: DeepPartial<T>): Promise<T> {
+    const entity = this.repository.create(entityData);
+    return this.repository.save(entity);
+  }
 
-    return document as TDocument;
+  async update(id, entityData): Promise<T | null> {
+    await this.repository.update(id, entityData);
+    return this.findOne({ id } as FindOptionsWhere<T>);
+  }
+
+  async delete(where: FindOptionsWhere<T>): Promise<boolean> {
+    const res = await this.repository.delete(where);
+    return res.affected > 0;
+  }
+
+  async findAll(
+    filter: Partial<Record<string, any>> = {},
+    options: { skip?: number; take?: number; sort?: any } = {},
+  ) {
+    const cursor = this.repository.find({
+      where: filter,
+      skip: options.skip,
+      take: options.take,
+      order: options.sort,
+    });
+    return cursor;
+    // return this.findAll({});
   }
 
   async findOneAndUpdate(
-    filterQuery: FilterQuery<TDocument>,
-    update: UpdateQuery<TDocument>,
-  ): Promise<TDocument> {
-    const document = await this.model.findOneAndUpdate(filterQuery, update, {
-      lean: true,
-      new: true,
-    });
+    where: FindOptionsWhere<T>,
+    entityData: DeepPartial<T>,
+  ): Promise<T | null> {
+    const entity = await this.findOne(where);
+    if (!entity) return null;
 
-    if (!document) {
-      this.logger.warn(`Document not found with filterQuery:`, filterQuery);
-      throw new NotFoundException('Document not found.');
-    }
-
-    return document as TDocument;
+    Object.assign(entity, entityData);
+    return this.repository.save(entity);
   }
-  async upsert(
-    filterQuery: FilterQuery<TDocument>,
-    document: Partial<TDocument>,
-  ): Promise<TDocument> {
-    return this.model
-      .findOneAndUpdate(filterQuery, document, {
-        upsert: true,
-        new: true,
-      })
-      .lean()
-      .exec() as Promise<TDocument>;
-  }
-
-  async find(filterQuery: FilterQuery<TDocument>): Promise<TDocument[]> {
-    return this.model.find(filterQuery).lean().exec() as Promise<TDocument[]>;
-  }
-
-  // async startTransaction() {
-  //   const session = await this.connection.startSession();
-  //   session.startTransaction();
-  //   return session;
-  // }
 }

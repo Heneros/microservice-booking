@@ -7,6 +7,8 @@ import {
   RabbitMqModule,
   RmqService,
 } from '@/libs/common/src';
+import * as Handlers from './handlers/index';
+
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentEntity } from './entities/Comment.entity';
 import { RedisRepository } from '@/libs/common/src/redis/redis.repository';
@@ -26,6 +28,12 @@ import { ConfigModule } from '@nestjs/config';
     CqrsModule.forRoot({}),
   ],
   controllers: [FeedbackController],
-  providers: [FeedbackService, PrismaService, RmqService, RedisRepository],
+  providers: [
+    FeedbackService,
+    PrismaService,
+    RmqService,
+    RedisRepository,
+    ...Object.values(Handlers),
+  ],
 })
 export class FeedbackModule {}

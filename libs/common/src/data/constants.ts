@@ -1,7 +1,7 @@
-export const tempTokenDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-export const tempRegisterDate = new Date(Date.now() + 10 * 60 * 1000);
-export const tempLoginDate = new Date(Date.now() + 31 * 60 * 60 * 1000);
-export const tempRequestPassDate = new Date(Date.now() + 15 * 60 * 1000);
+export let tempTokenDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+export let tempRegisterDate = new Date(Date.now() + 10 * 60 * 1000);
+export let tempLoginDate = new Date(Date.now() + 31 * 60 * 60 * 1000);
+export let tempRequestPassDate = new Date(Date.now() + 15 * 60 * 1000);
 
 export const env = process.env.NODE_ENV || 'development';
 

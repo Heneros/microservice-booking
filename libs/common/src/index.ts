@@ -41,5 +41,6 @@ export * from './repository/Auth.repository';
 export * from './repository/User.repository';
 export * from './repository/VerifyResetToken.repository';
 export * from './repository/Avatar.repository';
+export * from './repository/Feedback.repository';
 
 export * from './interfaces/cus-request';

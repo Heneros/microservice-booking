@@ -44,15 +44,20 @@ export class ResendEmailHandler implements ICommandHandler<ResendEmailCommand> {
       const token = randomBytes(32).toString('hex');
       const userId = user.id;
       const userToken = await this.verifyResetToken.findUnique({ userId });
+
       if (userToken) {
         await this.verifyResetToken.deleteToken(userId);
       }
+      const now = new Date();
+      const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
       const emailVerificationToken = await this.verifyResetToken.createToken({
         userId: user.id,
         token,
-        tempDate: tempRegisterDate,
+        // createdAt: now,
+        tempDate: expiresAt,
       });
+
       const data = {
         user,
         title: 'Welcome to Booking App! Confirm your Email ',

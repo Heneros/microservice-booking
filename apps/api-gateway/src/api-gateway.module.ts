@@ -6,6 +6,7 @@ import Joi from 'joi';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import {
   AuthRepository,
+  Comments,
   isDevelopment,
   isTest,
   MongodbModule,
@@ -27,7 +28,6 @@ import { HandleIOAuth } from './auth/passport/HandleOAuth';
 import { FeedbackController } from './feedback/feedback.controller';
 import { FeedbackService } from './feedback/feedback.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CommentEntity } from './feedback/entities/Comment.entity';
 
 @Module({
   imports: [
@@ -56,7 +56,7 @@ import { CommentEntity } from './feedback/entities/Comment.entity';
     ThrottlerModule.forRoot({
       throttlers: [{ ttl: 180, limit: 25 }],
     }),
-    TypeOrmModule.forFeature([CommentEntity]),
+    TypeOrmModule.forFeature([Comments]),
     PassportModule,
     CloudinaryModule,
   ],

@@ -2,12 +2,15 @@ import { Entity, ObjectIdColumn, Column } from 'typeorm';
 import { ObjectId } from 'mongodb';
 
 @Entity('comments')
-export class CommentEntity {
+export class Comments {
   @ObjectIdColumn()
   id: ObjectId;
 
   @Column()
-  message: string;
+  comment: string;
+
+  @Column()
+  pageId: string;
 
   @Column()
   imageUrl: string;

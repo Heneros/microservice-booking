@@ -28,6 +28,7 @@ import { getMetadataArgsStorage } from 'typeorm';
       inject: [ConfigService],
     }),
   ],
+  
   exports: [TypeOrmModule],
 })
 export class MongodbModule {}
