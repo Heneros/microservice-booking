@@ -28,6 +28,7 @@ import { HandleIOAuth } from './auth/passport/HandleOAuth';
 import { FeedbackController } from './feedback/feedback.controller';
 import { FeedbackService } from './feedback/feedback.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import path from 'path';
 
 @Module({
   imports: [
@@ -36,7 +37,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
-        // MONGODB_URI: Joi.string().required(),
+        MONGODB_URI: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         RABBIT_MQ_URI: Joi.string().required(),
         RABBIT_MQ_AUTH_QUEUE: Joi.string().required(),
@@ -44,7 +45,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         RABBIT_MQ_AUTH_MAIN_QUEUE: Joi.string().required(),
         PORT: Joi.number().required(),
       }),
-      envFilePath: isDevelopment ? '.env.development' : '.env.prod',
+      envFilePath: path.resolve(
+        process.cwd(),
+        isDevelopment ? '.env' : '.env.prod',
+      ),
+      // envFilePath: isDevelopment ? '.env' : '.env.prod',
     }),
     JwtModule.registerAsync({
       global: true,

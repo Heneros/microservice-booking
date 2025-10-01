@@ -44,19 +44,21 @@ import { RedisModule } from '@/app/common/redis/redis.module';
 
     // ...Object.values(Handlers),
     // ...Object.values(Repository),
-
+    // ConfigService,
     RmqService,
     RedisRepository,
   ],
   imports: [
     ConfigModule,
     // CommonModule,
+
     RabbitMqModule,
 
     CqrsModule.forRoot({}),
     RedisModule,
     // RmqModule,
     JwtModule.registerAsync({
+      imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: {

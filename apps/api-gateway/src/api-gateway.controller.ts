@@ -9,7 +9,7 @@ export class ApiGatewayController {
     private readonly apiGatewayService: ApiGatewayService,
   ) {}
 
-  @Get()
+  @Get('health')
   async getHello(): Promise<string> {
     return 'Hello World!!!!!!';
   }

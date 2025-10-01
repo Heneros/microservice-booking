@@ -7,7 +7,6 @@ COPY  tsconfig.json ./
 
 RUN npm install 
 
-
 COPY . .
 
 RUN npx prisma generate --schema=libs/common/src/postgresql-database/prisma/schema.prisma

@@ -17,7 +17,6 @@ services:
     depends_on:
       rabbitmq:
        condition: service_healthy
-
     networks:
        micro_booking:
 
@@ -28,7 +27,6 @@ services:
      target: ${NODE_ENV-development}
     env_file:
        - .env
-       - ./apps/auth/.env.${NODE_ENV}
     depends_on:
       - postgres
       - pgadmin
@@ -51,7 +49,7 @@ services:
      target: ${NODE_ENV-development}
     env_file:
        - .env
-       - ./apps/auth/.env.${NODE_ENV}
+      #  - ./apps/auth/.env.${NODE_ENV}
     depends_on:
       - postgres
       - pgadmin
@@ -72,7 +70,7 @@ services:
      target: ${NODE_ENV:-development}
     env_file:
       - .env
-      - ./apps/users/.env.${NODE_ENV}
+      # - ./apps/users/.env.${NODE_ENV}
     depends_on:
       - auth
       - postgres
@@ -93,7 +91,7 @@ services:
        target: ${NODE_ENV:-development}
     env_file:
        - .env
-       - ./apps/notifications/.env.${NODE_ENV}
+      #  - ./apps/notifications/.env.${NODE_ENV}
     depends_on:
       - maildev
       - rabbitmq

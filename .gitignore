@@ -5,8 +5,10 @@
 *.env.development
 .env
 *.env.prod
-
+.env.k8s
 *.pdf
+
+k8s/api-gateway/api-gateway.deployment.yaml
 
 featuresMicroservice.txt
 *.txt
