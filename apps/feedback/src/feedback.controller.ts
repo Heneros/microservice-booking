@@ -35,11 +35,11 @@ export class FeedbackController {
         new CreateCommentCommand(createCommentDto),
       );
       this.rmqService.ack(context);
-      console.log('val', res);
+      // console.log('val', res);
       return plainToInstance(Comments, res);
     } catch (error) {
       this.rmqService.nack(context, false);
-      console.error(error);
+      // console.error(error);
       throw new RpcException(error.message);
     }
   }

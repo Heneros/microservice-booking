@@ -22,13 +22,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { PassportModule } from '@nestjs/passport';
 import { CloudinaryModule } from '@/app/common/cloudinary/cloudinary.module';
-import { GoogleService } from './auth/services/Google.service';
+import { PassportService } from './auth/services/Passport.service';
 import { GoogleStrategy } from './auth/passport/GoogleStrategy';
-import { HandleIOAuth } from './auth/passport/HandleOAuth';
+import { HandleIOAuth } from './auth/services/HandleOAuth.service';
 import { FeedbackController } from './feedback/feedback.controller';
 import { FeedbackService } from './feedback/feedback.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import path from 'path';
+import { GithubStrategy } from './auth/passport/GithubStrategy';
 
 @Module({
   imports: [
@@ -79,13 +80,15 @@ import path from 'path';
   providers: [
     ApiGatewayService,
     PrismaService,
-    GoogleService,
+    PassportService,
     UserRepository,
     AuthRepository,
     VerifyResetTokenRepository,
     HandleIOAuth,
     GoogleStrategy,
+    GithubStrategy,
     FeedbackService,
+
     // UserInterceptor,
     // {
     //   provide: APP_INTERCEPTOR,

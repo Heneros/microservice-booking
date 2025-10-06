@@ -1,8 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
-import axios from 'axios';
-import { HandleIOAuth } from '../passport/HandleOAuth';
+import { HandleIOAuth } from './HandleOAuth.service';
 import {
   AuthRepository,
   UserRepository,
@@ -11,7 +10,7 @@ import {
 import { CloudinaryService } from '@/app/common/cloudinary/cloudinary.service';
 
 @Injectable()
-export class GoogleService extends HandleIOAuth {
+export class PassportService extends HandleIOAuth {
   constructor(
     protected readonly userRepository: UserRepository,
     protected readonly authRepository: AuthRepository,
@@ -30,7 +29,7 @@ export class GoogleService extends HandleIOAuth {
     );
   }
 
-  async validateGoogleUser(profile: any) {
+  async validateUser(profile: any) {
     try {
       // console.log('test', profile);
       return await this.handleOauthLogin(profile);

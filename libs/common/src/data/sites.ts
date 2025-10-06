@@ -10,6 +10,7 @@ export const AUTH_ROUTES = {
   RESEND_PASS: 'resend_password',
   RESET_PASSWORD: 'reset_password',
   RESET_PASSWORD_REQUEST: 'reset_password_request',
+  PING: 'ping',
 
   GOOGLE: 'google',
   GOOGLE_CALLBACK: 'google/callback',

@@ -16,7 +16,7 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { LoginUserDto, RegisterUserDto } from './dto';
 import { catchError, last, lastValueFrom, throwError, timeout } from 'rxjs';
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import {
   AUTH_CONTROLLER,
   AUTH_ROUTES,
@@ -38,7 +38,7 @@ import {
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { randomUUID } from 'crypto';
-import { GoogleService } from './services/Google.service';
+import { PassportService } from './services/Passport.service';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
 
@@ -47,7 +47,7 @@ export class AuthController {
   constructor(
     @Inject(AUTH_SERVICE.AUTH_MAIN) private readonly apiService: ClientProxy,
     private jwt: JwtService,
-    private readonly googleService: GoogleService,
+    private readonly passportService: PassportService,
   ) {}
 
   @Post(AUTH_ROUTES.REGISTER)
@@ -287,16 +287,16 @@ export class AuthController {
     }
   }
 
-  @Get(AUTH_ROUTES.GOOGLE)
-  @ApiOperation({
-    summary: 'Google log in for application ',
-  })
-  @ApiResponse({
-    status: 302,
-    description: 'Redirects to Google OAuth login',
-  })
-  @UseGuards(AuthGuard('google'))
-  async googleAuth() {}
+  // @Get(AUTH_ROUTES.GOOGLE)
+  // @ApiOperation({
+  //   summary: 'Google log in for application ',
+  // })
+  // @ApiResponse({
+  //   status: 302,
+  //   description: 'Redirects to Google OAuth login',
+  // })
+  // @UseGuards(AuthGuard('google'))
+  // async googleAuth() {}
 
   @Get(AUTH_ROUTES.GOOGLE_CALLBACK)
   @ApiOperation({ summary: 'Callback from Google OAuth' })
@@ -307,8 +307,8 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req: CustomRequest, @Res() res: Response) {
     try {
-      console.log(req.user);
-      const user = await this.googleService.validateGoogleUser(req.user);
+      // console.log(req.user);
+      const user = await this.passportService.validateUser(req.user);
 
       if (!user) {
         return res.status(400).json({ message: 'User not found' });
@@ -337,7 +337,48 @@ export class AuthController {
       throw new BadGatewayException(error.message || 'Authentication failed');
     }
   }
-  @Get('ping')
+
+  @Get(AUTH_ROUTES.GITHUB_CALLBACK)
+  @UseGuards(AuthGuard('github'))
+  @ApiOperation({ summary: 'Callback from Github OAuth' })
+  @ApiResponse({
+    status: 302,
+    description: 'Sets cookie and redirects to frontend',
+  })
+  async githubAuthCallback(@Req() req: Request, @Res() res: Response) {
+    try {
+      // console.log(req.user);
+      const user = await this.passportService.validateUser(req.user);
+
+      if (!user) {
+        return res.status(400).json({ message: 'User not found' });
+      }
+
+      const token = this.jwt.sign({
+        userId: user.id,
+        username: user.username,
+        roles: user.roles,
+      });
+
+      return res
+        .cookie('jwtBooking', token, {
+          httpOnly: true,
+          sameSite: !isDevelopment ? 'lax' : 'strict',
+          maxAge: 31 * 24 * 60 * 60 * 1000,
+          secure: !isDevelopment,
+        })
+        .redirect('/');
+    } catch (error) {
+      console.error('Google Auth Error:', error);
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+
+      throw new BadGatewayException(error.message || 'Authentication failed');
+    }
+  }
+
+  @Get(AUTH_ROUTES.PING)
   async handleGet() {
     return this.apiService.send({ cmd: 'ping' }, {});
   }
