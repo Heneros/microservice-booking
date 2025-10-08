@@ -52,6 +52,15 @@
         "tsConfigPath": "apps/feedback/tsconfig.app.json"
       }
     },
+    "hotels": {
+      "type": "application",
+      "root": "apps/hotels",
+      "entryFile": "main",
+      "sourceRoot": "apps/hotels/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/hotels/tsconfig.app.json"
+      }
+    },
     "notifications": {
       "type": "application",
       "root": "apps/notifications",

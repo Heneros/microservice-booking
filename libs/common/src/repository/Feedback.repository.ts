@@ -17,6 +17,10 @@ export class FeedbackRepository extends AbstractMongoRepository<Comments> {
     return this.findOne({ id } as any);
   }
 
+  async createComment(data): Promise<Comments | null> {
+    return this.create(data);
+  }
+
   async updateComment(
     id: ObjectId | string,
     data: Partial<Comments>,

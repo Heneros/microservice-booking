@@ -1,10 +1,12 @@
-import { IsNotEmpty, IsString, Max } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, Length, Max } from 'class-validator';
 
 export class CreateCommentDto {
-  @Max(3500)
+  @IsString()
   @IsNotEmpty()
-  comment: string;
+  @Length(0, 3500)
+  public comment: string;
 
-  //   @IsNotEmpty()
-  //   image: string;
+  @IsString()
+  @IsOptional()
+  public imageUrl?: string;
 }

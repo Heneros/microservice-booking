@@ -14,14 +14,10 @@ import * as Repository from 'libs/common/src/repository';
 import * as Handlers from './handlers/index';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
-// import { CommentEntity } from './entities/Comment.entity';
 import { RedisRepository } from '@/libs/common/src/redis/redis.repository';
 import { RedisModule } from '@/libs/common/src/redis/redis.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import Joi from 'joi';
-import path from 'path';
-// import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -34,8 +30,6 @@ import path from 'path';
   ],
   controllers: [FeedbackController],
   providers: [
-    ConfigService,
-    // FeedbackService,
     PrismaService,
     RmqService,
 

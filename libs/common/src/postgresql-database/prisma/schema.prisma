@@ -37,9 +37,12 @@ model User{
   email     String   @unique
   roles     String[] @default(["User"])
   refreshToken    String[]
+
   token          VerifyResetToken[]
+  author Hotel[]
 
   provider  String? @default("email")
+
   googleId  String? @unique()
   githubId  String? @unique()
   discordId String? @unique()
@@ -53,5 +56,37 @@ model Avatar{
   userId Int?  @unique()
 
   user User? @relation(name: "AvatarUser")
+  hotel Hotel? @relation(name: "PosterHotel")
   createdAt DateTime @default(now())
+}
+
+model Hotel{
+    id       Int    @id @default(autoincrement())
+    title String @unique()
+    description String?
+    avgRating Float   @default(0)
+    price Int? @default(0)
+    category String[]
+
+   author User @relation(fields: [authorId], references: [id])
+   authorId    Int 
+   rating        Int? @default(0)  
+
+    galleryId  Int?     @unique()
+    gallery    Gallery? @relation(name: "GalleryHotel", fields: [galleryId],      references: [id])
+
+
+    posterId Avatar? @relation(name: "PosterHotel", fields: [avatarId], references: [id], onDelete: Cascade)
+    avatarId Int? @unique()
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+}
+
+model Gallery{
+    id Int @id @default(autoincrement())
+    url String 
+    publicId String 
+    hotel Hotel? @relation(name: "GalleryHotel")
 }

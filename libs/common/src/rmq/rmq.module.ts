@@ -65,6 +65,23 @@ const RMQ_CLIENTS_CONFIG: ClientProviderOptions[] = [
     },
   },
   {
+    name: 'HOTELS',
+    transport: Transport.RMQ,
+    options: {
+      urls: ['amqp://user:password@rabbitmq:5672'],
+      queue: 'hotels_queue',
+      queueOptions: { durable: true },
+      persistent: true,
+      exchange: 'app_change',
+      exchangeType: 'direct',
+      routingKey: 'hotel_commands',
+      socketOptions: {
+        heartbeatIntervalInSeconds: 60,
+        reconnectTimeInSeconds: 5,
+      },
+    },
+  },
+  {
     name: 'NOTIFICATIONS',
     transport: Transport.RMQ,
     options: {

@@ -9,10 +9,14 @@ export class CreateCommandHandler
   constructor(private readonly feedbackRepository: FeedbackRepository) {}
 
   async execute(command: CreateCommentCommand) {
-    const { message } = command;
+    const { commentData } = command;
+  
+    const created = await this.feedbackRepository.createComment({
+      ...commentData,
+      createdAt: new Date(),
+    });
 
-    // console.log(message);
-
-    return message;
+    // console.log('created comment:', created);
+    return created;
   }
 }

@@ -13,7 +13,8 @@ import Joi from 'joi';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        // console.log(MONGODB_URI);
+        const uriFromEnv = configService.get('MONGODB_URI');
+
         const entities = getMetadataArgsStorage()
           .tables.map((tbl) => tbl.target as Function)
           .filter((entity) =>
@@ -28,6 +29,7 @@ import Joi from 'joi';
           database: configService.get('MONGO_DB'),
           entities,
           logging: true,
+          synchronize: true,
           autoLoadEntities: true,
           // useUnifiedTopology: true,
           // useNewUrlParser: true,

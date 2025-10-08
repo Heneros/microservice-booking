@@ -66,6 +66,7 @@ Unit tests
 - auth (registration, login, resend email, reset-password, request-resend-password and etc)
 - booking 
 - payment 
+- Feedback. For commenting, CRUD operations. 
 - notifications (SMTP module to send email to users)
 
 
