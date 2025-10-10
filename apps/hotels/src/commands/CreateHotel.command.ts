@@ -1,6 +1,6 @@
-import { CreateCommentDto } from '@/libs/common/src/dtos';
+import { CreateHotelDto } from '@/libs/common/src/dtos';
 import { ICommand } from '@nestjs/cqrs';
 
-export class CreateCommentCommand implements ICommand {
-  constructor(public commentData: CreateCommentDto) {}
+export class CreateHotelCommand implements ICommand {
+  constructor(public createHotelDto: CreateHotelDto) {}
 }
