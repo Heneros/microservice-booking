@@ -10,7 +10,6 @@ import {
   UploadApiResponse,
 } from 'cloudinary';
 import 'multer';
-// import Express from 'express';
 import { AvatarRepository } from './../repository/Avatar.repository';
 import path from 'path';
 

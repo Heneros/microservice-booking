@@ -77,6 +77,8 @@ model Hotel{
 
 
     posterId Avatar? @relation(name: "PosterHotel", fields: [avatarId], references: [id], onDelete: Cascade)
+
+    
     avatarId Int? @unique()
 
     createdAt DateTime @default(now())

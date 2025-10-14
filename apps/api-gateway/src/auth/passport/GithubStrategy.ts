@@ -50,7 +50,6 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
       }
 
       if (user) {
-        // console.log('Existing user found:', user.id);
         return user;
       }
 
@@ -75,7 +74,7 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
         email: emails[0].value,
         username: displayName || email.split('@')[0],
         avatar: photos?.[0]?.value || profile._json?.picture,
-        googleId: id,
+        githubId: id,
         // accessToken,
         // refreshToken,
       };
