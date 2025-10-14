@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap 
-metadata:
-  name: api-gateway-config
-data:
-  NODE_ENV: development
-  
