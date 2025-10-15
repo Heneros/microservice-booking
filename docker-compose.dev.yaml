@@ -1,0 +1,290 @@
+
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+      target: ${NODE_ENV:-development}
+    restart: always
+    ports:
+     - "3000:3000"  
+    env_file:
+      - .env
+      - ./apps/api-gateway/.env.${NODE_ENV}
+    volumes:
+     - .:/usr/src/app
+     - common_node_modules:/usr/src/app/node_modules
+    depends_on:
+      rabbitmq:
+       condition: service_healthy
+    networks:
+       micro_booking:
+
+  auth:
+    build:
+     context: .
+     dockerfile: ./apps/auth/Dockerfile
+     target: ${NODE_ENV-development}
+    env_file:
+       - .env
+    depends_on:
+      - postgres
+      - pgadmin
+      - redis
+      - rabbitmq
+      - maildev
+    volumes:
+     - .:/usr/src/app
+     - common_node_modules:/usr/src/app/node_modules
+    # ports:
+    #   - '3000:3000'
+    networks:
+      micro_booking:
+
+
+  feedback:
+    build:
+     context: .
+     dockerfile: ./apps/feedback/Dockerfile
+     target: ${NODE_ENV-development}
+    env_file:
+       - .env
+      #  - ./apps/auth/.env.${NODE_ENV}
+    depends_on:
+      - postgres
+      - pgadmin
+      - redis
+      - rabbitmq
+      - maildev
+    volumes:
+     - .:/usr/src/app
+     - common_node_modules:/usr/src/app/node_modules
+    networks:
+      micro_booking:
+
+      
+  hotels:
+    build:
+     context: .
+     dockerfile: ./apps/hotels/Dockerfile
+     target: ${NODE_ENV-development}
+    env_file:
+       - .env
+      #  - ./apps/auth/.env.${NODE_ENV}
+    depends_on:
+      - postgres
+      - pgadmin
+      - redis
+      - rabbitmq
+      - maildev
+    volumes:
+     - .:/usr/src/app
+     - common_node_modules:/usr/src/app/node_modules
+    networks:
+      micro_booking:
+
+
+
+  users:
+    build:
+     context: .
+     dockerfile: ./apps/users/Dockerfile
+     target: ${NODE_ENV:-development}
+    env_file:
+      - .env
+      # - ./apps/users/.env.${NODE_ENV}
+    depends_on:
+      - auth
+      - postgres
+      - pgadmin
+      - redis
+      - maildev
+      - rabbitmq
+    volumes:
+     - .:/usr/src/app
+     - common_node_modules:/usr/src/app/node_modules
+    networks:
+      micro_booking:
+
+  notifications:
+    build: 
+       context: .
+       dockerfile: ./apps/notifications/Dockerfile
+       target: ${NODE_ENV:-development}
+    env_file:
+       - .env
+      #  - ./apps/notifications/.env.${NODE_ENV}
+    depends_on:
+      - maildev
+      - rabbitmq
+      - redis
+    volumes:
+     - .:/usr/src/app
+     - common_node_modules:/usr/src/app/node_modules
+    networks:
+      micro_booking:
+
+  # analytics_rep:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/analytics/Dockerfile
+  #   env_file:
+  #     - ./apps/analytics/.env
+
+
+  rabbitmq:
+    image: rabbitmq:3-management
+  # //.  hostname: rabbitmq  
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+       RABBITMQ_DEFAULT_USER: user
+       RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - rabbit_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    networks:
+      micro_booking:
+
+  mongo:
+    image: mongo:6
+    restart: always
+    env_file:
+     - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
+    volumes:
+     - mongo-data:/data/db 
+    ports:
+      - '27017:27017'
+    healthcheck:                 
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      micro_booking:
+
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo_express_container
+    restart: always
+    ports:
+      - "8081:8081"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin123456
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+    networks:
+      micro_booking:
+
+  postgres:
+    restart: always
+    image: postgres:14-alpine
+    env_file: ./.env
+    # build:
+    #  context: ./docker/postgres
+    #  dockerfile: Dockerfile
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD:  ${POSTGRES_PASSWORD}
+      POSTGRES_DB:  ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      micro_booking:
+
+  pgadmin:
+   image: dpage/pgadmin4:8
+   restart: always
+   environment: 
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+   ports: 
+     - "5050:80"
+   volumes:
+      - pgadmin-data:/var/lib/pgadmin
+   networks:
+    micro_booking:
+     
+  maildev:
+   image: maildev/maildev:2.2.1
+   restart: always
+   ports:
+    - "1080:1080"
+    - "1025:1025"
+   environment:
+      - MAILDEV_WEB_PORT=1080
+      - MAILDEV_SMTP_PORT=1025
+   networks:
+    micro_booking:
+
+  redis:
+   image: redis:7.4
+   container_name: redis-micro
+   restart: always
+   ports:
+    - '6379:6379'
+   volumes:
+   - redis_data:/data
+   healthcheck:
+    test: ["CMD", "redis-cli", "ping"]
+    interval: 5s
+    timeout: 5s
+    retries: 5
+   networks:
+    micro_booking:
+    
+
+  nginx:
+   image: nginx:stable-alpine
+   container_name: nginx
+   restart: always
+   ports:
+    - "80:80"
+    - "443:443"
+   depends_on:
+    - api-gateway
+   volumes:
+     - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+     - ./docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+     - ./logs/nginx:/var/log/nginx
+   networks:
+      micro_booking:
+    
+
+volumes:
+  postgres_data:
+  redis_data:
+  pgadmin-data:
+  mongo-data:
+  rabbit_data:
+  common_node_modules:
+
+
+networks:
+   micro_booking:
+      driver: bridge

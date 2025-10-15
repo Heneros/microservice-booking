@@ -1,0 +1,32 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "node",
+      "express",
+      "express-session"
+    ],
+    "paths": {
+      "express-session": [
+        "../../node_modules/express-session"
+      ],
+      "@types/express-session": [
+        "../../node_modules/@types/express-session"
+      ]
+    }
+  },
+  "types": [
+    "node",
+    "express",
+    "express-session"
+  ],
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "**/*spec.ts"
+  ]
+}

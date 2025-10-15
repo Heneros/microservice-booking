@@ -1,0 +1,73 @@
+{
+  "compilerOptions": {
+    "module": "nodenext",
+    "target": "ESNext",
+    "moduleResolution": "nodenext",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "noEmit": false,
+    "isolatedModules": true,
+    "noFallthroughCasesInSwitch": false,
+    "types": [
+      "express",
+      "express-session",
+      "jest",
+      "multer",
+      "node"
+    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "libs/common/src/interfaces"
+    ],
+    "paths": {
+      "@/*": [
+        "*"
+      ],
+      "@/api-gateway": [
+        "apps/api-gateway/src"
+      ],
+      "@/api-gateway/*": [
+        "apps/api-gateway/src/*"
+      ],
+      "@/app/common": [
+        "libs/common/src"
+      ],
+      "@/app/common/*": [
+        "libs/common/src/*"
+      ],
+      "@app/feedback": [
+        "libs/feedback/src"
+      ],
+      "@app/feedback/*": [
+        "libs/feedback/src/*"
+      ]
+    }
+  },
+  "include": [
+    "test/**/*",
+    "apps/**/*",
+    "libs/**/*",
+    "types",
+    "apps/users/src/query/FindAllUsers.query.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "out",
+    "ignore"
+  ]
+}
